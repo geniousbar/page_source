@@ -1,0 +1,13 @@
+site_url: 'http://geniousbar.github.io'
+site_title: '日常学习'
+site_description: 'geniousbar 日常知识总结'
+site_author: 'geniousbar'
+site_author_profile: 'stay hungry stay foolish'
+site_author_image: 'profile.png'
+reverse_title: true
+social_links:
+  # twitter: 'https://twitter.com'
+  # facebook: 'https://facebook.com'
+  github: 'https://github.com/geniousbar'
+  # linkedin: 'https://linkedin.com'
+# google_analytics_account: 'XX-12345678-9'
