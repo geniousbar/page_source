@@ -124,7 +124,6 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (4.1.0.333)
     nokogiri (1.7.1)
       mini_portile2 (~> 2.1.0)
     padrino-helpers (0.13.3.3)
@@ -177,10 +176,9 @@ DEPENDENCIES
   middleman-livereload
   middleman-s3_sync
   middleman-syntax
-  newrelic_rpm
   puma
   rack-contrib
   slim
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

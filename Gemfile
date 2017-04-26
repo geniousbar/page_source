@@ -21,6 +21,9 @@ gem 'slim'
 # For GitHub Pages deployment
 gem 'middleman-deploy', '~> 2.0.0.pre.alpha'
 
+# For S3 deployment
+gem 'middleman-s3_sync'
+
 # For Markdown
 gem 'kramdown'
 
