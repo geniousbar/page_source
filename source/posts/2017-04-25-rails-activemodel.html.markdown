@@ -4,6 +4,10 @@ date: 2017-04-25
 tags: rails, activemodel
 ---
 
+[AttributeAssignment](#attribute_assignment)
+[Callbacks](#callbacks)
+[Dirty](#dirty)
+[Validations](#validations)
 ## rails activemodel
 
   ```ruby
@@ -190,7 +194,7 @@ tags: rails, activemodel
         end
       ```
 
-## callback
+## callbacks
   1. 代码调用
 
       ```ruby
@@ -420,7 +424,7 @@ tags: rails, activemodel
     **问题为什么需要CallbackChain 到CallbackSequence的转换呢？**
       - CallbackChain中主要针对Callback的实例数组操作， delete, append, prepend, clear, compile 等, CallbackSequence 也是类似的，存储lambda之后的可执行数组
 
-## Dirty
+## dirty
   > dirty 根据文档的描述是，为了提供一个工具集来跟踪变量变化(之前以为是auto， 用了一些callback， 或者元编程之类的结果不是！！！， 而是提供了一个工具集， 在使用中， 需要手动调用方法)
 
   下面的可见一斑:
@@ -468,5 +472,175 @@ tags: rails, activemodel
         @previously_changed = changes
         @changed_attributes = ActiveSupport::HashWithIndifferentAccess.new
       end
-
   ```
+
+## validations
+  1. 示例代码
+
+      ```ruby
+        class Person
+          include ActiveModel::Validations
+          validates_with MyValidator
+        end
+
+        class MyValidator < ActiveModel::Validator
+          def validate(record)
+            if some_complex_logic
+              record.errors.add(:base, "This record is invalid")
+            end
+          end
+
+          private
+            def some_complex_logic
+              # ...
+            end
+        end
+      ```
+
+  2. 调用栈分析
+
+      ```
+        # validation 中的代码
+          define_callbacks :validate, scope: :name
+          class_attribute :_validators, instance_writer: false
+
+        |- validates_with MyValidator
+          |- options = args.extract_options!
+          |- validator = klass.new(options, &block)
+          |- validator.attributes.each {|attribute| _validators[attribute.to_sym] << validator }
+          |- validate(validator, options)
+            |- set_callback(:validate, *args, &block)
+
+        # 一些内置的validator, 例如PresenceValidator
+        |- validates_presence_of(*attr_names)
+          |- validates_with PresenceValidator, _merge_attributes(attr_names)
+
+        |- valid?(context = nil)
+          |- run_validations!
+            |- _run_validate_callbacks
+            .......
+            |- validate(record)
+              |- validate_each(record, attribute, value)
+      ```
+
+      **一个主要的数据流走向为:**
+
+        1. > 在include  Validator 时候， define_callbacks :validate, scope: :name。 设定callback， scope: :name 的作用为调用 一个instance callback时候调用的方法, 在 define_callbacks :save, MyValidator, :before, scope: [:kind, :name], 在执行callback时候调用 MyValidator#before_save, Callback#apply 中存在
+
+        2. > validates_with Class, options, 构造实例， 调用validate， 调用set_callback设定 callback时候的lambda, 2. 存在一些内置的校验器, validates_presence_of :name， 通过统一的调用 validate_with Class, options
+
+        3. > valid?, 执行callback 中的lambda校验， 其中有意思的是valid?(context = nil), valid?的调用存在一个 context参数， 可以传递 在 validate_with Class, on: :save，的参数， 来决定执行特定环境中的validate， 所以猜想贯穿到 ActiveRecord#.save 时候的调用，应该存在类似的 valid?(:save)代码逻辑, 执行个个validator实例中的validate函数， 通过 继承EachValidator 分发到validate_each
+
+
+      ```ruby
+      class EachValidator < Validator #:nodoc:
+        attr_reader :attributes
+
+        def initialize(options)
+          @attributes = Array(options.delete(:attributes))
+          raise ArgumentError, ":attributes cannot be blank" if @attributes.empty?
+          super
+        end
+      end
+
+      # active_model/validation.rb
+      module ActiveModel
+        module Validations
+          extend ActiveSupport::Concern
+
+          included do
+            extend ActiveModel::Callbacks
+            extend  HelperMethods
+            include HelperMethods
+
+            attr_accessor :validation_context
+            private :validation_context=
+            define_callbacks :validate, scope: :name
+
+            class_attribute :_validators, instance_writer: false
+            self._validators = Hash.new { |h,k| h[k] = [] }
+          end
+
+          module ClassMethods
+            def validate(*args, &block)
+              options = args.extract_options!
+              if options.key?(:on)
+                options = options.dup
+                options[:if] = Array(options[:if])
+                options[:if].unshift ->(o) {
+                  !(Array(options[:on]) & Array(o.validation_context)).empty?
+                }
+              end
+
+              args << options
+              set_callback(:validate, *args, &block)
+            end
+          end
+        end
+      end
+
+      # active_model/validations/with.rb
+      module ActiveModel
+        module Validations
+          module ClassMethods
+            def validates_with(*args, &block)
+              options = args.extract_options!
+              options[:class] = self
+
+              args.each do |klass|
+                validator = klass.new(options, &block)
+
+                if validator.respond_to?(:attributes) && !validator.attributes.empty?
+                  validator.attributes.each do |attribute|
+                    _validators[attribute.to_sym] << validator
+                  end
+                else
+                  _validators[nil] << validator
+                end
+
+                validate(validator, options)
+              end
+            end
+          end
+        end
+      end
+
+      module ActiveModel
+
+        module Validations
+          class PresenceValidator < EachValidator # :nodoc:
+            def validate_each(record, attr_name, value)
+              record.errors.add(attr_name, :blank, options) if value.blank?
+            end
+          end
+
+          module HelperMethods
+            def validates_presence_of(*attr_names)
+              validates_with PresenceValidator, _merge_attributes(attr_names)
+            end
+          end
+        end
+      end
+
+
+
+      class EachValidator < Validator #:nodoc:
+        attr_reader :attributes
+
+        def initialize(options)
+          @attributes = Array(options.delete(:attributes))
+          raise ArgumentError, ":attributes cannot be blank" if @attributes.empty?
+          super
+          check_validity!
+        end
+
+        def validate(record)
+          attributes.each do |attribute|
+            value = record.read_attribute_for_validation(attribute)
+            next if (value.nil? && options[:allow_nil]) || (value.blank? && options[:allow_blank])
+            validate_each(record, attribute, value)
+          end
+        end
+      end
+
+      ```
