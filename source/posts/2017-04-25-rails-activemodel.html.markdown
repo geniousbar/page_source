@@ -416,11 +416,83 @@ tags: rails, activemodel
 
        > 大概的调用 调用顺序为, define_callbacks :save 定义callback的名字，初始化CallbackChain, set_callback :save, :before, :save_messsage, 在CallbackChain中添加Callback 的实例, 在最后run_callback 的时候最为重要， 将前面两步做的操作都进行了兑现， 1. 调用CallBackChain#compile, compile 有意思的是初始化了一个CallbackSequence实例， 并对Callback数组进行inject Callback.apply 中最为重要， CallBack.apply 中将 Filters::Before, Filters::After中的其他通用部分， 执行条件(set_callback :save, :before, :do_something if: :xxx?), hook函数(do_something) 进行了lambda化，(条件为conditions_lambdas函数， hook为make_lambda), 并根据 kind(:before, :after, :around)进行了分发， 下降到Filters::Before 中， 则在 hook 的lambda的基础上进行了， 完善，完成了各自 Before, After 等的具体操作，这是最底层的具体到执行逻辑的部分。2. 执行， 上面的lambda化结果， 提供了一个Environment的环境， 包含:halt, :value, :target 等信息，
 
-  4. good-part
+  4. active_model 中的 callback
+
+      > active_model 中封装了， activesupport 中设定callback的繁琐步骤，而是通过 define_model_callbacks 来设定
+
+      ```
+        |- define_model_callbacks :save
+          |- define_callbacks(callback, options)
+          |- send("_define_#{type}_model_callback", self, callback)
+            |-  klass.define_singleton_method("before_#{callback}") do |*args, &block|
+            |-    set_callback(:"#{callback}", :before, *args, &block)
+            |-  end
+
+      ```
+
+      ```ruby
+      module ActiveModel
+        module Callbacks
+          def self.extended(base) #:nodoc:
+            base.class_eval do
+              include ActiveSupport::Callbacks
+            end
+          end
+
+          def define_model_callbacks(*callbacks)
+            options = callbacks.extract_options!
+            options = {
+              terminator: deprecated_false_terminator,
+              skip_after_callbacks_if_terminated: true,
+              scope: [:kind, :name],
+              only: [:before, :around, :after]
+            }.merge!(options)
+
+            types = Array(options.delete(:only))
+
+            callbacks.each do |callback|
+              define_callbacks(callback, options)
+              types.each do |type|
+                send("_define_#{type}_model_callback", self, callback)
+              end
+            end
+          end
+
+          private
+
+          def _define_before_model_callback(klass, callback) #:nodoc:
+            klass.define_singleton_method("before_#{callback}") do |*args, &block|
+              set_callback(:"#{callback}", :before, *args, &block)
+            end
+          end
+
+          def _define_around_model_callback(klass, callback) #:nodoc:
+            klass.define_singleton_method("around_#{callback}") do |*args, &block|
+              set_callback(:"#{callback}", :around, *args, &block)
+            end
+          end
+
+          def _define_after_model_callback(klass, callback) #:nodoc:
+            klass.define_singleton_method("after_#{callback}") do |*args, &block|
+              options = args.extract_options!
+              options[:prepend] = true
+              conditional = ActiveSupport::Callbacks::Conditionals::Value.new { |v|
+                v != false
+              }
+              options[:if] = Array(options[:if]) << conditional
+              set_callback(:"#{callback}", :after, *(args << options), &block)
+            end
+          end
+        end
+      end
+
+      ```
+
+  5. good-part
 
       > 代码中使用了，大量的lambda化最为震撼（其中包括 条件执行，hook函数）， 将符号配置， 执行条件配置都lambda化， 变成了一个可以随时执行的代码(compile 的含义很符合)， 存储在一个数组中，hook的执行 变成了执行数组的 each item.call, 其中个个callback如何确定环境（比如是否执行，是否已经callback中断了）通过Environment 对象传递
 
-  5. 问题
+  6. 问题
     **问题为什么需要CallbackChain 到CallbackSequence的转换呢？**
       - CallbackChain中主要针对Callback的实例数组操作， delete, append, prepend, clear, compile 等, CallbackSequence 也是类似的，存储lambda之后的可执行数组
 
