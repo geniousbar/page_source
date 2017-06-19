@@ -74,7 +74,7 @@ Sinatra
                     |- block ? block[self, values] : yield(self, values)
       ```
 
-      > 第一个步骤， 将 :get, :put 等方法， 委托给Application, Application 继承Base，拿get举例， get 的低矮用在@routes中添加 将proc 取消binding的 可执行proc(不知道为什么需要这样，详细见 generate_method, 而且method_name 还可以是 "{ver} ${path}"), Regrex 对象等
+      > 第一个步骤， 将 :get, :put 等方法， 委托给Application, Application 继承Base，拿get举例， get 的调用在@routes中添加 将proc 取消binding的 可执行proc(不知道为什么需要这样，详细见 generate_method, 而且method_name 还可以是 "{ver} ${path}"), Regrex 对象等
 
       > 第二个执行， rack 中中间件调用call， 构建了response, Request.new(env), invoke 为一个接住halt异常，并且记录返回数据到response 的函数， dispatch!则更为重要， 在其中执行了route!, route！的目的为执行路由，寻找匹配的路由，然后执行其中的可执行proc， process_route, 使用存在routes中的正则匹配路径是否命中，命中则执行对应的proc，
 
@@ -231,5 +231,11 @@ Sinatra
         end
       ```
   4. 总结
-
-    1. DSL中通过将用户的block， 解除bind，执行bind来达到更换执行环境的问题， 
+    1. DSL中通过将用户的block， 解除bind，执行bind来达到更换执行环境的问题，用这种方法实现的有 :get, :error 等, filter
+    2. sinatra提供的一下halt, pass 等，是采用throw :halt, 等来实现的， throw异常 然后中断正常处理，从而由sinatra接管
+    3. sinatra在路由匹配上每次都会将所有的现有的路由，首先通过verb(get, post, put) 等，过滤， 然后 循环匹配，
+    4. 关于渲染模板中如何将实例变量(@name='xx') 带入到模板中去， sinatra使用的为tilt， 在render的时候 将Sinatra::Application 实例传递进去， 使tilt在Application的实例变量中渲染模板(get 获得的代码块在Application实例中执行， 所以实例变量等都会副职在 其中， 而渲染模板的环境也在Application中，保证能够正常执行）
+    5. 这里在halt的实现方式上就有对比了， Rails vs Sinatra， rails中的callback实现的方式为每次检查Environment的变量， sinatra中为抛出异常， 传统认为抛出异常的代价是很高的。
+    6. sinatra中的invoke抽象的非常好， invoke是执行block然后将结果保存到body， status，response中
+    7. error 中的管理方法同路由中的一样，保存在类变量中， error => @error, :get, :put => @route,
+    8. 其中的Delegator的设定， 可以避免代码污染，污染全局空间，将委托方法放在一个module中
