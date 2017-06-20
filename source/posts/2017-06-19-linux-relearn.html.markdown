@@ -52,9 +52,6 @@ linux bash
   * 登录欢迎信息，在 /etc/issue, /etc/motd
 
 
-
-
-
   * 变量：
 
     >
