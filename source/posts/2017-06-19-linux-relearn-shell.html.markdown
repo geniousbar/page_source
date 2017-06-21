@@ -1,10 +1,10 @@
 ---
-title: Linux Relearn
+title: Linux Shell
 date: 2017-06-19
 tags: linux, relearn, bash, shell
 ---
 
-linux bash
+linux shell
 --------
 
 #### 常用命令
