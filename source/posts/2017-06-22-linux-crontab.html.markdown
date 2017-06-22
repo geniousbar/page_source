@@ -16,20 +16,22 @@ linux crontab （例行性工作排程）
   * at -l（列出用户的at排程）, -d （取消）, -c （列出id的实际工作内容）
   * 任务管理， atrm id， 移除任务, 等同于 at -d
 
-  > 设定范例
-  at HH:MM YYYY-MM-DD
-  at HH:MM[am|pm]
-  at now + numbers [minutes | hours | days | weeks]
-  at now + 5 minutes
-  ---- 进入编辑窗口
-  ctrl + d 结束
+    ```zsh
+      #设定范例
+      at HH:MM YYYY-MM-DD
+      at HH:MM[am|pm]
+      at now + numbers [minutes | hours | days | weeks]
+      at now + 5 minutes
+      #进入编辑窗口
+      ctrl + d 结束
+    ```
 
 ##### crontab
   * 周期性执行任务
-  * crontab [-u username] [-i|-e|-r] (-u 只有root才能使用， 帮助其他用户管理任务), -e 编辑， -l 查阅， -r 移除所有工作
+  * crontab -u 只有root才能使用， 帮助其他用户管理任务, -e 编辑， -l 查阅， -r 移除所有工作
   * 分中， 小时， 日期， 月份， 周， 指令（分时日月周）
-  * * 任何时候
-  * ，分割枚举
+  * \* 任何时候
+  * , 分割枚举
   * - 时间范围
   * /n， 每隔n个单位
   * crontab 每分钟读取， 所以只需要编辑， /etc/crontab 文件即可
@@ -39,14 +41,15 @@ linux crontab （例行性工作排程）
   * /var/log/cron中为crontab的log文件
   * anacron 是可以自动自动检查timestap日志，并将因为开关机导致没有执行的crontab重新执行的程序， 但是需要按照天，月来进行任务排期，
 
-  >
-    # run-parts
-    01 * * * * root
-    02 4 * * * root
-    22 4 * * 0 root
-    42 4 1 * * root 分时日月周执行者身仹 挃令串
-    root run-parts /etc/cron.hourly <==每小时 run-parts /etc/cron.daily <==每天
-    root run-parts /etc/cron.weekly <==每周日 run-parts /etc/cron.monthly <==每个月 1 号
+    ```zsh
+      # run-parts
+      01 * * * * root
+      02 4 * * * root
+      22 4 * * 0 root
+      42 4 1 * * root 分时日月周执行者身仹 挃令串
+      root run-parts /etc/cron.hourly <==每小时 run-parts /etc/cron.daily <==每天
+      root run-parts /etc/cron.weekly <==每周日 run-parts /etc/cron.monthly <==每个月 1 号
+    ```
 
 ##### 系统性常见周期任务
   * 登录档的轮替， log rotate
