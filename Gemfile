@@ -1,7 +1,7 @@
 source 'https://gems.ruby-china.org/'
 
 # middleman
-gem 'middleman', '~> 4.1'
+gem 'middleman', '~> 4.2.1'
 
 # middleman-blog
 gem 'middleman-blog', '~> 4.0'
@@ -32,3 +32,7 @@ gem 'puma'
 
 # to serve static files
 gem 'rack-contrib'
+
+gem "therubyracer"
+
+gem 'listen'
