@@ -13,9 +13,6 @@ linux ACl 控制管理
   * groups, newgrp（切换有效群组， 当一个人拥有多个群组时候，可以切换群组）,
   * useradd, passwd, usermod,
 
-<<<<<<< HEAD
-sadfasf
-=======
   >
   /etc/passwd中建立帐号相关数据，
   /etc/shadow 中设定相关，但是没有密码
