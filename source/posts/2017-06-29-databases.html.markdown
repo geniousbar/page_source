@@ -76,5 +76,16 @@ tags: mysql, riak, redis, hbase
   缺点：
   >  鼓励反规范化的模式， 将任意类型的数据插入集合中，是很危险的。需要努力去设计和管理。
 
-### Neo4j
-  1. NoSql, 图数据库， 关系数据库领域有句老话， 只要时间足够长， 所有的字段都不是必须的。
+
+### redis
+    1. redis-server, redis-cli
+    2. redis 数据类型，Lists, Sets, Sorted sets, Hashes, Bit arrays, HyperLogLogs
+    3. redis keys 
+       * 空值可以是key
+       * 太长太浪费空间，　太短容易造成冲突
+       * 坚持使用一种模式
+    4. 命令集合: 
+       * set, get, incr, decr, mset, exists, type, expire, ttl
+       * list rpush, lpush, lrange, rpop, del, llen, lpop, 
+       * hash, hmset, hget, hgetall, 
+       * sets, sadd, smembers, sismember, sinter, sunionstore, spop, scard, 
