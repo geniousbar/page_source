@@ -125,4 +125,15 @@ crafting rails application
 
   使用继承类，定义自定义的方法， 其他的自然使用继承的方法调用
 
-  > 1. 如何扩展 FormBuilder， 2： FormBuilder 在编辑时候的，默认值，是如何取到的
+> 1. 如何扩展 FormBuilder， 2： FormBuilder 在编辑时候的，默认值，是如何取到的
+
+
+### server 异步消息到 client
+  1. 当样式表改动时候，rails发送data到浏览器，浏览器根据data 重新加载当前页面的样式表， 从而达到不需要重新刷新页面累加载样式的目的.
+  2. 使用websocket(但是不知道为啥不能保持很长时间)， puma多线程, 自定义subscribe 使用queue作为数据结构， 体统轮训， 来分发到个个subscribe， 使用listener，监听个个文件的通知提供事件。
+  3. 涉及到线程概念
+  4. 代码加载， autoload是rails提供，而非ruby， ruby中的require是存在缺陷的，不是原子性的require， 在多线程加载中，存在问题， 可能存在A加载中class， B看到了class但是却是残缺不全的， 所以提供了eager load技术，加载所有的代码，而不需要动态加载代码。可以通过config.eager_load_namespaces 来配置，或者，使用代码 eager_autoload {autoload: SSESubscriber}， eager load受益的不仅仅是 puma这样的多线程，还有基于fork的unicorn，
+  5. listener， linux实现机制
+
+### responders
+  1. 影响条件， type, http verb, resource status
