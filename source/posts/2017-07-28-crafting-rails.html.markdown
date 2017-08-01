@@ -126,3 +126,82 @@ crafting rails application
   使用继承类，定义自定义的方法， 其他的自然使用继承的方法调用
 
   > 1. 如何扩展 FormBuilder， 2： FormBuilder 在编辑时候的，默认值，是如何取到的
+  
+  
+  2. 完善的ActiveModel
+     1. ActiveModel::AttributeMethods
+     ```ruby
+     moduel MailForm
+        class Base
+            include ActiveModel::AttributeMethods
+            attribute_method prefix: "clear_"
+            
+            def self.attributes(* names)
+                attr_accessor(*names)
+                define_attribute_methods(names)
+            end
+            
+            private
+            def clear_attribute(name)
+                send("#{name}=", nil)
+            end
+        end
+     end
+     ```
+     
+     * 当rails controller, view helper接到一个 model,首先调用to_model，操纵结果，而不是直接使用model,　同样我们也不会自己实现，而是通过include ActiveModel::Conversion来实现, 其中主要实现为：　
+     
+       1. to_params, 用来生成唯一路由，　
+       2. to_key, 返回唯一表示model的数组，供诸如dom_id, dom_class, div_for
+       3. to_partial_path，　在vieｗ中使用render(model)时候调用，来计算渲染使用的模板，
+   　　> 重要的不仅仅是　这些方法的作用，还有这些方法帮助我们所实现的，取得的成就。　比如实现to_params 可以轻松的改变object 的url,
+    def to_params
+        "#{id}-#{title.parameterize}"
+    end
+    假设每个POST有一个不同的方式，可能是video, link, or text, 需要不同的渲染方式，　
+    @posts.each do |post| 
+       render partial: "post/post_#{post.format}", locals: {post: post}
+    end
+    可以这样：　
+    def to_partial_path
+       "post/post_#{format}"
+    end
+    render @posts
+    
+    * 最终的结果是这个样子：
+    ```ruby
+    module ActiveModel
+        class Base
+            def self.included(base)
+                base.class_eval do 
+                    extend ActiveModel::Naming
+                    extend ActiveModel::Translation
+                    include ActiveModel::Validations
+                    include ActiveModel::Conversions
+                    
+                end
+            end
+            
+            def persisted?
+                true
+            end
+        end
+    end
+    ```
+    > 可以实现一个自己的model来自定义，自己重写sequel中定义的model，而不需要改动interface来定义, cms中可以通过两种方式结合来，重新重构：１：自定义form_for，　２：自定义model
+    
+
+### 自定义视图模板
+    rails在渲染模板，必须通过某种方式定位模板位置，默认rails的模板在文件系统中，但是却不是必须的，rails提供的钩子允许我们从任何地方来提供模板，让我们从数据库中提供模板，让我们深入了解rails的render stack。
+    
+    *　rails 渲染：　主要职责为：normalize　选项然后传递给ActionView::Renderer 的实例变量，renderer接受一个ActionView::Base的实例变量和hash，来寻找，编译，渲染模板。无论合适，我们渲染模板，源代码必须给编译成可执行的ruby代码，每当代码被执行，发生在给定的环境变量中，　view context，所有的helper方法都在，　包括form_for, link_to，　在view context中，　view renderer还有ActionView::LookupContext的实例变量，这个变量是在controller和view中共享的，它包含所有的为了找到模板的信息，　比如，当渲染jsoｎ请求来是，request的format　就被存储在lookup context变量中，所以rails只寻找json格式的模板。变量在view中也是可用的，包含模板名称，locale, format, 
+    
+request---> controller---->(render) view_renderer ------->(find) looup_context ------>(find) view_path ----------------------------|
+                                                                                                                                   |
+                                                                                                                                   |
+response <- controller <-(rendered template)<-----view_renderer<--------(template)looup_context<-------(template)view_path<--------|
+
+
+    * resolver API, 
+      > resolver API 只有find_all一个接口，返回包含template,等的数组。
+      
