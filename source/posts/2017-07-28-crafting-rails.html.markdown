@@ -1,5 +1,5 @@
 ---
-title: crafting rails
+title: Crafting rails
 date: 2017-07-28
 tags: rails, ruby
 ---
@@ -237,3 +237,49 @@ Crafting rails application
   ***最后章节， 关于generator的自定义，类似于rails guides，可以作为参考***
 
 ### Notification API
+    1. instrument(), subscribe(),
+      ```ruby
+        ActiveSupport::Notification.instrument(event_name,
+        payload: {format: :html, name: 'xxx'}) do
+          process_action("index")
+        end
+        ActiveSupport::Notification.subscribe(event_name) do |*args|
+          args
+        end
+
+        args: {
+          name: 事件名字,
+          started_at: 事件开始时间,
+          ended_at: 事件完结时间,
+          instrument_id: 事件唯一id,
+          payload: 事件携带的信息,
+        }
+      ```
+    2. Rails and rack
+      > 任何一个响应call方法的ruby对象都是Rack应用，接受一个参数， environment， 然后返回 status, headers, body
+
+      ```ruby
+      class HelloRack
+        def call(env)
+          [200, {'Content-Type' => 'text/html'}, ['Hello Rack!']]
+        end
+      end
+      run HelloRack.new
+      ```
+    3. Rails Router
+      Rails自动将 Controller#action 转换成Rack application， 可以这样， PostsController.action(:index).responds_to?(:call)
+    4. middleware stacks
+      * 除了在 config 中配置middleware外，还可以在Conttoller中配置使用， class Userscontroller use MyMiddleware end;
+      * Request ---> Web server -> middleware -> Rails Appplication -> middleware -> Router -> Controller -> middleware -> Action
+
+### I18n （没看）
+
+
+### 总结
+  * 创建自己的render： 创建自己的pdf handler
+  * 自定义自己的ActionModel： 讲的有点鸡肋， 没有进行深入的剖析, 譬如Active::Model中的callback实现， 自定义model的原因， 目的。FormBuilder的自定义也没有涉及到
+  * websocket： 似乎并不是一个完整的实现， 还存在缺陷
+  * Responders: 并不是解耦的很好方法，实际情况中，似乎并不需要
+  * Notification: 主要讲的并不是Notification的实现机制，实现方法，主要讲的是Rails Engin， middleware
+
+  > 书中讲解的并不算太多，大部分都是在Rails Engin 中进行， 进行了一个markdown的view handler 值得注意看，之外， 其他的都没有进行深入的讲解，譬如， 自定义ActiveModel 的作用，目的，实现方法， FormBuilder又是如何, Reponder 感觉并没有太多的进行简化，
