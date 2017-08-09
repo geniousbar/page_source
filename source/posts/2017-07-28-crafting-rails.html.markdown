@@ -1,9 +1,10 @@
 ---
-title: crafting rails
+title: Crafting rails
 date: 2017-07-28
 tags: rails, ruby
 ---
-crafting rails application
+
+Crafting rails application
 --------
 
 ### 创建自己的render
@@ -205,3 +206,161 @@ response <- controller <-(rendered template)<-----view_renderer<--------(templat
     * resolver API, 
       > resolver API 只有find_all一个接口，返回包含template,等的数组。
       
+> 1. 如何扩展 FormBuilder， 2： FormBuilder 在编辑时候的，默认值，是如何取到的
+
+
+### Server 异步消息到 client
+  1. 当样式表改动时候，rails发送data到浏览器，浏览器根据data 重新加载当前页面的样式表， 从而达到不需要重新刷新页面累加载样式的目的.
+  2. 使用websocket(但是不知道为啥不能保持很长时间)， puma多线程, 自定义subscribe 使用queue作为数据结构， 体统轮训， 来分发到个个subscribe， 使用listener，监听个个文件的通知提供事件。
+  3. 涉及到线程概念
+  4. 代码加载， autoload是rails提供，而非ruby， ruby中的require是存在缺陷的，不是原子性的require， 在多线程加载中，存在问题， 可能存在A加载中class， B看到了class但是却是残缺不全的， 所以提供了eager load技术，加载所有的代码，而不需要动态加载代码。可以通过config.eager_load_namespaces 来配置，或者，使用代码 eager_autoload {autoload: SSESubscriber}， eager load受益的不仅仅是 puma这样的多线程，还有基于fork的unicorn，
+  5. listener， linux实现机制
+
+### Responders
+  **使用ActionController::Responder 最大的好处是 集中处理 每种请求的format**
+
+  1. 影响条件， type, http verb, resource status
+
+  rails 中responder 的实现
+  ```ruby
+  # rails/actionpack/lib/action_controller/metal/responder.rb
+  def self.call(*args)
+    new(*args).respond
+  end
+
+  def respond
+    method = "to_#{format}"
+    respond_to?(method) ? send(method) : to_format
+  end
+
+  def to_html
+    default_render
+  rescue ActionView::MissingTemplate => e
+    navigation_behavior(e)
+  end
+
+  def to_js
+    default_render
+  end
+
+  def to_format
+    if get? || !has_errors? || response_overridden?
+      default_render
+    else
+      display_errors
+    end
+  rescue ActionView::MissingTemplate => e
+    api_behavior(e)
+  end
+
+  DEFAULT_ACTIONS_FOR_VERBS = {
+    post: :new,
+    patch: :edit,
+    put: :edit
+  }
+
+  def navigation_behavior(error)
+    if get?
+      raise_error
+    elsif has_errors? && default_action
+      rende4r :action => default_action
+    else
+      redirect_to navigation_location
+    end
+  end
+
+  def api_behavior(error)
+    raise error unless resourceful?
+    if get?
+      display resource
+    elsif post?
+      display resource, :status => :created, :location => api_location
+    else
+      head :no_content
+    end
+  end
+
+  def resourceful?
+    resource.respond_to?("to_#{format}")
+  end
+
+  def has_errors?
+    resource.respond_to?(:errors) && !resource.errors.empty?
+  end
+
+  def resource_location
+    options[:location] || resources
+  end
+
+  def display(resource, given_options = {})
+    controller.render given_options.merge!(options).merge!(format => resource)
+  end
+
+  # 配置方式
+  ApplicationController.responder = MyAppResponder
+  class UsersController < ApplicationController
+    self.responder = MyAppResponder
+  end
+  ```
+
+  **如果想特殊化一个format的展现， 可以像respond_to 一样使用block**
+
+  ```ruby
+  def index
+    @users = User.all
+    respond_with(@users) do |format|
+      format.json {render json: @users.to_json(some_specific_option: true)}
+    end
+  end
+  ```
+
+  ***最后章节， 关于generator的自定义，类似于rails guides，可以作为参考***
+
+### Notification API
+    1. instrument(), subscribe(),
+      ```ruby
+        ActiveSupport::Notification.instrument(event_name,
+        payload: {format: :html, name: 'xxx'}) do
+          process_action("index")
+        end
+        ActiveSupport::Notification.subscribe(event_name) do |*args|
+          args
+        end
+
+        args: {
+          name: 事件名字,
+          started_at: 事件开始时间,
+          ended_at: 事件完结时间,
+          instrument_id: 事件唯一id,
+          payload: 事件携带的信息,
+        }
+      ```
+    2. Rails and rack
+      > 任何一个响应call方法的ruby对象都是Rack应用，接受一个参数， environment， 然后返回 status, headers, body
+
+      ```ruby
+      class HelloRack
+        def call(env)
+          [200, {'Content-Type' => 'text/html'}, ['Hello Rack!']]
+        end
+      end
+      run HelloRack.new
+      ```
+    3. Rails Router
+      Rails自动将 Controller#action 转换成Rack application， 可以这样， PostsController.action(:index).responds_to?(:call)
+    4. middleware stacks
+      * 除了在 config 中配置middleware外，还可以在Conttoller中配置使用， class Userscontroller use MyMiddleware end;
+      * Request ---> Web server -> middleware -> Rails Appplication -> middleware -> Router -> Controller -> middleware -> Action
+
+### I18n （没看）
+
+
+### 总结
+  * 创建自己的render： 创建自己的pdf handler
+  * 自定义自己的ActionModel： 讲的有点鸡肋， 没有进行深入的剖析, 譬如Active::Model中的callback实现， 自定义model的原因， 目的。FormBuilder的自定义也没有涉及到
+  * websocket： 似乎并不是一个完整的实现， 还存在缺陷
+  * Responders: 并不是解耦的很好方法，实际情况中，似乎并不需要
+  * Notification: 主要讲的并不是Notification的实现机制，实现方法，主要讲的是Rails Engin， middleware
+
+  > 书中讲解的并不算太多，大部分都是在Rails Engin 中进行， 进行了一个markdown的view handler 值得注意看，之外， 其他的都没有进行深入的讲解，譬如， 自定义ActiveModel 的作用，目的，实现方法， FormBuilder又是如何, Reponder 感觉并没有太多的进行简化，
+
