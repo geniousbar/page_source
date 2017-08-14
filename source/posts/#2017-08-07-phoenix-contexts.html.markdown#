@@ -138,3 +138,36 @@ Design
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
   ```
+  使用 Phoenix.HTML's inputs_for 函数来添加一个关联的嵌套的fields， 在嵌套的inputs中，我们渲染了 credfential‘s 的email error_tag 等。
+  展示用户的user 的email地址在用户的show页面中。添加下面的代码到show.html.eex中 
+  ```
++ <li>
++   <strong>Email:</strong>
++   <%= @user.credential.email %>
++ </li>
+</ul>
+  ```
+  现在如果我们访问users/new 我们会看到email的输入框，如果保存，你会发现email自大un被护士了，没有验证告诉你字段没有被保存。
+  我们是哟个Ecto's belongs_to has_one 关联关系来贯穿起来，为了关联用户输入到数据库，我们需要在changeset中处理，改动Accounts context中的create_user , update_user 函数。
+  ```elixir
+      def update_user(%User{} = user, attrs) do 
+        user 
+        |> User.changeset(attrs)
+        |> Ecto.Changeset.cast_assoc(:credential, with: &Credential.changset/2)
+        |> Repo.update()
+      end
+      
+      def create_user(attrs \\ %{}) do 
+        %User{}
+        |> User.changset(attrs)
+        |> Ecto.Changeset.cast_assoc(:credential, with： &Credential.changset/2)
+        |> Repo.insert()
+      end
+  ```
+  Ecto's cast_assoc 告诉changset如何转换用户的输入到schema 关系中。我们使用with告诉changset使用Credential.changeset函数来转换用户输入，这样，Credential.changset 中所有的验证会应用到 User中。
+  最后，我们可以测试，会见到Email的验证。
+  
+### Adding Account functions
+    如你所见， context是一个包粗一组相关函数的module， Phoenix 生成一般的函数， 例如list_users, upate_users, 但是他们只提供一个基础的，为了使用一些真是的功能来扩展我们的Account context， 让我们修复我们应用中的明显的问题， -我们可以创建带有凭证的用户，但是却无法使用凭证登录，建立一个负载的完整的用户验证系统超出了本书的范围，让我们着手建立一个基于email的登录页面来跟踪用户的session， 这会让我们聚焦在Accounts context上， 并且给你一个建立完成的认证系统上一个好的开始。
+    首先，开始想名字，为了使用email地址来验证用户，我们需要一个方法来查找用户和验证凭证是否正确，我们只暴露一个函数来完成这件事情。
+    
