@@ -308,8 +308,8 @@ Design
     Author 来负责CMS中的author， CMS context 会对Account context存在一个数据上的依赖。我们有两个选择，1：在Account context中暴露API 来允许我们在CMS中方便的获取User。 2：通过数据库的join操作来获取依赖部分的数据，都是可能的选项，但是join data 对于一个硬的数据依赖，对于大应用来说是很好的，如果你决定拆分context 分散到不同应用，数据中，你依然享受隔离的好处，因为你的开放的接口保持不变。
     /lib/hello/cms/page.ex
     ```elixir
-    alias Hello.CMS.Page
-    alis Hello.CMS.{Page, Author}
+    - alias Hello.CMS.Page
+    + alis Hello.CMS.{Page, Author}
     
     schema "pages" do 
         field :body, :string
@@ -319,7 +319,144 @@ Design
         timestamps()
     end
     ```
+    添加了author page, 之间的关联关系
+    ```elixir
+    - alias Hello.CMS.Author
+    + alias Hello.CMS.{Author, Page}
+    
+    schema "authors" do 
+        field :bio, :string
+        field :genre, :string
+        field :role, :string
+        field :user_id, :id
+        
+        
+        has_many :pages, Page
+        belongs_to :user, Hello.Accounts.User 
+        timestamps()
+    end
+    ```
+    下面我们来改变 CMS context需要一个author当更新、创建page的时候，
+    ```elixir
+    alias Hello.CMS.{Page, Author}
+    alias Hello.Accounts
+    
+    def list_pages do 
+        Page 
+        |> Repo.all()
+        |> Repo.preload(author: [user: :credential])
+        
+    end
+    
+    def get_page!(id) do 
+         Page
+         |> Repo.get!(id)
+         |> Repo.preload(author: [user: :credential])
+    end
+    
+    def get_author!(id) do 
+        Author
+        |> Repo.get!(id)
+        |> Repo.preload(user: :credential)
+    end
+    ```
+    
+    我们在list_pages, get_page中，preload 关联的author， user，credential 从数据库中，
+    我们来处理 数据的存储， 在创建、编辑page的时候，保存author， 编辑文件, lib/hello/cms/cms.ex
+    ```elixir
+    def create_page(%Author{} = author, attrs \\ %{}) do 
+        %Page{}
+        |> Page.changeset(attrs)
+        |> Ecto.Changeset.put_change(:author_id, author.id)
+        |> Repo.insert()
+    end
+    
+    def ensure_author_exists(%Accounts.User{} = user) do
+       %Author{user_id: user.id}
+       |> Ecto.Changeset.change()
+       |> Ecto.Changeset.unique_constraint(:user_id)
+       |> Repo.insert()
+       |> handle_existing_author()
+    end
+    
+    defp handle_existing_author({:ok, author}), do: author
+    
+    defp handle_existing_author({:error, changeset}) do
+       Repo.get_by!(Author, user_id: changeset.data.user_id)
+    end
+    ```
+    
+    lib/helo_web/controllers/cms/page_controller.ex
+    ```elixir
+        plug :require_existing_author
+        plug :authorize_page when action in [:edit, :update, :delete]
+        
+        def require_existing_author(conn, _) do 
+            author = CMS.ensure_author_exists(conn.assigns.current_user)
+            asign(conn, :current_author, author)
+        end
+        
+        defp authorize_page(conn, _) do
+            page = CMS.get_page!(conn.params["id"])
+            
+            if conn.assigns.current_author.id == page.author_id do 
+                assign(conn, :page, page)
+            else
+                conn 
+                |> put_flash(:error, "you can't modify this page")
+                |> redirect(to: cms_page_path(conn, :index))
+                |> halt()
+            end
+        end
+    ```
+    我们在 CMS.PageController中添加了 两个Plug, 地一个plug， :require_existing_author, 在每个action都需要执行， 函数 调用CMS.ensure_author_exists 并传递current_user过去，当找到 或者创建author，我们使用Plug.Conn.assign 来将 current_author 传递到下去。
+    第二步，我们使用:authorized_page来过滤特定的action， 函数 地一个从connection params获取page，，然后跟current_author 进行验证， 如果current_author 的ID 跟Page的author_id一样，可以通过验证， 如果不一样，我们Plug.Conn.halt 来阻止， action的进一步执行。
+    ```elixir
+     def create(conn, %{"page" => page_params}) do
++   case CMS.create_page(conn.assigns.current_author, page_params) do
+      {:ok, page} ->
+        conn
+        |> put_flash(:info, "Page created successfully.")
+        |> redirect(to: cms_page_path(conn, :show, page))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+    end
+  end
 
+  def update(conn, %{"page" => page_params}) do
++   case CMS.update_page(conn.assigns.page, page_params) do
+      {:ok, page} ->
+        conn
+        |> put_flash(:info, "Page updated successfully.")
+        |> redirect(to: cms_page_path(conn, :show, page))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "edit.html", changeset: changeset)
+    end
+  end
+
+  def delete(conn, _) do
++   {:ok, _page} = CMS.delete_page(conn.assigns.page)
+
+    conn
+    |> put_flash(:info, "Page deleted successfully.")
+    |> redirect(to: cms_page_path(conn, :index))
+  end     
+
+   ```
+   我们改变了create 的写法，从connection assign中获取current_author, authenticate_user 会存放进去， 然后我们传递current_author 到 CMS.create_page 中 来关联到page。
+   在web view中展示 author's name
+   lib/hello_web/views/cms/page_view.ex
+   ```elixir
+   defmodule HelloWeb.CMS.PageView do 
+       use HelloWeb, :view
+       alias Hello.CMS
+       
+       def author_name(%CMS.Page{author: author}) do 
+        author.user.name 
+       end
+   end
+   ```
+   完成！我现在有两个独立的分别负担 user context 和内容管理
     
     
     
