@@ -45,11 +45,20 @@ tags: rails, ruby, refactor
       end
     end
 
+    # save_model 用来在callback中， before_save中， 创建model不能保存为 @model，会导致callback new? 为false
+    attr_reader :save_model
     # ActiveModel::Attributes 中的方法, 使model伪装成 active record
     alias :set :assign_attributes
 
     # 生命callback，统一使用一个save的interface来更新，创建 model， 使用if: :persisted?进行update， create的区分
     define_model_callbacks :save
+    define_model_callbacks :init
+
+    def initialize(hash = {})
+      _run_init_callbacks do
+        set(hash)
+      end
+    end
 
     def save
       if valid?
@@ -77,6 +86,14 @@ tags: rails, ruby, refactor
       end
     end
 
+    # 工具类
+    def params_present(*columns)
+      (columns.flatten - [:model, :id]).inject({}) do |hash, item|
+        infer = instance_variable_get("@#{item.to_s}")
+        hash[item] = infer if infer.present?
+        hash
+      end
+    end
   end
 
 
@@ -121,8 +138,10 @@ tags: rails, ruby, refactor
     end
 
   # callback ------------------------------------
+  # 这其中不能保存为 model
     def create_model
       # do something
+      @save_model = User.create()
     end
 
     def update_model
@@ -183,3 +202,4 @@ tags: rails, ruby, refactor
   * 使用统一的save方法进行更新， 创建操作
   * 使用@model区分更新或者创建, persisted?的返回值
   * 使用 before callback 进行创建更新model， after callback进行关联model的区分
+  * 可以通过继承提供大量的工具类型函数， 应用模板方法创建 流程
