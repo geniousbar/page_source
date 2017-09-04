@@ -1,5 +1,6 @@
+
 ---
-title: css The Definitive Guide
+Title: Css The Definitive Guide
 date: 2017-09-02
 tags: html, css
 ---
@@ -78,14 +79,6 @@ The Definitive Guide css
   * text-indent: 数值： length, percentage, inherit，应用于： 块，继承： 有，百分数：相对于包含块的宽度
   * text-align: 数值: left, right, center, justify, inherit, 应用于：块，继承性：有
   * line-height: 值：length, percentage, number, normal, inherit，初始值: normal, 应用于：所有元素，继承性：有
-  
-  
-  
-  
-  
-  
-  
-  
 
 #### 基本视觉格式化：（书中的css 版本为 2.１　其中大量的规则已经不能使用了）
     * 基本框：css假定每个元素都会生成一个或多个矩形框，这成为元素框。包含：内边框, 边框，外边框，内容
@@ -94,9 +87,51 @@ The Definitive Guide css
       1. 水平格式化：元素的宽度：指的是　左外边界到右外边界的距离，可见区域：width + 内边距，规则：正常流中的块级元素框的水平部分总和等于　父元素的width,
       2. 水平属性：　margin-left, border-left, padding-left, width, padding-right, border-right, margin-right
       3. width,, margin-left, margin-right中的某个值设定为auto，其余两个就会计算指定为特定值，使元素的框宽度等于副元素的width,　如果三个都设定为非auto，会产生过分受限，这时候从会把　margin-right强制为auto。margin-left, margin-right 设定为auto, 会将元素居中。border不能使用白分数
-      
-    
+      4. 一个元素的默认的高度由其内容决定，　高度还会受内容宽度影响。　段落越窄，相应的高度就会越高。
+      5.　垂直属性：margin-top, border-top, padding-top, height, padding-bottom, border-bottom, margin-bottom, 属性值　之和必须等于　包含块的height, 如果一个正常流中的一个块元素的margin-top, margin-bottom设置为auto,他会自动计算为０，并不会让块垂直居中
+      6. auto 如果height 为auto，　其高度正好为包含内容的高度，
+      7. 合并垂直外边框：这种合并行为只应用于外边距，如果元素有内边距和边框，他们绝对不会合并。
+  * 行内元素－－行内布局：　
+    1. 基本概念：　匿名文本，em框,　内容区，行间距((font-size - line-height) / 2)，行内框（非替换元素，行内框的高度等于line-height，　替换元素，行内框高度等于内容区的高度　替换元素没有行间距）
+    2. 规则：
+       1. 内容区类似于一个块级元素的内容框
+       2. 行内元素的背景应用于内容区　以及所有　内边距
+       3. 行内元素的边框要包围内容区　及所有　内边距和边框
+       4. 非替换元素的内边距，边框和外边距对汗内元素或者其生成的框没有垂直效果，也就是说，　他们呢不会影响元素行内框的高度
+       5. 替换元素的外边距和边框　会影响该元素行内框的高度，相应的影响该元素行框的高度
+       
+   3. 行内　非替换元素：　
+      1. font-size：定义内容（字体）高度，　line-height: 定义框高度，　(line-height - font-size) / 2 为行间距，　line-height 可以小于font-size导致行内框小于内容区，行间距为负数，造成行间重叠。
+      2. 行框定义为　行中最高行内框的顶端到最低行内框低端之间的距离，为了避免行间重叠。
+      3. vertical-align: top, bottom, middle etc,　描述基准线的位置。
+      4. line-height: 数值的话：为font-size的缩放比例。该属性是可以继承的，从而在不同的ｆｏｎｔ-size中存在不同的line-height,
+      5.　内边距，外边距，边框　可以应用到行内非替换元素，但是却不会影响行框的高度，可能会造成重叠。实际上，外边距不会应用到元素上，但是可以应用到两侧。可以将文本推离到两侧。
+  4. 行内块元素(inline-block)：
+     1. 类似于　图像放在行中
 
-#### 家
+#### 边框：
+    * 基本元素框：
+      1. 元素的width：左内边　－－　右内边，　height: 上内边－－下内边，　不能应用到行内非替换元素, width: 白分数想对于　包含块的　width, 正常流中的元素很少设定height，height: 白分数相对于　包含块的height。
+      2. 背景颜色会延伸到内边距中，而不会到外边距。
+      3. margin: 白分数相对于包含块的width, margin 的左右，上下都是相对于包含块width
+      3. padding: 白分数相对于包含块的width, padding 的左右，上下都是相对于包含块width      
+      4. 值复制：　top right bottom left, top -> right, top -> bottom, right -> left。
+      5. 边框：border-style: top right bottom left; (none, hidden, dotted, dashed, solid double, grove, ridge, inset, outset, inherit) 注意在边框指定为none 的时候，设定其他属性是没有作用的。可以设定单边样式：　border-top-style, border-right-style etc, border-width　同style类似（thin, medium, thick, length, inherit）, 单边设定border-top-width, border-color 同style 一样,单边设定 border-top-color: 简写：border-top: thick solid gray;全局边框: border: thick solid gray;
+       
+       
+#### 颜色和背景：（略过）
+
+#### 浮动和定位：
+    *　属性：　float: left, right, none, inherit, 应用于：所有元素，　
+    * 浮动会将元素从正常流中　删除，浮动元素包含块为　其最近的块级祖先元素。只要是浮动元素，就会生成一个块级框，回像块及元素一样表现和摆放。简单规则：
+      1. 浮动元素的左右外边界不能超过其包含块的　左右内边界。
+　　　2. 浮动元素的顶端　不能比其父元素的内边界更高
+    * 定位：　position: static, relative, absolute, fixed, inherit
+    * 对于一个非根元素，　如果其position为　relative, static包含块设定为最近的块级框、表单元格、行内块祖先框的内容边界构成
+    * 对于非根元素，如果其position 为absolute，包含块设定为最近的position值不是static　的祖先元素，如果这个祖先是块级元素，　包含块设定为该元素的内边距边界。
+    * 绝对定位：　
+    
+#### 家re
+
     1. 海，天空，星辰，公主，王子，烤箱（蛋糕），狗，毛绒玩具
     
