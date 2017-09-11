@@ -129,9 +129,18 @@ The Definitive Guide css
     * 定位：　position: static, relative, absolute, fixed, inherit
     * 对于一个非根元素，　如果其position为　relative, static包含块设定为最近的块级框、表单元格、行内块祖先框的内容边界构成
     * 对于非根元素，如果其position 为absolute，包含块设定为最近的position值不是static　的祖先元素，如果这个祖先是块级元素，　包含块设定为该元素的内边距边界。
-    * 绝对定位：　
+    * relative: 元素想对于之前元素偏移位置，它原本所占据的空间仍然保留。
+    * absolute: 从文档流中完全删除，并相对于包含块定位。元素定位之后会生成一个块级框。
+    * fixed: 表现类似与absolute，不过包含块是视图本身。
+    * relative, absolute, fixed, 描述偏移：　top, right, bottom, left, 用来描述　距离包含块最近边的偏移距离。width, height，　对于定位元素并不重要，因为可以通过四个属性来隐形的确定。
+    * min-width, min-height, max-width, max-height　作用：　可以相对安全的混合使用不同的单位，　使用白分数的时候，可以设定长度限制。
+    * 内容溢出和可见性：　overflow: visible(超出边框) | hidden(超出边框的被剪裁) | scroll(html中添加滚轮展示) | auto | inherit, visibility:  visible | hidden | collapse | inherit, visible　设定为展示内容，　hidden 隐藏内容，但是并不从文档流中删除，　区别于 display: none, 会从文档中删除，不占据位置，　所以 visibility　是可以继承的，可以设定父元素hidden, 子元素为visible 
+    - [还没有介绍 collapse呢]
+    * 绝对定位：包含块： 最近的position值不为 static 的元素。通常简单的做法是， 选在一个元素作为绝对定位元素的包含块，将其position设定为relative，并没有偏移。元素绝对定位时候，还为其后代元素建立了一个包含块。文档可以滚动的话，绝对定位是随着文档滚动的，因为定位元素的包含块是文档流的一部分。外边距为 auto可以得到垂直居中的 效果，
+    * 固定定位： 固定定位与绝对定位相似，只是包含块是 视窗。
+    * 相对定位： 
     
-#### 家re
+#### 家:
 
     1. 海，天空，星辰，公主，王子，烤箱（蛋糕），狗，毛绒玩具
     

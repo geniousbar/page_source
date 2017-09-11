@@ -96,3 +96,45 @@ Mysql 性能优化
     * 在同一个表上查询和更新： 借助临时表
     * 关联查询： 确保On 中的列上有索引， 只需要在关联顺序中的第二个表的对应列上创建索引
     * 优化limit：一般会加上合适的order by语句， 如果有索引，效率会非常不错。 2： 大偏移量问题： 限制
+
+#### 索引：
+    1. 索引目的：加速查询， 帮助建立强制约束(unique, foreign key), 查询可以没有index，但是会浪费很多时间
+    2. 索引类型：Btree indexes, rtree indexes(myisam only), hash indexes(memory NDB), bitmap indexes(not support mysql), full text indexes(mysql 5.6 after)
+    3. String indexes: prefix LIKE is a special type of range, 'ABC%' range, '%ABC' can't use range
+    4. 索引是有代价的，不要加太多的索引，在大部分的情况下， 拓展一个索引比加一个新的索引要好。在写入的时候，是索引的主要代价， 读取，会耗费多余的空间。
+    5. 索引应用： data lookups, sorting, avoiding reading data, special optimizations
+    6. 多个字段索引的技巧: 
+       * index (A, B, C) 建立索引的顺序是很重要的
+       * 可以使用索引的查询： 
+         - A > 5
+         - A = 5 and B > 6
+         - A = 5 and B = 6 AND C = 7
+         - A = 5 and B IN (2, 3) AND C > 5
+       * 不能使用索引的情况： 
+         - B > 5 
+         - B = 6 and C = 7 
+       * 使用部分索引的： 
+         - A > 5 and B = 2
+         - A = 5 and B > 6 and C = 2 
+       * sorting
+       * index(A, B)
+       * 使用索引: 
+         - order by A, sorting by leading column
+         - A = 5 and order by B, equal filter by a , order by b
+         - order by A desc, B desc, sorting by 2 columns in same order
+         - A > 5 order by A, range on the column, sorting on the same
+       * 不会使用索引:
+         - order by B, sorting by second column
+         - A > 5 order by B, range on the first column, sorting by second
+         - A in(1, 2) order by B, In-rang on the first column
+         - order by A asc, B desc, sorting in different  order
+       * 应用规则： 不能使用不同的排序规则在两个字段上， 只能使用= 在，不再order by中的字段。
+       * 避免加载数据：索引比数据要小很多， 获取数据可能是非常不连续的，quite random, 
+       * 索引帮助 mix/ max 函数加快，但是只有这些。
+       * 选择索引前缀长度： 1. 保证尽量少的row共享同样的前缀，2. 
+       * explain 101:
+         - sort type good to bad: system, const, eq_ref, ref, range, index, ALL, 
+         - rows数值越大，意味着越慢
+         - key_len 展示　多少key真正的使用到了
+         - extra: index good, filesort, temporary bad 
+         
