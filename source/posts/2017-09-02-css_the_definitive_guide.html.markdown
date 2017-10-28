@@ -1,6 +1,5 @@
-
 ---
-Title: Css The Definitive Guide
+title: Css The Definitive Guide
 date: 2017-09-02
 tags: html, css
 ---
@@ -19,7 +18,7 @@ The Definitive Guide css
          块级(block-level)，行内(inline-level)
          display: none, inline, block, inline-block, list-item, run-in
       ```
-    * css and html: 
+    * css and html:
       1. link 标记： <link rel='stylesheet' type='text/css' href='sheet1.css' media='all' />
       2. media 属性： all, aural(语音合成器), braille, print, screen, tty, tv <link rel='stylesheet' type='text/css' href='sheet1.css' media='screen, tv'/> 在tv， 屏幕设备上使用共同的css样式。
       3. style元素， <style type='text/css'> xxxxx </style>
@@ -29,18 +28,18 @@ The Definitive Guide css
 
     * 规则结构： 选择器 + 声明块 h1(选择器) {color: red; background: yellow}(声明块)
     * 声明和关键字： 格式：属性： 关键字\数值;关键字在多个的情况下，由空格分隔
-    * 选择器： 
+    * 选择器：
       1. 元素： html { color: red}
       2. 选择器分组： 使用，分隔 选择器 h1, p {color: grey}
       3. 通配选择器: * {color: red;}
       4. 类选择器: p.warning 多类选择器， class='urgent warning' 选择器如下:  .urgent.warning
-      5. ID选择器: #ID 
-      6. 属性选择器: 
+      5. ID选择器: #ID
+      6. 属性选择器:
          1.简单属性选择器： <h1 class='people'> hello </h1> , h1[class] {color: red;} img[alt] {border: 1px solid red;}， 可以多个属性同时选择： a[href][title] {color: red; font-weight: bold;}
          2. 属性值选择器： planet[name="1" {color: red;}]
          3. 部分属性值选择：主要应用在class上，因为class可能为多个， 不能直接p[class='name'] 当p以后有多个class时候，而是需要p[class~='name']
          4. 特定属性选择器： *[lang!="en"] {color: "white";}
-     7. 使用文档结构： 
+     7. 使用文档结构：
         1. 后代选择器： h1 em {color: gray;}
         2. 子元素选择器： h1 > em {color: gray;}
      8. 伪类和伪元素：（可以为文档中不一定具体存在的结构制定样式， 会根据某种条件来应用部分样式）
@@ -57,11 +56,11 @@ The Definitive Guide css
       4. 通配符选择器对特殊性没有任何贡献
       5. 内联样式的特殊性: 1, 0, 0, 0
     > #id 与　p[id='id'] 中，第一个贡献的为：0, 1, 0, 0第二个贡献为 0, 0, 1, 0
-    
+
     * 重要性: !important p.dark {color: red !important; background: white !important}
     !important　没有特殊性，不过要与其他的分开考虑，所有!important的会分组在一起考虑，其中的冲突在内部解决。重要声明与非冲要声明相比，总是胜出。
     * 继承没有特殊性，通配符大于继承的特殊性。注意：不应该不加区别的使用通配符选择器。
-    
+
     * 层叠规则：
       1. 找出所有规则，这些规则都包含与一个给定元素匹配的选择器
       2. 按照权重对应用到该元素的所有声明排序，标志!important的规则的权重高于没有的，按来源进行对应用到元素的所有声明排序，３中来源，　创作人员，读者，用户代理。排序为：　读者的重要声明，　２：创作人员的重要声明，３：创作人员的正常声明，　４：读者的正常声明，　５：用户代理声明
@@ -70,12 +69,12 @@ The Definitive Guide css
 
 #### 值和单位：
     em ex为相对单位长度，　em定义为　一种给定字体的font-size的值，如果一个元素的font-size 为１４px，　那em为14px,　1ex = 0.5em
-    
+
 #### 字体(先略过)
 
 #### 文本属性
 　> 文本是内容，　而字体用于显示内容
-  
+
   * text-indent: 数值： length, percentage, inherit，应用于： 块，继承： 有，百分数：相对于包含块的宽度
   * text-align: 数值: left, right, center, justify, inherit, 应用于：块，继承性：有
   * line-height: 值：length, percentage, number, normal, inherit，初始值: normal, 应用于：所有元素，继承性：有
@@ -99,7 +98,7 @@ The Definitive Guide css
        3. 行内元素的边框要包围内容区　及所有　内边距和边框
        4. 非替换元素的内边距，边框和外边距对汗内元素或者其生成的框没有垂直效果，也就是说，　他们呢不会影响元素行内框的高度
        5. 替换元素的外边距和边框　会影响该元素行内框的高度，相应的影响该元素行框的高度
-       
+
    3. 行内　非替换元素：　
       1. font-size：定义内容（字体）高度，　line-height: 定义框高度，　(line-height - font-size) / 2 为行间距，　line-height 可以小于font-size导致行内框小于内容区，行间距为负数，造成行间重叠。
       2. 行框定义为　行中最高行内框的顶端到最低行内框低端之间的距离，为了避免行间重叠。
@@ -117,8 +116,8 @@ The Definitive Guide css
       3. padding: 白分数相对于包含块的width, padding 的左右，上下都是相对于包含块width      
       4. 值复制：　top right bottom left, top -> right, top -> bottom, right -> left。
       5. 边框：border-style: top right bottom left; (none, hidden, dotted, dashed, solid double, grove, ridge, inset, outset, inherit) 注意在边框指定为none 的时候，设定其他属性是没有作用的。可以设定单边样式：　border-top-style, border-right-style etc, border-width　同style类似（thin, medium, thick, length, inherit）, 单边设定border-top-width, border-color 同style 一样,单边设定 border-top-color: 简写：border-top: thick solid gray;全局边框: border: thick solid gray;
-       
-       
+
+
 #### 颜色和背景：（略过）
 
 #### 浮动和定位：
@@ -134,13 +133,12 @@ The Definitive Guide css
     * fixed: 表现类似与absolute，不过包含块是视图本身。
     * relative, absolute, fixed, 描述偏移：　top, right, bottom, left, 用来描述　距离包含块最近边的偏移距离。width, height，　对于定位元素并不重要，因为可以通过四个属性来隐形的确定。
     * min-width, min-height, max-width, max-height　作用：　可以相对安全的混合使用不同的单位，　使用白分数的时候，可以设定长度限制。
-    * 内容溢出和可见性：　overflow: visible(超出边框) | hidden(超出边框的被剪裁) | scroll(html中添加滚轮展示) | auto | inherit, visibility:  visible | hidden | collapse | inherit, visible　设定为展示内容，　hidden 隐藏内容，但是并不从文档流中删除，　区别于 display: none, 会从文档中删除，不占据位置，　所以 visibility　是可以继承的，可以设定父元素hidden, 子元素为visible 
+    * 内容溢出和可见性：　overflow: visible(超出边框) | hidden(超出边框的被剪裁) | scroll(html中添加滚轮展示) | auto | inherit, visibility:  visible | hidden | collapse | inherit, visible　设定为展示内容，　hidden 隐藏内容，但是并不从文档流中删除，　区别于 display: none, 会从文档中删除，不占据位置，　所以 visibility　是可以继承的，可以设定父元素hidden, 子元素为visible
     - [还没有介绍 collapse呢]
     * 绝对定位：包含块： 最近的position值不为 static 的元素。通常简单的做法是， 选在一个元素作为绝对定位元素的包含块，将其position设定为relative，并没有偏移。元素绝对定位时候，还为其后代元素建立了一个包含块。文档可以滚动的话，绝对定位是随着文档滚动的，因为定位元素的包含块是文档流的一部分。外边距为 auto可以得到垂直居中的 效果，
     * 固定定位： 固定定位与绝对定位相似，只是包含块是 视窗。
-    * 相对定位： 
-    
+    * 相对定位：
+
 #### 家:
 
     1. 海，天空，星辰，公主，王子，烤箱（蛋糕），狗，毛绒玩具
-    
