@@ -36,3 +36,4 @@ gem 'rack-contrib'
 gem "therubyracer"
 
 gem 'listen'
+gem 'pry'

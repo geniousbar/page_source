@@ -207,12 +207,12 @@ tags: SICP
         (define (car z) (z 0))
         (define (cdr z) (z 1))
    ```
-   
+
 9. 序对 (cons a b) cons的闭包性质是非常重要的，某种组合数据对象的操作满足闭包性质，就是说，通过他组合起来的对象得到的结果本身还可以通过同样的操作再次进行组合。闭包性质是一种组合功能的关键所在。
 10. 序列的表示： (cons 1 (cons 2 (cons 3 nil))) (list 1 2 3)
 11. map
 
-```scheme 
+```scheme
         (define (scale-list items factor)
     (if (null? items)
 '()
@@ -231,6 +231,6 @@ tags: SICP
 (define (scale-list items factor)
   (map (lambda (x) (* x 10))
        items))
-       
+
 ```
 map 不仅仅是一种模式，更重要的建立起了一种高级抽象。在scale-list 原来的设计中，更多的注意力放在了， 循环递归的结构中，而通过map定义的scale-list 则忽略了这种细节层面的情况，强调是表到表的缩放，这两种形式上的差异并不在于计算机会执行不同的计算过程，而在于我们对这同一种过程的不同思考方式。
