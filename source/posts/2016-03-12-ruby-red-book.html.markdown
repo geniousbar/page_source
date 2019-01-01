@@ -31,11 +31,10 @@ tags: ruby
 
 ### 设计单一职责 ###
    1. 如何确定一个类是否具有单一职责
-      > 1. 将类的每个方法都改述为一个问题（例如：齿轮请问你的直径多大） 2. 尝试使用一句话描述方法做的事情，这件事情的描述应该很简单。而不是需要使用 “和” 这样的字眼。
+      > 将类的每个方法都改述为一个问题（例如：齿轮请问你的直径多大） 2. 尝试使用一句话描述方法做的事情，这件事情的描述应该很简单。而不是需要使用 “和” 这样的字眼。
    2. 解决问题的方法
       1. 依赖行为而不是数据（变量） // ruby中对这样的支持非常好， att_accessor 等元编程
-      2. 隐藏数据结构。
-
+      2. 隐藏数据结构
       ```ruby
          # 代码示例
          class Example
@@ -76,9 +75,8 @@ tags: ruby
             end
          end
      ```
-
-     3. 将外在的依赖关系尽量的隔离开来
-     > 将经常重复的代码封装，将对外在的依赖尽量隔离在一个地方（建立单独的方法，统一隔离对外在的依赖关系，思想类似与 依赖方法而不是数据）
+   3. 将外在的依赖关系尽量的隔离开来
+      > 将经常重复的代码封装，将对外在的依赖尽量隔离在一个地方（建立单独的方法，统一隔离对外在的依赖关系，思想类似与 依赖方法而不是数据）
 
 ### 管理依赖关系 ###
   > 消息的三中类型， 1. 自身实现 2. 继承 3. 依赖（指代发送消息）
@@ -89,65 +87,61 @@ tags: ruby
      3. 消息所需要的参数。
      4. 参数的顺序
   2. 解决依赖关系的方法
-     1. 注入依赖关系（依赖注入）
+     * 注入依赖关系（依赖注入）
+         ```ruby
+         class Gear
+             attr_reader :chainring, :cog, :rim, :tire
+             def initialize(chainring, cog, rim, trie)
+                 @chaining = chainring
+                 @cog = cog
+                 @rim = rim
+                 @tire = tire
+             end
 
-       ```ruby
-       class Gear
-           attr_reader :chainring, :cog, :rim, :tire
-           def initialize(chainring, cog, rim, trie)
-               @chaining = chainring
-               @cog = cog
-               @rim = rim
-               @tire = tire
-           end
+             def gear_inches
+              ratio * Wheel.new(rim, tire).diameter
+             end
+         end
+         Gear.new(10, 10, 10, 10).gear_inches
 
-           def gear_inches
-            ratio * Wheel.new(rim, tire).diameter
-           end
-       end
-       Gear.new(10, 10, 10, 10).gear_inches
-
-       # 重构之后代码
-        class Gear
-            attr_reader :chainring, :cog, :wheel
-            def initialize(chainring, cog, wheel)
-                @chainring = chanring
-                @cog = cog
-                @wheel = wheel
-            end
-            def get_inches
-                ratio * wheel.diameter
-            end
+         # 重构之后代码
+          class Gear
+              attr_reader :chainring, :cog, :wheel
+              def initialize(chainring, cog, wheel)
+                  @chainring = chanring
+                  @cog = cog
+                  @wheel = wheel
+              end
+              def get_inches
+                  ratio * wheel.diameter
+              end
+          end
+          Gear.new(10, 10, Wheel.new(12, 10)).gear_inches
+         ```
+     * 隔离脆弱的外部信息
+        ```ruby
+        def gear_inches
+            ratio * wheel.diameter
         end
-        Gear.new(10, 10, Wheel.new(12, 10)).gear_inches
-       ```
-  2. 隔离脆弱的外部信息
 
-    ```ruby
-    def gear_inches
-        ratio * wheel.diameter
-    end
+        def gear_inches
+            // ......
+            wheel.diameter
+            //......
+        end
+        # 现在对wheel.diameter的引用嵌入在一个复杂的应用过程中， 这样做会变得更加脆弱
+        def gear_inches
+            //.....
+            diameter
+            //.....
+        end
 
-    def gear_inches
-        // ......
-        wheel.diameter
-        //......
-    end
-    # 现在对wheel.diameter的引用嵌入在一个复杂的应用过程中， 这样做会变得更加脆弱
-    def gear_inches
-        //.....
-        diameter
-        //.....
-    end
-
-    def diameter
-        wheel.diameter
-    end
-    #移除依赖关系，并将其封装在自己的某个方法中
-
-    ```
-
-  > 当一个类包含了对某个可能发生变化的消息的嵌入引用时，这样的技术变得非常有用。另一种方法为：将依赖关系反转（后面）
+        def diameter
+            wheel.diameter
+        end
+        #移除依赖关系，并将其封装在自己的某个方法中
+        ```
+        > 当一个类包含了对某个可能发生变化的消息的嵌入引用时，这样的技术变得非常有用。另一种方法为：将依赖关系反转（后面）
   3. 为什么需要管理依赖关系：
      1. 依赖关系是可以被改变的（通过函数的参数改变）
      2. 依赖关系的方向的选择会对未来的变化产生影响
