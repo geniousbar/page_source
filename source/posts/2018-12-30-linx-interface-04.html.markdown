@@ -93,3 +93,51 @@ The linux programming interface
    * setenv(char * name, char *value, overwrite): 该函数会复制 name, value。函数会自动拼接=号，overwrite ！= 0 总会写入， overwrite = 0时，存在则不写入，不存在写入
    * unsetenv
    * clearenv
+4. ABI, 应用程序二进制接口，一套规则。 规定了二进制可执行文件在运行时应该如何与某些服务（诸如内核或函数库所提供的服务）交换信息， ABI特别规定了使用那些寄存器和栈地址交换信息以及所交换数值的含义，一旦针对某个特定ABI进行了编译，其二进制可执行文件应该能在ABI相同的任何系统上运行。与之想法，标准化的API仅能通过编译源代码来保证应用程序的可移植性。
+
+
+## 内存分配
+1. 在堆上分配内存， 进程呢个可以通过增加堆的大小来分配内存， 堆就是一段长度可变的连续的虚拟内存，初始于 进程未初始化的数据段末尾，随着内存的分配和释放而增减。通常将堆当前内存边界成为 program break 
+   * brk(vodi * end_data_segment), sbrk(int increment), 两个系统调用可以改变 program break 的位置， 位置调升以后，程序可以访问新分配区域内的任何内存地址。内核会在进程首次访问新分配的地址时，会自动分配实际的物理内存页。brk 直接改变 program break 的地址， sbrk 增量的改变 break 地址， 在原有的 break 地址上 增加increment 的空间，函数返回之前的break地址，也就是新分配的地址空间的起始处，sbrk(0) 返回现有的 program break 地址。
+   * malloc(size_t size), free(void *ptr)： 库函数(建立在系统调用， brk, sbrk的基础上封装而成)，比较与系统调用， 库函数拥有不少的优点， 明显的有 **允许随意的释放内存块，他们被维护于一张空闲的内存列表中，在后续的内存分配调用时候循环使用**, 
+     1. malloc: 分配成功返回void* 类型指针， 因为void类型所以可以随意使用， 调用失败可能是因为program break 已经触顶，（已经没有堆空间可以分配） 则返回NULL， 虽然出错的概率很小，但是依然需要进行错误检查。
+     2. free： 函数释放ptr所指向的内存块，一般情况下， free并不会降低 program break 的位置， 而是将该内存块放入到空闲的内存列表中，以便供后续的malloc使用。有如下的好处， 1）尽量的减少了 sbrk的系统调用此处
+   * 调用free还是不呢？: 当进程终止时， 所有的内存都会返回给操作系统，基于内存的这一自动释放机制，对于那些分配内存并持续使用的程序而言，可以忽略free，因为在多次调用free时候不但消耗大量的cpu时间，还是使代码趋向于复杂。
+   * malloc, free 的实现: 数据结构为 双向链表， len| pre | next | space | 其中len 表示该空闲内存块 的大小， pre,next 为双向链表指针，指向上一个下一个空闲内存块， space为空闲内存
+     1. malloc(size_t size) 会扫描空闲链表，以找到适合大小的内存块
+        * 空闲链表中的len == size 时，则直接返回给z调用者
+        * len > size: 对其切割（将会出现一个合适大小的内存块+一个空闲的内存块）
+        * len < size: 没有找到符合要求的内存块时，调用sbrk 重新分配适合的内存块（为了更少的系统调用sbrk, 通常mallock 会以更大的increment 调用sbrk ）
+        * 更新 空闲块链表
+     2. free(void * ptr) : free函数通过 ptr 内存块中 len来知道内存块大小，然后加入到 空闲块链表中。
+     3. 因为free， malloc的实现导致， 1）ptr指针需要完全正确，以避免对空闲链表的错误操作。（非malloc返回的指针，绝不能调用free）， 2）不能重复释放同一个指针
+     4. 除了mallock, C函数库还提供了其他的 内存分配算法版本的 内存分配函数实现。 calloc, realloc, memalign, posix_memalign, alloca（该函数从栈上分配内存，因为栈的特殊性使其有两个特点 1）只有当调用函数的位于顶部时候可用 2）不需要free， 因为函数返回时代码会重置栈指针。）
+
+## 用户和组
+
+1. 每个用户都存在唯一的UID， 并可以归属于多个GID
+2. UID， GID 的主要用途有 1）确定各种系统资源的所有权， 2）对进程的操作资源的权限加以控制
+3. /et/passwd, 用于记录用户相关的UID， home, shell etc等。 /etc/shadow 维护对应UID的加密密码。组文件 /etc/group, 维护GID， 以及对应的用户列表，
+
+## 进程凭证 
+1. 每个进程都有一套数字表示UID和GID 具体如下： 
+    1. real user id, real group id, 实际用户id，实际组id， 确定了进程所属的用户和组，作为登陆过程之一，登陆shell 从/etc/passwd中读取相应用户密码记录的3，4字段，设定为其实际用户id & 组id，当创建进程时，将从父进程中继承这些
+    2. effective user id, effective group id, 有效用户id， 有效组id。 系统通常通过结合有效用户id，组id 连同辅助组id 来授予进程权限。
+    3. saved user id, saved group id, 保存的用户id， 保存的组id
+    4. file-system user id, file-system group id, 文件系统用户id， 文件系统组id
+    5. 辅助组id 
+2. set-user-id, set-group-id 程序， set-user-id 程序会将进程的有效用户id设为可执行文件的用户id， 从而获得不具备的权限。set-group-id 程序有类似的效果。可执行文件拥有两个特别的权限位 set-user-id和set-group-id位，（实际上所有文件都有，只有可执行文件比较有用）ls -l program, x 变成 代表 拥有set-user-id or set-group-id. 当运行set-user-id程序时候，内核会将进程的有效用户id变为可执行文件的用户id， set-group-id 执行类似的操作。 linux系统中常用的passwd, mount, unmount, wall(用户向tty组下所有终端写入消息)等都为set-user-id程序(set-user-id-root 来特指 root用户所拥有的 set-user-id 程序)
+3. 保存用户id(saved-user-id) 当执行程序时，会发生如下事情：
+   1. 可执行文件的set-user-id权限位开启，将进程等的有效用户id 设定为 可执行文件的属主，未设定则进程有效用户id不变
+   2. 复制 有效id 到 set-user-id
+4. 有不少的系统调用，允许将set-user-id 程序的有效用户id在实际用户id和保存set-user-id之间切换。对于与执行文件用户id相关的任何权限，程序能够随时在两种状态间切换。
+5. 文件系统用户id： 在进行linux中 打开文件、改变文件属主 、修改文件权限之类的文件操作时，决定其操作权限的是 文件系统用户id， 而非 有效用户id。通常 文件系统用户id和组id都等于相应的有效用户和组id， 并且只要有效用户id发生变化，相应的文件系统用户id也会发生变化，只有linux特有的两个系统调用setfsuid(), setfsgid()才能刻意的制造出 文件系统用户id 不等于 有效用户id。因此   大部分情况下，可以忽视文件系统用户id，等同于检查 有效用户id
+
+  * [ ] 完成对应的系统调用
+  * [ ] 如何在进程中调用 特权程序?
+  
+  
+## 时间
+
+
+
