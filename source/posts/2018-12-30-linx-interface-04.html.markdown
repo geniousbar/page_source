@@ -88,18 +88,17 @@ The linux programming interface
    * NAME=value programe: 在应用程序 programe的环境变量中添加一个变量值，但是不影响shell
    * printenv： 显示当前的环境列表
    * /proc/PID/environ: 文件显示编号为PID的进程的环境列表
-   * getenv(char *name): 获取环境变量的数值(value), 不存在返回NULL
-   * putenv(char *string): 添加一个 name=value 形式字符串的环境变量，失败返回非0值。一位内putenv 添加到environ变量的是一个指针，而不是string 的副本，所以不应该在栈上分配
-   * setenv(char * name, char *value, overwrite): 该函数会复制 name, value。函数会自动拼接=号，overwrite ！= 0 总会写入， overwrite = 0时，存在则不写入，不存在写入
+   * getenv(char \*name): 获取环境变量的数值(value), 不存在返回NULL
+   * putenv(char \*string): 添加一个 name=value 形式字符串的环境变量，失败返回非0值。一位内putenv 添加到environ变量的是一个指针，而不是string 的副本，所以不应该在栈上分配
+   * setenv(char \* name, char \*value, overwrite): 该函数会复制 name, value。函数会自动拼接=号，overwrite ！= 0 总会写入， overwrite = 0时，存在则不写入，不存在写入
    * unsetenv
    * clearenv
 4. ABI, 应用程序二进制接口，一套规则。 规定了二进制可执行文件在运行时应该如何与某些服务（诸如内核或函数库所提供的服务）交换信息， ABI特别规定了使用那些寄存器和栈地址交换信息以及所交换数值的含义，一旦针对某个特定ABI进行了编译，其二进制可执行文件应该能在ABI相同的任何系统上运行。与之想法，标准化的API仅能通过编译源代码来保证应用程序的可移植性。
 
-
 ## 内存分配
 1. 在堆上分配内存， 进程呢个可以通过增加堆的大小来分配内存， 堆就是一段长度可变的连续的虚拟内存，初始于 进程未初始化的数据段末尾，随着内存的分配和释放而增减。通常将堆当前内存边界成为 program break
-   * brk(vodi * end_data_segment), sbrk(int increment), 两个系统调用可以改变 program break 的位置， 位置调升以后，程序可以访问新分配区域内的任何内存地址。内核会在进程首次访问新分配的地址时，会自动分配实际的物理内存页。brk 直接改变 program break 的地址， sbrk 增量的改变 break 地址， 在原有的 break 地址上 增加increment 的空间，函数返回之前的break地址，也就是新分配的地址空间的起始处，sbrk(0) 返回现有的 program break 地址。
-   * malloc(size_t size), free(void *ptr)： 库函数(建立在系统调用， brk, sbrk的基础上封装而成)，比较与系统调用， 库函数拥有不少的优点， 明显的有 **允许随意的释放内存块，他们被维护于一张空闲的内存列表中，在后续的内存分配调用时候循环使用**,
+   * brk(vodi \* end_data_segment), sbrk(int increment), 两个系统调用可以改变 program break 的位置， 位置调升以后，程序可以访问新分配区域内的任何内存地址。内核会在进程首次访问新分配的地址时，会自动分配实际的物理内存页。brk 直接改变 program break 的地址， sbrk 增量的改变 break 地址， 在原有的 break 地址上 增加increment 的空间，函数返回之前的break地址，也就是新分配的地址空间的起始处，sbrk(0) 返回现有的 program break 地址。
+   * malloc(size_t size), free(void \* ptr)： 库函数(建立在系统调用， brk, sbrk的基础上封装而成)，比较与系统调用， 库函数拥有不少的优点， 明显的有 **允许随意的释放内存块，他们被维护于一张空闲的内存列表中，在后续的内存分配调用时候循环使用**,
      1. malloc: 分配成功返回void* 类型指针， 因为void类型所以可以随意使用， 调用失败可能是因为program break 已经触顶，（已经没有堆空间可以分配） 则返回NULL， 虽然出错的概率很小，但是依然需要进行错误检查。
      2. free： 函数释放ptr所指向的内存块，一般情况下， free并不会降低 program break 的位置， 而是将该内存块放入到空闲的内存列表中，以便供后续的malloc使用。有如下的好处， 1）尽量的减少了 sbrk的系统调用此处
    * 调用free还是不呢？: 当进程终止时， 所有的内存都会返回给操作系统，基于内存的这一自动释放机制，对于那些分配内存并持续使用的程序而言，可以忽略free，因为在多次调用free时候不但消耗大量的cpu时间，还是使代码趋向于复杂。
@@ -140,61 +139,56 @@ The linux programming interface
 ## 时间
 大多数计算机体系结构都内置有硬件始终，是的内核得以计算真实时间和进程时间。
 1. 日历时间: Unix 系统内部对时间的表示，以 Epoch以来的秒数来度量（UTC 时间）。存储于time_t类型的变量中。（time_t是一个有符号整数 理论上当前许多的32位unix系统都面临着一个2038 的理论问题，如果执行的计算工作涉及到未来时间，那么在2038年问题都会出现，事实上在此之前所有的unix系统可能都已经升级到了64位系统，然而32位嵌入式系统的寿命要长的多，依然面临着这个问题）
-  * gettimeofday(timeval *tv, timezone *tz): struct timeval { time_t tv_sec; suseconds_t tv_usec;} 其中 tv_usec提供了微秒级别的精度，参数tz是一个历史产物，应该总为NULL， 
-  * time_t time(time_t *timep): 函数有两种方式返回同样的结果， UTC秒数， timep 不为NULL，将秒数放在timep 的指针中， timep NULL返回一个数值
+  * gettimeofday(timeval \*tv, timezone \*tz): struct timeval { time_t tv_sec; suseconds_t tv_usec;} 其中 tv_usec提供了微秒级别的精度，参数tz是一个历史产物，应该总为NULL，
+  * time_t time(time_t \*timep): 函数有两种方式返回同样的结果， UTC秒数， timep 不为NULL，将秒数放在timep 的指针中， timep NULL返回一个数值
   * 时间转换函数： 类型包含如下 time_t， 打印格式， 分解时间(即是： struct tm {int tm_sec; int tm_min; int tm_hour; int tm_mday; int tm_year; int tm_mon; etc})， 转换函数即是 用来在上面的类型中 进行转换的函数，方便使用。其中包括， strftime, mktime, gmtime, localtime 等。
   * 时区： 时区信息被系统使用标准格式保存于文件中。 /usr/share/zoneinfo, 该目录中的每个文件都包含了一个特定国家或地区的时区制度，系统的本地时间在 /etc/localtime 中定义，通常链接到 /usr/share/zoneinfo中的一个文件。使用TZ环境变量来为一个程序指定时区，其值为 ":“ + 时区名称组成的字符串。设定时区会自动影响到 ctime, locatime, mktime, strftime 等，
-  * setlocale(int category, char * locale) : 设定和查询程序的当前地区, category 可选项为 表中的数值 + LC_ALL, LANG, LANGUAGE, 其中，LC_ALL 为设定所有值而准备， LANG为设定所有为明确指定的变量而准备. setlocale 参数中的locale可以为 “ ”空字符串，表示可以从环境变量中却的地区的设定， 大部分的程序代码 setlocale(LC_ALL, "") 来使用程序中的环境变量设定地区，如果调用被省略，这些环境变量将不会对程序的地区设定生效。
-  
-  +---+---+
-  | 文件名      | 目的                           |
-  | LC_TYPE     | 包含字符分类以及大小写转换规则 |
-  | LC_COLLATE  | 包含针对一字符集的排序规则     |
-  | LC_MONETARY | 对货币格式化规则               |
-  | LC_NUMERIC  | 对货币意外的数字格式化规则     |
-  | LC_TIME     | 对日期和时间的格式化规则       |
-  | LC_MESSAGES | 针对肯定和否定响应，就格式以及数值做了规定                               |
-  
+  * setlocale(int category, char \* locale) : 设定和查询程序的当前地区, category 可选项为 表中的数值 + LC_ALL, LANG, LANGUAGE, 其中，LC_ALL 为设定所有值而准备， LANG为设定所有为明确指定的变量而准备. setlocale 参数中的locale可以为 “”空字符串，表示可以从环境变量中却的地区的设定， 大部分的程序代码 setlocale(LC_ALL, "") 来使用程序中的环境变量设定地区，如果调用被省略，这些环境变量将不会对程序的地区设定生效。
+
+    |---|---|
+    | 文件名      | 目的                           |
+    | LC_TYPE     | 包含字符分类以及大小写转换规则 |
+    | LC_COLLATE  | 包含针对一字符集的排序规则     |
+    | LC_MONETARY | 对货币格式化规则               |
+    | LC_NUMERIC  | 对货币意外的数字格式化规则     |
+    | LC_TIME     | 对日期和时间的格式化规则       |
+    | LC_MESSAGES | 针对肯定和否定响应，就格式以及数值做了规定                               |
+
 2. 进程时间:
    **软件时钟： 进程时间受限于 系统软件时钟的分辨率，度量单位 为jiffies（定义在内核代码中的常量HZ, jiffies 为1s内 cpu增加的记数，100HZ(jiffies) 时候， 1 jiffies(hz) 的时间为10毫秒）这是内核按照round-robin的分时调度算法分配cpu进程的单位。因为CPU 的速度大大提高，2.6.0的内核时钟速度已经提高了1000hz， 更高的分辨率意味着更高的时间精度，然而并非可以任意的提高时钟频率，因为每个时钟中断都对耗费少量的CPU时间**
   * 用户CPU时间： 在用户模式下执行所花费的时间数量
   * 系统CCPU时间： 在内核模式中执行所花费的时间数量
-  
-  
+
 ## 系统和进程信息
+  **为了提供简单的方法来访问内核信息， 现在的UNIX实现提供了一个/proc 虚拟文件系统（并非存储于磁盘上，恶热是内核在进程访问信息时候动态生成的），其中包含了各种用于展示内核信息的文件。并允许进程通过常规的IO系统调用来访问，有些还可以对信息进行修改。**
+* /proc/PID： 内核提供了对应PID进程的目录结构，
 
-**为了提供简单的方法来访问内核信息， 现在的UNIX实现提供了一个/proc 虚拟文件系统（并非存储于磁盘上，恶热是内核在进程访问信息时候动态生成的），其中包含了各种用于展示内核信息的文件。并允许进程通过常规的IO系统调用来访问，有些还可以对信息进行修改。**
-1. /proc/PID： 内核提供了对应PID进程的目录结构，
-
-+---+---+
-| 文件    | 描述                                       |
-| cmdline | 以 \0分割的命令行参数                      |
-| cwd     | 指向当前工作目录的符号连接                 |
-| Environ | NAME=value 键值对的环境列表                |
-| exe     | 指向正在执行文件的符号连接                 |
-| fd      | 文件目录包含了指向由进程打开文件的符号连接 |
-| maps    | 内存映射                                   |
-| mem     | 进程虚拟内存                               |
-| mounts  | 进程的安装点                               |
-| root    | 指向根目录的符号链接                       |
-| status  | 各类信息                                   |
+  |---|---|
+  | 文件    | 描述                                       |
+  | cmdline | 以 \0分割的命令行参数                      |
+  | cwd     | 指向当前工作目录的符号连接                 |
+  | Environ | NAME=value 键值对的环境列表                |
+  | exe     | 指向正在执行文件的符号连接                 |
+  | fd      | 文件目录包含了指向由进程打开文件的符号连接 |
+  | maps    | 内存映射                                   |
+  | mem     | 进程虚拟内存                               |
+  | mounts  | 进程的安装点                               |
+  | root    | 指向根目录的符号链接                       |
+  | status  | 各类信息                                   |
 
 
 * /proc/PID/fd： 目录 为进程打开的每个文件描述符都包含了一个符号连接，每个符号连接的名称都与描述符的数值向匹配（/proc/pid/1 为 标准输出）， 任何进程都可以使用符号连接 /proc/self 来访问自己的/proc/PID 目录
-* /proc 目录下的系统信息: 
-+---+---+
-| 目录              | 描述                   |
-| /proc/net         | 网路和套接字的状态信息 |
-| /proc/sys/fs/     | 文件系统相关的设定     |
-| /proc/sys/kernel/ | 各种常规的内核设定     |
-| /proc/sys/net     | 网络和套接字设定       |
-| /proc/sys/vm/     | 内存管理设定           |
+* /proc 目录下的系统信息:
+
+  |---|---|
+  | 目录              | 描述                   |
+  | /proc/net         | 网路和套接字的状态信息 |
+  | /proc/sys/fs/     | 文件系统相关的设定     |
+  | /proc/sys/kernel/ | 各种常规的内核设定     |
+  | /proc/sys/net     | 网络和套接字设定       |
+  | /proc/sys/vm/     | 内存管理设定           |
 
 * uname(utsname * utsbuf): 系统调用返回主机系统的标识信息
 
-
 ##  文件IO缓冲
 **出于效率的考虑， 系统IO调用，以及 函数库IO函数，都在文件IO操作中对数据进行了缓冲**
-
-
-
