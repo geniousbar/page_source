@@ -97,9 +97,9 @@ The linux programming interface
 
 
 ## 内存分配
-1. 在堆上分配内存， 进程呢个可以通过增加堆的大小来分配内存， 堆就是一段长度可变的连续的虚拟内存，初始于 进程未初始化的数据段末尾，随着内存的分配和释放而增减。通常将堆当前内存边界成为 program break 
+1. 在堆上分配内存， 进程呢个可以通过增加堆的大小来分配内存， 堆就是一段长度可变的连续的虚拟内存，初始于 进程未初始化的数据段末尾，随着内存的分配和释放而增减。通常将堆当前内存边界成为 program break
    * brk(vodi * end_data_segment), sbrk(int increment), 两个系统调用可以改变 program break 的位置， 位置调升以后，程序可以访问新分配区域内的任何内存地址。内核会在进程首次访问新分配的地址时，会自动分配实际的物理内存页。brk 直接改变 program break 的地址， sbrk 增量的改变 break 地址， 在原有的 break 地址上 增加increment 的空间，函数返回之前的break地址，也就是新分配的地址空间的起始处，sbrk(0) 返回现有的 program break 地址。
-   * malloc(size_t size), free(void *ptr)： 库函数(建立在系统调用， brk, sbrk的基础上封装而成)，比较与系统调用， 库函数拥有不少的优点， 明显的有 **允许随意的释放内存块，他们被维护于一张空闲的内存列表中，在后续的内存分配调用时候循环使用**, 
+   * malloc(size_t size), free(void *ptr)： 库函数(建立在系统调用， brk, sbrk的基础上封装而成)，比较与系统调用， 库函数拥有不少的优点， 明显的有 **允许随意的释放内存块，他们被维护于一张空闲的内存列表中，在后续的内存分配调用时候循环使用**,
      1. malloc: 分配成功返回void* 类型指针， 因为void类型所以可以随意使用， 调用失败可能是因为program break 已经触顶，（已经没有堆空间可以分配） 则返回NULL， 虽然出错的概率很小，但是依然需要进行错误检查。
      2. free： 函数释放ptr所指向的内存块，一般情况下， free并不会降低 program break 的位置， 而是将该内存块放入到空闲的内存列表中，以便供后续的malloc使用。有如下的好处， 1）尽量的减少了 sbrk的系统调用此处
    * 调用free还是不呢？: 当进程终止时， 所有的内存都会返回给操作系统，基于内存的这一自动释放机制，对于那些分配内存并持续使用的程序而言，可以忽略free，因为在多次调用free时候不但消耗大量的cpu时间，还是使代码趋向于复杂。
@@ -119,13 +119,13 @@ The linux programming interface
 2. UID， GID 的主要用途有 1）确定各种系统资源的所有权， 2）对进程的操作资源的权限加以控制
 3. /et/passwd, 用于记录用户相关的UID， home, shell etc等。 /etc/shadow 维护对应UID的加密密码。组文件 /etc/group, 维护GID， 以及对应的用户列表，
 
-## 进程凭证 
-1. 每个进程都有一套数字表示UID和GID 具体如下： 
+## 进程凭证
+1. 每个进程都有一套数字表示UID和GID 具体如下：
     1. real user id, real group id, 实际用户id，实际组id， 确定了进程所属的用户和组，作为登陆过程之一，登陆shell 从/etc/passwd中读取相应用户密码记录的3，4字段，设定为其实际用户id & 组id，当创建进程时，将从父进程中继承这些
     2. effective user id, effective group id, 有效用户id， 有效组id。 系统通常通过结合有效用户id，组id 连同辅助组id 来授予进程权限。
     3. saved user id, saved group id, 保存的用户id， 保存的组id
     4. file-system user id, file-system group id, 文件系统用户id， 文件系统组id
-    5. 辅助组id 
+    5. 辅助组id
 2. set-user-id, set-group-id 程序， set-user-id 程序会将进程的有效用户id设为可执行文件的用户id， 从而获得不具备的权限。set-group-id 程序有类似的效果。可执行文件拥有两个特别的权限位 set-user-id和set-group-id位，（实际上所有文件都有，只有可执行文件比较有用）ls -l program, x 变成 代表 拥有set-user-id or set-group-id. 当运行set-user-id程序时候，内核会将进程的有效用户id变为可执行文件的用户id， set-group-id 执行类似的操作。 linux系统中常用的passwd, mount, unmount, wall(用户向tty组下所有终端写入消息)等都为set-user-id程序(set-user-id-root 来特指 root用户所拥有的 set-user-id 程序)
 3. 保存用户id(saved-user-id) 当执行程序时，会发生如下事情：
    1. 可执行文件的set-user-id权限位开启，将进程等的有效用户id 设定为 可执行文件的属主，未设定则进程有效用户id不变
@@ -135,9 +135,14 @@ The linux programming interface
 
   * [ ] 完成对应的系统调用
   * [ ] 如何在进程中调用 特权程序?
-  
-  
+
+
 ## 时间
-
-
-
+大多数计算机体系结构都内置有硬件始终，是的内核得以计算真实时间和进程时间。
+1. 日历时间: Unix 系统内部对时间的表示方式军事以 Epoch以来的秒数来度量。
+  * gettimeofday(timeval { sec, usec} * tv): 系统调用返回Epoch以来的秒数，sec为秒数， usec 为us，
+  * 时区： 时区信息被系统使用标准格式保存于文件中。 /usr/share/zoneinfo, 该目录中的每个文件都包含了一个特定国家或地区的时区制度，系统的本地时间问津啊 /etc/localtime 定义，通常链接到 /usr/share/zoneinfo中的一个文件。使用TZ环境变量来为一个程序指定时区，其值为: + 时区名称组成的字符串。设定时区会自动影响到 ctime, locatime, mktime, strftime 等，
+  * 地区(locale): 同时区信息一样规范 /usr/share/local 下的每个目录包含了一个地区的信息， 目录格式规定如下， language[_territory[.codeset][@modifier]] language 是ISO 语言代码， territory 是ISO 国家代码， modifier 提供了一种方法，用以区分 language 等相同的情况
+2. 进程时间:
+  * 用户CPU时间： 在用户模式下执行所花费的时间数量
+  * 系统CCPU时间： 在内核模式中执行所花费的时间数量
