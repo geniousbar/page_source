@@ -15,7 +15,7 @@ The linux programming interface
       | DOMAIN | 执行的通讯 | 应用程序间的通讯 | 地址格式 | 地址结构
       | :------------- | :------------- | :------ | :------ | :-------- |
       | AF_UNIX | 内核中| 同一主机 | 路径名 | sockaddr_un |
-      | AF_INET | 通过IPv4 | IPv4 连接起来的网络 | 32为IP地址+ 16位端口号 | sockaddr_in |
+      | AF_INET | 通过IPv4 | IPv4 连接起来的网络 | 32为IPoe 地址+ 16位端口号 | sockaddr_in |
       | AF_INET6 | 通过IPv6 | IPv6 连接起来的网络 | 128为IP地址+ 16位端口号 | sockaddr_in6 |
 
     * type: sock_stream, sock_dgram
@@ -40,6 +40,7 @@ The linux programming interface
         * accpet调用返回的结果是 已连接的 socket文件描述符，监听 socketfd 会保持打开状态。并可以接受后续连接。
         * 典型的 服务器应用 会创建一个 监听socketfd， 将其绑定到一个约定的地址上。然后 accept 该socketfd 上 的连接 来处理所有的客户端请求。
     * connect(int sockfd, struct sockaddr * addr, scoklen_t addrlen): 系统调用将sockfd 主动连接到 地址addr 指定的监听socket上。如果连接失败，标准的可以移植的方法为，关闭socket，创建一个新的socket，并重新连接
+      ![udp](../images/pending_socket.png)
 
 4. 流 socket 提供了一个在两个端点之间 一个双向通信的通道，流socket IO 上的操作与 管道 IO的操作类似
     * 可以使用 read， write，因为socket是双向的，所以两端都可以使用
@@ -55,6 +56,7 @@ The linux programming interface
       * 发送者 socket connect之后，数据报的发送可以使用write，来完成，而无需使用sendto，并每次传递addr地址。
       * 接受者 socket connect之后，只能接受由对等的socket 发送的数据报
       * 数据报socket connect的明显优势在于 可以使用更简单的IO 系统调用，在一些TCP/IP实践中，将一个数据报的socket连接到一个对等socket（connect）能够带来性能上的提升
+      ![udp](../images/udp_socket.png)
 
 ### Socket: Unix domain
 
