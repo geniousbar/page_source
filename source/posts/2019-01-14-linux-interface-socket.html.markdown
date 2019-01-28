@@ -48,7 +48,7 @@ The linux programming interface
 
 5. 数据报 socket(SOCK_DGRAM):
     1. socket 系统调用创建一个邮箱，
-    2. bind 到一个约定的地址上， 来允许 一个应用程序发送数据报 到这里，一般来讲， 一个服务器会将其socket 绑定到一个地址上，客户端会向改地址发送一个数据报 来发起通讯 （在一个domain 特别是UNIX domain 中，客服端想接收到服务器发送来的数据报的话，也需要bind到一个地址上）
+    2. bind 到一个约定的地址上， 来允许 一个应用程序发送数据报 到这里，一般来讲， 一个服务器会将其socket 绑定到一个地址上，客户端会向该地址发送一个数据报 来发起通讯 （在一个domain 特别是UNIX domain 中，客服端想接收到服务器发送来的数据报的话，也需要bind到一个地址上）
     3. sendto(int sockfd, void * buffer, size_t length, int flags, sockaddr * dest_addr, socklen_t addrlen): 用来发送一个数据报, flags 用来控制一些socket的特性，dest_addr置顶了目标接收者的socket地址,
     4. recvfrom(int sockfd, void * buffer, size_t length, int flags, sockaddr * src_addr, socklen_t addrlen): 用来接收数据报，在没有数据报时候会阻塞应用。由于recvfrom允许获取发送者的地址，因为可以发送一个响应（这在 发送者的socket没有绑定到一个地址上是有用的，正如bind中的描述所说，unix domain中也需要 客服端 来bind一个地址，才能接收到服务器的响应）其中 src_addr 用来获取发送数据报的远程socket地址，如果并不关心发送者的地址，可以传递NULL，length 数值 用来限制recvfrom获取的数据大小，如果超过length，则会进行截断。（使用recvmsg 则可以找出被截断的数据报）
     5. 数据报通讯无法保证 数据报 接收的顺序，甚至无法保证数据是到达的 或者是 多次到达
@@ -166,3 +166,100 @@ The linux programming interface
       * serever program (服务器程序): 指定了 被执行程序的服务器程序路径
       * server program argument(服务器 程序参数): 该字段指定了 一个或多个参数， 参数之间由 空格符分隔，当执行服务器程序时，这些参数就作为程序的参数列表
       * inetd 作为一个提高效率的机制，本身就实现了一些简单的服务，而无需单独的 服务器程序编码来完成任务， UDP， TCP 的echo 服务就是由inetd 来实现的一个例子。编辑修改 /etc/inetd.conf 之后，需要 killall -HUP inetd 发送SIGHUP信号来重新读取配置文件
+
+### socket 高级主题
+
+1. 流式套接字 上的部分读和部分写
+    * read, write 系统调用 会产生部分读 和 部分写，在流式套接字上 更容易出现这样的问题。套接字傻姑娘可用的数据比read 读取的数量要少，那么read就会出现部分读 的现象，但是只是简单的返回读取的内容大小。write 调用在没有足够的缓冲区 来传输所有的字节时，并且 被信号处理函数中断 或 在 非阻塞模式下工作 或 TCP连接出现问题 write 会产生部分写的现象。 readn， writen 这两个函数 使用循环来 启用这些系统调用，总能确保 所有的数据都会被写入 或者读取。
+2. shutdown(int sockfd, int how) 系统调用
+    **套接字 上调用close 将双向通讯通道 的两端都关闭，shutdown 提供了 更精细的控制** 其中how的选项有；
+    * SHUT_RD: 关闭连接的 读取端， 之后的读取操作将返回文件结尾，写入套接字操作依然可以进行。在UNIX domain 上进行 SHUT_RD, 对端的应用程序 将接受一个 SIGPIPE 信号，对端程序依然写入的话 将产生 EPIPE 错误， 对于TCP 套接字来说没有什么意义（需要在 61.6.6 中讨论）
+    * SHUT_WR: 关闭连接的 写端， 对端 会检测到 文件结尾。后续对套接字的读取操作会产生 SIGPIPE 信号以及 EPIPE 错误，而由对端的写入数据依然可以在套接字上正常读取。这个操作允许我们依然可以读取数据，并且告知对方写入已经完成。该操作在ssh 中rsh中 有用到，并称为 半关闭 套接字
+    * SHUT_RDWR: 将连接的读写端都关闭。等同于调用了 shutdown SHUT_RD, SHUT_WR
+    * 区分于close： shutdown 关闭的是系统级 文件表， 而非 进程文件描述符。 这意味着， 父进程 shutdown之后， fork 的子进程中的文件描述符 同样受到影响。需要注意的是， shutdown 并不会关闭进程文件描述符， 依然需要进程close来关闭文件描述符
+
+      ```c
+      fd2 = dup(sockfd);
+      close(sockfd); // 之后依然可以在 fd2上进行IO操作
+      //--------
+      fd2 = dup(sockfd);
+      shutdown(sockfd, SHUT_RDWR); // 之后无法在fd2 上sockfd 上 进行IO操作
+      ```
+3. recv, send, 专属于  套接字的IO系统调用:
+    * recv(int sockfd, void * buffer, size_t length, inf flags) flags 的选项有：
+        * MSG_DONTWAIT:  使recv 以非阻塞方式执行， 没有数据可用 立即返回， 错误码为EAGAIN, 同样可以通过 fcntl 来把套接字设定为非阻塞方式运行， 区别在于，这个可以设定每次的调用的阻塞行为
+        * MSG_OOB: 在 套接字上接受带外数据
+        * MSG_PEEK: 从套接字数据缓冲区 获取一份请求字节的副本，但不会将数据从缓冲区中移除，这份数据可以在之后的read中重新读取
+        * MSG_WAITALL: 指定标记后， 将导致系统调用阻塞到 接收到length字节，但是总会出现返回的字节数少于 length的情况： 1）捕获到一个信号， 2）对端终止了连接 3） 遇到了带外数据字节 d）接收到的数据总长度小于 length， 4）套接字错误
+    * send(int sockfd, const void * buffer, size_t length, int flags)
+        * MSG_DONTWAIT: send 以非阻塞方式运行，如果 数据不能立即传送（发送缓冲区满时）该调用失败，错误码 EAGAIN
+        * MSG_MORE: 在TCP 套接字上，这个标记实现的效果同 套接字选项 TCP_CORK 完成的功能相同，区别在于该标记可以在每次调用中 对数据进行 栓塞 处理。
+        * MSG_NOSIGNAL: 指定该标记时，在已连接的套接字上发送数据时，如果连接的另一端已经关闭时，send 不会产生SIGPIPE信号，而是返回错误 EPIPE
+        * MSG_OOB: 在流式套接字 上 发送带外数据
+
+4. size_t sendfile(int outfd, int in_fd, off_t * offset, size_t count):
+    传输文件的简单写法：
+    ```c
+      while ((n = read(diskfilefd, buf, BUZ_SIZE)) > 0)
+        write(sockfd, buf, n);
+    ```
+    示例代码中 read 简单的将文件内容 从内核缓冲区cache中拷贝到用户空间，write将用户空间缓冲区拷贝到内核空间中的socket缓冲区。 sendfile 被用来减少这种操作的低效性。文件内容会直接传送到套接字上，而不会经过用户空间， 这种技术成为 zero-copy transfer 零拷贝传输
+    sendfile 函数调用的限制： out_fd 必须为套接字， in_fd 必须指向文件，能够进行mmap，这通常只能是一个普通文件。
+    ![zero_copy](../images/zero_copy.png)
+5. TCP_CORK 套接字选项： 为了提高TCP使用效率（linux专有的选项），在web服务器传送页面时候，作为请求的响应，通常由两部分组成， HTTP 首部， 页面数据，单独的使用write操作 会传输2个TCP报文段，一个非常小的HTTP报文放在第一个分段中，这对网络是非常浪费的。这时候使用TCP_CORK 来避免其低效性。当在TCP 套接字上启用 TCP_CORK 选项时，之后所有的数据都会穿充到一个单独的TCP 报文段中，直到满足以下条件为止： 以达到报文段的大小上限、取消了 TCP_CORK 选项、套接字被关闭、或者启用 TCP_CORK后，从写入的第一个字节开始已经超过200ms（防止忘记取消 TCP_CORK 选项，超时时间可以保证传输）下面例子 介绍如何使用 TCP_CORK:
+    ```c
+    optval = 1
+    setsockopt(sockfd, IPPROTO_TCP, TCP_CORK, sizeof(optval)); // enable TCP_CORK
+    write(sockfd, ...);
+    sendfile(sockfd, ...);
+    optval = 0
+    setsockopt(sockfd, IPPROTO_TCP, TCP_CORK, sizeof(optval)); // disable TCP_CORK, TCP 开始传输
+    ```
+6.  获取套接字地址：
+    * getsockname(int sockfd, struct sockaddr * addr, socklen_t * addrlen): 获取本地套接字地址， sockfd表示套接字的描述符， addr 为返回的套接字地址存储结构， addrlen 为 addr 结构的大小。在套接字并不是由自己初始化时，如 inet调用的应用程序只能获取 已经存在套接字，则可以通过该函数 获取 对应的绑定地址。
+      <!-- 1. 当隐式得绑定到一个 -->
+    * getpeername(int sockfd, struct sockaddr * addr, socklen_t * addrlen): 获取对端的套接字地址, sockfd, 为对端的套接字描述符， 其他的同 getsockname 一致。在TCP 连接中，可以在accept时获取对端地址，但是如果服务器进程是由另一个进城调用的，比如inetd，那么这个函数就非常有用
+    * 内核隐式绑定的情况：
+        1. 已经在TCP 套接字上执行了connect， listen调用，但之前并没有bind 调用到一个地址上
+        2. 在UDP套接字上 首次调用sendto，盖套接字之前并没有bind到地址上
+        3. 调用bind 时，将端口号 指定为0， 这种情况下 bind 会为套接字制定一个IP地址，并选择一个临时端口号
+7. 深入探讨TCP 协议
+    1. TCP 报文格式
+        ![zero_copy](../images/tcp_segment.png)
+        * Source port number（源端口号）： TCP 发送端的端口号
+        * Destination port number(目的端口号)： TCP 接收端的端口号
+        * Sequence number(序列号)： 报文的 序列号
+        * Acknowledgement number（确认序列号）： 如果设定了ACK 位，那么这个字段包含了接收方期望从发送方接收到的下一个 报文的序列号
+        * Header length： 表示TCP 报文首部的长度，首部长度单位是32位，因为这个字段只有4个byte位，所以首部总长度最大可以达到 60字节， 该字段 是的TCP接收端可以确定变长的选项字段的长度，以及数据域的起始点
+        * Reserved（保留位）: 该字段包含4个为啥喜欢i用的byte （必须设置为 0）
+        * Control bit（控制位）: 8个byte组成：
+              - CER: 拥塞窗口减小标记
+              - ECE： 现实的拥塞通知回显标记 cwr & ece 标记用在TCP 的显示拥塞通知(ECN)算法中。 linux中 可以通过编辑文件 /proc/sys/net/ipv4/tcp_enc 设定一个非零值 来开启这个功能
+              - URG： 设定了该位， 紧急指针字段包含的信息是有效的
+              - ACK: 如果设定了该位， 那么确认序号字段包含的信息就是有效的 （可以同时包含对对端数据报的确认）
+              - PSH： 将所有收到的数据发给接受的进程 (RFC993)
+              - RST： 重置连接
+              - SYN： 同步序列号，在建立连接时，双方需要交换设定了该位的报文，使得tcp 连接的两段可以指定初始序列好
+              - FIN： 发送端提示已经完成了传送任务，TCP 连接关闭
+        * Window size （窗口大小）： 滑动窗口机智有关， 用于 在ACK确认时 提示自己可以接受数据的空间大小
+        * Checksum(校验和)
+        * Urgent Pointer(紧急指针)： 设定了该位置， 表示传送的数据位紧急数据
+        * Options(选项)： 这是一个变长的字段， 包含了控制TCP连接操作的选项
+        * Data （数据）： 包含了该报文中 传输的用户数据
+    2.  TCP 序列号 和 确认机制
+        每个通过TCP 连接传送的字节都由TCP 协议分配了一个逻辑序列号，双向数据流都有各自的序列号，当传送一个报文时，该报文的序列号被设为该传送方向上的 报文段数据域的第一个字姐的逻辑偏移。这样接收端 就可以按照正确的顺序对接收到的报文进行重组了。TCP 采用了主动确认，当一个报文段被成功接收后， 接收端会发送一个确认信息 即发送ACK 确认报文 给发送端，该报文的 确认序号字段被设置为 期望接受的下一个数据字节的逻辑序列号 （上一个成功收到的序列号 + 1 ）TCP 发送端发送报文时会启动一个定时器，如果在定时器超时时，仍未收到确认报文，那么就重传该报文 (注意 序列号并非常简单的递增 1，而是 按照 传送报文数据 大小来递增的 如下图)
+        ![tcp_ack](../images/tcp_ack.png)
+    3. TCP 连接的建立: API 层面： 服务器）调用listen 打开套接字，然后accept， 阻塞服务器进程 直到连接建立完成。客户端）调用connect 同服务器打开的套接字 建立连接
+        1. 客户端 TCP节点 发送一个SYN 报文到服务器 TCP端，这个报文将告知 服务器有关客户端的TCP节点的初始序列号 （因为序列号不是从0 开始）
+        2. 服务器 TCP端 发送确认 客户端 SYN报文的 ACK报文，并同时携带 SYN 的序列号。 即发送ACK，SYN 报文
+        3. 客户端 TCP 节点发送一个ACK报文 来确认服务器端的TCP SYN 报文
+        ![tcp_three_hand_shake](../images/tcp_three_hand_shake.png)
+    4. TCP 连接的终止： 一端的应用程序执行close 调用 （主动关闭）， 之后 连接另一端的应用程序 也执行close调用（被动关闭）下面的报文顺序为假设 客户端 发起主动关闭
+        1. 客户端执行主动关闭， 导致客户端TCP节点 发送一个FIN报文到服务器端
+        2. 服务器端收到FIN 报文后，发送 ACK 报文进行响应。（之后服务器端任何对 套接字 read 操作 的尝试都会读取到 文件结尾）
+        3. 稍后， 当服务器关闭 自己端的 连接时，服务器端 TCP 节点发送 FIN报文到客户端
+        4. 客户端TCP 节点发送ACK报文作为响应
+        ![tcp_close](../images/tcp_close.png)
+        上面讨论的是 close 全双工的关闭(连接虽然是双向的，但是TCP节点的状态是唯一共享的)， 然而系统调用允许 shutdown 调用来关闭其中的一个通道，使TCP 成为 一个半双工。我们使用 shut_rdwr, SHUT_WR 来调用 shutdown 时候，TCP 连接将开始上面的关闭步骤。本地的 TCP节点 迁移到FIN_WAIT1 状态， 然后进入 FIN_WAIT2 状态，对端的进入到 CLOSE_WAIT 状态， 如果参数为 SHUT_WR 那么 套接字依然合法（合法的定义是？ 某种符合条件的状态？ FIN_WAIT1， FIN_WAIT2 正好处于 接受对端的ACK 报文， 而没有收到对方FIN 的状态，即 自己主动关闭成功，对方并未关闭），读端依然是打开的，因为对端的写入操作依然可以进行。这里 SHUT_RD 在TCP套接字上没有实际意义的原因是因为， 大多数TCP协议的实现都没有为 SHUT_RD 提供所期望的行为。导致该参数调用的shutdown 并不具有可移植性
+    5. 可靠的链接终止
+        time_wait
