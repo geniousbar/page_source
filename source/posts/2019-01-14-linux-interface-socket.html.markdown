@@ -335,3 +335,61 @@ The linux programming interface
             * -1: 表示有错误发生，有 EBADF 表示readfds,writefds,exceptfds  中又一个文件描述非法， EINTR 表示被信号处理器中断
             *  0: 表示 任何文件描述符成为就绪状态前 select调用已经超时， 其中fdset的参数都会被清空  
             * 正数: 表示处于就绪态的文件描述符个数， 如果一个文件描述符 在readfds, writefds, exceptfds中存在多次，则会被多次统计， 即 数值表示的， 3个fdset中的就绪状态的文件描述符之和
+    * int poll(struct  pollfd fds[], nfds_t nfds, int timeout): struct pollfd {int fd; short events; short revents; }
+        * pollfd 结构体中 的events & revents 字段都是 位掩码， 调用者厨师胡嘉爱events来之定需要为描述符fd做检查的事件， poll 返回时， revents 被设定为 该文件描述符实际上发生的事件
+        * events 0： 表示对该文件描述符上的事件 不感兴趣，同时 revents字段总是返回0， fd 设定一个负值 会产生同样的效果， 两种方法都可以用来关闭对单个文件描述符的检查
+        * timeout 设定了 poll的阻塞行为，如下：
+            * -1 ： poll会一直阻塞知道fds数组中列出的文件描述符有一个达到就绪态 或者 捕获到一信号
+            * 0： poll 不会一直阻塞，只是检查是否有处于就绪态的 文件描述符
+            * > 0: poll 至多阻塞timeout毫秒，直到fds 列表中 的文件描述符有一个达到就绪态， 或者 捕获到一个信号
+        * 返回值：
+            * -1 表示有有错发生， 一种可能的错误为 EINTR, 表示该调用被一个信号处理器中断， 并且poll 不会自动恢复
+            * 0 表示 在文件描述符就绪之前超时了
+            * 正数： 表示就绪态的 pollfd 结构体数量 （比较于 select， 这里并不会出现重复统计的问题）
+
+          | 位掩码 | events 中的输入 | 返回 revents |  描述 |
+          | :------------- | :------------- | :------- | :-------- |
+          | POLLIN | *       |       *   |      可读取非高优先级的数据     |
+          | POLLRDNORM | * |     *     |   等同于POLLIN        |
+          | POLLRDBAND| * |     *     |  可读取优先级数据 （linux中不使用） |
+          | POLLPRI | * |     *     |   可读取高优先级数据   |
+          | POLLRDHUP | * |     *     |   对端套接字关闭 |
+          | POLLOUT | * |     *     |   普通数据可写 |
+          | POLLWARNORM| * |     *     |   等同于 pollout|
+          | POLLWRBAND| * |     *     |   优先级数据可写入 |
+          | POLLERR | * |     *     |   有错误发生|
+          | POLLHUP | * |     *     |   出现挂断|
+          | POLLNVAL | * |     *     |   文件描述符未打开 |
+          | POLLMSG | * |     *     |   Linux中不使用 |
+
+    * 文件描述符何时就绪？： select 使用简单的 w（可写）， r（可读）， x （异常）poll， 使用revents 的位掩码
+        * 普通文件 select总是标记为可读可写， 对于poll来说 则在revents中返回 POLLIN \| POLLOUT （因为read总是立即返回数据， write 总是立刻传送数据）
+        * 管道和FIFO：
+
+            | 管道中有数据？ | 写端打开了吗？     | select | Poll |
+            | :------------- | :------------- | :------ | :------- |
+            | 否 | 否 | r | pollhup |
+            | 是| 是 | r | pollin |
+            | 是 | 否 | r | pollin | pollhup|
+
+            一些UNIX 实现中，如果管道写端是关闭状态，那么poll 返回POLLIN （因为read遇到的结尾） 可移植性的程序应该同时检查 两个标志 来知道read 是否阻塞了
+
+            | 有 PIPE_BUF 个字节空间吗？ | 读端打开了吗？     | select | Poll |
+            | :------------- | :------------- | :------ | :------- |
+            | 否 | 否 | W | pollerr |
+            | 是| 是 | W | pollout |
+            | 是 | 否 | W | pollout | pollerr |
+
+            一些UNIX 实现中，如果管道读端是关闭状态，那么poll 返回POLLOUT、POLLHUP 可移植性的程序应该同时检查 三个标志 来知道read 是否阻塞了
+
+        * 套接字上面的表现
+
+            | 有 PIPE_BUF 个字节空间吗？ |  select | Poll |
+            | :------------- | :------ | :------- |
+            | 有输入 | r | pollin |
+            | 有输出 | w | pollout |
+            |监听套接字上建立连接  | r | pollin|
+            | 接收到带外数据| x | pollpri |
+            | 流套接字的对端关闭连接 或执行了shutdown(SHUT_WR)| rw | pollin \| pollout \| pollrdhup |
+
+            Linux专有的pollrdhup标志， 实际上是epollrdhup，主要设计用于epoll api 的边缘触发模式下， 当流式套接字连接远端关闭了写连接时候会返回该标志，能够让采用了epoll 边缘触发模式的应用程序 更简单的判断远端是否已经关闭
