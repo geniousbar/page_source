@@ -5,12 +5,12 @@ tags: linux, books
 ---
 The linux programming interface
 ----------
+<!-- 1. 57 介绍UNIX domain socket， 允许同一主机上的系统上的应用程序之间通讯。 58 介绍TCP/IP之间联网协议的关键特性。， 59 描述internet domain socket, 允许位于不同主机上的应用程序通过一个TCP/IP王璐进行通讯， 60 讨论socket的服务设计， 61: 介绍一些高级主题， 包括socket IO的， TCP协议的细节信息，已经socket选项来获取修改socket的各种特性。 -->
 
 ### Socket
 **socket是一种IPC方法， 它允许位于同意主机或者网络连接的不同主机 上的应用程序之间交换数据(第一个被广泛接收的socket API 实现于 1983年，现在这组API 已经被移植到了大部分的计算机系统上)**
-1. 57 介绍UNIX domain socket， 允许同一主机上的系统上的应用程序之间通讯。 58 介绍TCP/IP之间联网协议的关键特性。， 59 描述internet domain socket, 允许位于不同主机上的应用程序通过一个TCP/IP王璐进行通讯， 60 讨论socket的服务设计， 61: 介绍一些高级主题， 包括socket IO的， TCP协议的细节信息，已经socket选项来获取修改socket的各种特性。
 2. socket(domain, type, protocol): 系统调用
-    * domain: 1） 识别 socket 地址的格式， 2） 确定范围， 实在同一个主机上的不同应用程序还是， 在一个网络上的不同主机
+    * domain: 1）识别 socket 地址的格式  2） 确定范围: 在同一个主机上的不同应用程序还是 在一个网络上的不同主机
 
       | DOMAIN | 执行的通讯 | 应用程序间的通讯 | 地址格式 | 地址结构
       | :------------- | :------------- | :------ | :------ | :-------- |
@@ -30,21 +30,21 @@ The linux programming interface
         1. 可靠的: 表示可以保证发送者传输的数据会完整的传递到接收者应用程序 （假设接收者发送者应用程序不会崩溃）
         2. 双向的: 数据可以在socket 之间的任意方向上传输
         3. 字节流: 表示与管道一样不存在 消息边界的概念
-    * 数据报 socket: 允许数据以 数据报的消息形式进行交换， 在数据报socket中， 消息边界得到了保留，但是数据传输是不可靠的，消息的到达顺序 可能是无需的、重复的、或者根本无法到达的。数据包socket是一个更一般的无连接socket概念的一个示例， 与流socket连接，一个数据报 socket 在使用时候，无需与另一个socket 连接，现在internet domain 中， 数据包socket使用了UDP（用户数据报协议）, 而流socket 则使用了TCP（传输控制协议）（是否意味着更多的协议的存在？）
+    * 数据报 socket: 允许数据以 数据报的消息形式进行交换， 在数据报socket中， 消息边界得到了保留，但是数据传输是不可靠的，消息的到达顺序 可能是无序的、重复的、或者根本无法到达的。数据包socket是一个更一般的无连接socket概念的一个示例， 与流socket连接，一个数据报 socket 在使用时候，无需与另一个socket 连接，现在internet domain 中， 数据包socket使用了UDP（用户数据报协议）, 而流socket 则使用了TCP（传输控制协议）（是否意味着更多的协议的存在？）
 3. socket 相关的系统调用:  
     * socket(int domain, int type, int protocol): 其中domain， type 在上面有所描述。protocol 总是为0， 在一些socket类型中会使用非0数值，socket成功后会返回一个socket的文件描述符
     * bind(int sockfd, struct sockaddr * addr, socklen_t addrlen): sockfd 为 socket调用返回的文件描述符，addr 为socket绑定到的地址结构指针，结构详细取决于 socket domain, addrlen 为结构地址大小。一般来讲服务器会将socket 绑定到一个 约定的地址上。
     * listen(int sockfd, int backlog): 系统调用将会sockfd设定为 『被动』， 接收主动连接的请求。 backlog 用于 设定 服务器端 保持等待连接的数量。（在backlog之内的连接会立即成功，等待accept， 更多的连接会阻塞一直到有等待中的连接被accept并冲等待连接中删除掉）（backlog的限制在sys/socket.h 中的 somaxconn 常量设定， linux中 这个常量设定为128,从内核 2.4.25起 linux允许在运行时通过 特有的/proc/sys/net/core/somaxconn 文件来调整这个限制）
-    * accept(int sockfd, struct sockaddr * addr, socklen_t * addrlen): 系统调用在 sockfd 的文件描述符 引用的监听流socket上接收一个接入连接。如果在调用accpet时不存在 未决 的连接，那么调用就会阻塞直到 有连接请求为止。参数 addr, addrlen, 会返回连接socket 的地址信息。理解accept 的关键点在于
+    * accept(int sockfd, struct sockaddr * addr, socklen_t * addrlen): 系统调用在 sockfd 的文件描述符 引用的监听流socket上接收一个接入连接。如果在调用accpet时不存在 未决 的连接，那么调用就会阻塞直到 有连接请求为止。参数 addr, addrlen, 会返回连接socket 的地址信息。理解accept 的关键点在于:
         * accept 会创建一个新的scoket， 这个socket与执行connect的客户端scoket进行连接。
         * accpet调用返回的结果是 已连接的 socket文件描述符，监听 socketfd 会保持打开状态。并可以接收后续连接。
         * 典型的 服务器应用 会创建一个 监听socketfd， 将其绑定到一个约定的地址上。然后 accept 该socketfd 上 的连接 来处理所有的客户端请求。
-    * connect(int sockfd, struct sockaddr * addr, scoklen_t addrlen): 系统调用将sockfd 主动连接到 地址addr 指定的监听socket上。如果连接失败，标准的可以移植的方法为，关闭socket，创建一个新的socket，并重新连接
+    * connect(int sockfd, struct sockaddr * addr, scoklen_t addrlen): 系统调用将sockfd 主动连接到 地址addr 指定的监听socket上。如果连接失败，标准的可以移植的方法为: 关闭socket，创建一个新的socket，并重新连接
       ![udp](../images/pending_socket.png)
 
 4. 流 socket 提供了一个在两个端点之间 一个双向通信的通道，流socket IO 上的操作与 管道 IO的操作类似
     * 可以使用 read， write，因为socket是双向的，所以两端都可以使用
-    * socket可以使用close来关闭，之后对应的另一端的socket 在读取数据时候会收到文件结束的标志，如果进行写入 会收到一个SIGPIPE的信号，并且系统调用会返回一个EPIPE的错误。
+    * socket可以使用close来关闭，之后对应的另一端的socket 在读取数据时候会收到文件结束的标志，如果继续进行写入 会收到一个SIGPIPE的信号，并且系统调用会返回一个EPIPE的错误。
 
 5. 数据报 socket(SOCK_DGRAM):
     1. socket 系统调用创建一个邮箱，
@@ -81,7 +81,7 @@ The linux programming interface
 2. socketpair(int domain, int type, int protocol, int sockfd[2]): 该系统调用 用于创建一对 互相连接的socket，
     * 只能用在UNIX domain中(也就是说 domain 必须指定为 AF_UNIX) type 可以为sock_dgram, sock_stream, protocol必须为0，
     * sockfd 数组返回了 引用这两个相互连接的socket文件描述符。type 为sock_stream 相当于创建了一个双向管道，一般来讲 socket对的使用方式与管道的使用方式类似，在调用完socketpair()之后，可以fork出一个子进程，然后子父进程可以通过这一对socket来进行IPC了。
-    * 与 手动闯将一对相互连接的socket的做法的优势: socketpair 创建的socket不会绑定到任意的地址上（即其他方式的socket创建都需要bind 到一个地址上）这样就能避免安全问题，因为这一对socket对其他进程是不可见的
+    * 与 手动创建一对相互连接的socket的做法的优势: socketpair 创建的socket不会绑定到任意的地址上（即其他方式的socket创建都需要bind 到一个地址上）这样就能避免安全问题，因为这一对socket对其他进程是不可见的
 3. linux 抽象socket 命名空间
   **所谓的抽象命名空间 是linux特有的特性。他允许将一个UNIX domain socket绑定到一个名字上但不会在文件系统上创建该名字** 优势有:
   * 无需担心与文件系统中的既有名字冲突
@@ -501,3 +501,4 @@ The linux programming interface
   2. 信号 相关的设定 是如何的？ 为什么会出现 如此复杂的设计，race conditoin，
   3. epoll 中 一小段不能交换的内存是？新概念吗？
   4. epoll 的内部实现
+  5. 消息边界的概念，以及实际意义
