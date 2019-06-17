@@ -14,6 +14,14 @@ header {
     height: 400px;
   }
 
+  #header-wechat-img{
+      width: 100%;
+      text-align: center;
+      position: fixed;
+      top: $top-menu-height;
+      visibility:hidden;
+  }
+
   .top-menu {
     @include pie-clearfix;
     background-color: $blind-gray;

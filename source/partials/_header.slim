@@ -14,6 +14,12 @@
         li
           a href="/by-year/"
             | By Year
+        li#wechat
+
+          a href="#" onclick= "toggleShowWechat()"
+            | Wechat
+#header-wechat-img
+  img src="/images/wechat_nasa.png"
 h1.logo
   a href="/" title="#{data.settings.site_title}"
     - if data.settings.site_title_logo
