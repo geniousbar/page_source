@@ -26,3 +26,36 @@ tags: linux,book
 
 
 
+
+
+class A
+  @@name = "A"
+  @name = "a"
+  def self.a
+    p @@name
+    p @name
+  end
+  def a
+    p @@name
+    self.class.a
+  end
+end
+
+class B < A
+  
+  def self.b
+    p @@name
+    self.a
+  end
+  
+  def b
+    p @@name
+    self.class.b
+    p "-" * 20
+    self.class.b
+  end
+  
+end
+
+@name 类变量， 为 ruby 的类的实例变量， 不为继承体系所继承，
+@@name 类变量， 为继承体系所继承
