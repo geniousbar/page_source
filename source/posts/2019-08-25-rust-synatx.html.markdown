@@ -130,18 +130,18 @@ tags: rust
   ```
  * Advanced Traits: Traits with placeholder
   ```rust
-  pub trait Iterator {
-    type Item;
+    pub trait Iterator {
+      type Item;
 
-     fn next(&mut self) -> Option<Self::Item>;
-  }
-  impl Iterator for Counter {
-      type Item = u32;
+       fn next(&mut self) -> Option<Self::Item>;
+    }
+    impl Iterator for Counter {
+        type Item = u32;
 
-      fn next(&mut self) -> Option<Self::Item> {
-      }
-  }
-```
+        fn next(&mut self) -> Option<Self::Item> {
+        }
+    }
+  ```
   为什么不适用这样的实现呢？
   ```rust
   pub trait Iterator<T> {
@@ -265,6 +265,7 @@ fn main() {
 
 
 ```
+
 SuperTriat： 超级 Trait， 依赖于一个Trait的实现， 示例如下：
 ```rust
 
@@ -287,31 +288,29 @@ impl OutlinePrint for Point {}
 NewType: 因为 impl Trait for Type, 中的type需要在本地的crate，而不是 引用库 中的Type。 所以 可以通过Newtype类来包装 Type，实现一些 Trait. 
 这里面包含另外一些需要东西： 如何让 NewType， 伪装成Type？
 实现 Deref Trait。
-```rust
-use std::fmt;
 
-struct Wrapper(Vec<String>); // 新的type 类似于下边的
-struct Color(i32, i32, i32);
-struct Point(i32, i32, i32);
+  ```rust
+  use std::fmt;
 
-impl fmt::Display for Wrapper {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[{}]", self.0.join(", "))
-    }
-}
+  struct Wrapper(Vec<String>); // 新的type 类似于下边的
+  struct Color(i32, i32, i32);
+  struct Point(i32, i32, i32);
 
-fn main() {
-    let w = Wrapper(vec![String::from("hello"), String::from("world")]);
-    println!("w = {}", w);
-}
-```
+  impl fmt::Display for Wrapper {
+      fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+          write!(f, "[{}]", self.0.join(", "))
+      }
+  }
 
-
+  fn main() {
+      let w = Wrapper(vec![String::from("hello"), String::from("world")]);
+      println!("w = {}", w);
+  }
+  ```
 
 ### Generic 生命周期 syntax： 用于区分函数中 参数生命周期， 对比 参数、返回值 等 生命周期之间的关系。 确保 参数传递生命周期符合 函数声明. 生命周期 需要关联 参数与返回值，才会有效果，只有参数的生命周期没有用处
 
   ```rust
-
   fn longest(x: &str, y: &str) -> &str {
     if x.len() > y.len() {
         x
@@ -379,34 +378,35 @@ fn main() {
 
 
 
-### Closures: 
- *  |x| {}
+### Closures:
+ *  /|x/| {}
  *  FnOnce: 获取参数的ownership
  *  FnMut： 获取参数的 mut 引用
  *  Fn： 获取参数的 非mut引用
  *  以上三种 为 Trait， 可以声明类型为 FN(i32) -> i32
  *  function as paramas： Function Pointer(fn a Type diff with Fn) ， fn 类型，实现了， Fn, FnMut, FnOnce 的实现， 即 impl Fn, FnMut, FnOnce for fn {....} 所以，可以传递 fn 到 接受 closures的 函数中。 还可以声明接受fn类型的 函数
+
  ```rust
-fn add_one(x: i32) -> i32 {
-    x + 1
-}
+  fn add_one(x: i32) -> i32 {
+      x + 1
+  }
 
-fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
-    f(arg) + f(arg)
-}
+  fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
+      f(arg) + f(arg)
+  }
 
-fn main() {
-    let answer = do_twice(add_one, 5);
+  fn main() {
+      let answer = do_twice(add_one, 5);
 
-    println!("The answer is: {}", answer);
-}
+      println!("The answer is: {}", answer);
+  }
 
-// 可以 传递参数fn 类型
-let list_of_numbers = vec![1, 2, 3];
-let list_of_strings: Vec<String> = list_of_numbers
-    .iter()
-    .map(ToString::to_string)
-    .collect();
+  // 可以 传递参数fn 类型
+  let list_of_numbers = vec![1, 2, 3];
+  let list_of_strings: Vec<String> = list_of_numbers
+      .iter()
+      .map(ToString::to_string)
+      .collect();
  ```
 
 
