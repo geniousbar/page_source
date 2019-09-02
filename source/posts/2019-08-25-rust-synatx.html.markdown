@@ -4,7 +4,7 @@ date: 2019-08-25
 tags: rust
 ---
 
-Ownership Rules
+### Ownership Rules
 
   * Each value in Rust has a variable that’s called its owner.
   * There can only be one owner at a time.
@@ -13,10 +13,10 @@ Ownership Rules
   Scope : { //scope }
   内存申请 let s = String::from("xx");
   内存释放： s 超出scop，变为不可用。rust自动添加drop调动代码， 归还内存
-  所有权规则： 
+  所有权规则：
 
-  堆、栈 中变量的其他 赋值方式： 
-  * stack-only: copy 
+  堆、栈 中变量的其他 赋值方式：
+  * stack-only: copy
     ```rust
     let x = 5;
     let y = x; // x, y  都可用， 因为x 为栈上分配， 对于内存方式为 copy， 不影响所有权
@@ -30,25 +30,31 @@ Ownership Rules
   let s1 = String::from("xx");
   let s2 = s1; // s1 不在可用， s2为 字符串的 owner, 这里只是转移 指向 string的指针，而非 copy string
   ```
-  * Function 调用参数： 跟 赋值 一样。
-  * Function 返回参数： 堆上的内存，作为返回值的时候， 两种情况： 1. 转移到 函数调用者中 2. drop掉 （因为超过 函数中的作用域 scope）
-  * Function 调用： 每次都需要转移所有权，在将所有权转回到调用者。非常麻烦， 所以设计了 引用 。 
-  * 引用： 指向变量的指针， 并不具有 ownership， 所以drop并不会，释放内存，使得引用的变量不可用。在Function 中使用 非常合适，因为不需要ownership传递回去， 因为根本没有ownership
-  可变 mut 引用： 可以 改变 引用指向的内容。
-  引用 规则： 
-  1. 任何时候，只有一个 可更改引用，或者 一个 不可更改引用。 或者 同时多个不可变应用
-  2. 引用需要总是有效的。即： 引用的scope应该小于变量的scope
+  
+### Function 调用：
+  * Function 调用参数： 跟 赋值 一样的所有权  转移一样
+  * Function 返回参数： 堆上的内存，作为返回值的时候， 两种情况： 1. 转移所有权 到 函数调用者 2. drop掉 （因为超过 函数中的作用域 scope）
+
+### 引用： Function 调用： 每次都需要转移所有权，在将所有权转回到调用者。非常麻烦， 所以设计了 引用 
+**指向变量的指针， 并不具有 ownership， 所以drop并不会，释放内存，使得引用的变量不可用。在Function 中使用 非常合适，因为不需要ownership传递回去， 因为根本没有ownership的转移**
+
+  *  可变 mut 引用: 可以 改变 引用指向的内容。
+  *  不可变引用
+  *  引用 规则:
+    1. 任何时候，只有一个 可更改引用，或者 同时多个不可变应用
+    2. 引用需要总是有效的。即： 引用的scope应该小于变量的scope
+
   ```rust
   fn no_dangle() -> &String {
     let s = String::from("hello");
     &s
-  }// 函数返回， s 会drop掉， 所以会造成空指针 null reference
-  ``` 
-  错误的函数，s在 函数中分配内存，但是只返回引用，引用变量作用于大于 指向的变量作用域
-  
-  slice: 同refrence， 引用一个连续的collection，但是没有ownership。 这里用来防止，在同样的作用域使用 mut refrence， 或者 mut 调用 (因为不能同时存在  mut 引用，和 非mut引用。添加一份检查)
-  
-  Generic define & syntax,
+  }
+  // 函数返回， s 会drop掉， 所以会造成空指针 null reference
+  ```
+  错误的函数，s在 函数中分配内存，但是只返回引用，**引用变量作用于大于 指向的变量作用域**
+  *slice: 同refrence， 引用一个连续的collection，但是没有ownership。 这里用来防止，在同样的作用域使用 mut refrence， 或者 mut 调用 (因为不能同时存在  mut 引用，和 非mut引用。所以自动的添加一份检查)*
+
+###  Generic define & syntax
   定义 函数参数签名（告诉编译器 参数类型）, 形式如下:
   ```rust
   fn largest<T>(list:&[T]) -> T {
@@ -68,12 +74,13 @@ Ownership Rules
     fn x(&self) -> &T {
         &self.x
     }
-  } // 这里为什么显得如此怪异的原因， 在于 我们可以写出 impl Point<String> 来定定制 T=String 时候特有的方法定义。所以我们需要写成如此 impl<T> 来区分于 impl Point<String> , 声明 T 代表是一个place holder
+  } 
+  // 这里为什么显得如此怪异的原因， 在于 我们可以写出 impl Point<String> 来定定制 T=String 时候特有的方法定义。所以我们需要写成如此 impl<T> 来区分于 impl Point<String> , 声明 T 代表是一个place holder
   ```
   并不会牺牲性能，没有runtime的耗时， 在编译阶段， rust 会填充 placeholder, 来完成， 不同类型的定义。
 
-  Trait: Defining Shared Behavior
-  impl  实现
+### Trait: Defining Shared Behavior
+ * impl 定义 及其 实现
   ```rust
     pub trait Summary {
         fn summarize(&self)-> String;
@@ -93,7 +100,7 @@ Ownership Rules
     }
   ```
   * Trait 类似于Interface， 共享 行为（函数） 定义，还可以 实现 类似 模板调用的方法。
-  * Trait 当 Function 参数z
+  * Trait 当 Function 参数
   ```rust
   pub fn notify(item: impl Summary) {
       println!("---------");
@@ -113,7 +120,7 @@ Ownership Rules
       println!("---------");
   }
 ```
-  * Trait 当做Function 的return type, 但是 存在一些限制： 主要有， 返回值不能是不同类型， 而只能是一个确定的类型 impl trait
+  * Trait 当做Function 的return type, 但是 存在一些限制： 主要有， 返回值不能是不同类型， 而只能是一个确定的类型 impl trait（例如{} 中 通过if else 返回一个完全不同类型，却实现了同样的Trait 的类型）
   * Trait with Generic 可以 约束 impl Generic 的 类型为实现了 Trait 的类型。
   ```rust
   impl<T: Display + PartialOrd> Point<T> {
@@ -121,28 +128,28 @@ Ownership Rules
       }// 只有实现了 Display & PartialOrd trait的 Point<_> 类型，才会有 only_some 方法
   }
   ```
-  Advanced Traits: Traits with placeholder
+ * Advanced Traits: Traits with placeholder
   ```rust
   pub trait Iterator {
     type Item;
 
-    fn next(&mut self) -> Option<Self::Item>;
- }
- impl Iterator for Counter {
-     type Item = u32;
+     fn next(&mut self) -> Option<Self::Item>;
+  }
+  impl Iterator for Counter {
+      type Item = u32;
 
-     fn next(&mut self) -> Option<Self::Item> {
-     }
- }
+      fn next(&mut self) -> Option<Self::Item> {
+      }
+  }
 ```
-为什么不适用这样的实现呢？
-```rust
-pub trait Iterator<T> {
-    fn next(&mut self) -> Option<T>;
-}
-```
+  为什么不适用这样的实现呢？
+  ```rust
+  pub trait Iterator<T> {
+      fn next(&mut self) -> Option<T>;
+  }
+  ```
   原因在于 如果采用第二种实现， 我们需要 写成这样
-  
+
   ```rust
   impl Iterator<String> for Counter {
 
@@ -150,10 +157,9 @@ pub trait Iterator<T> {
   impl Iterator<i32> for Counter {
 
   }
-
-```
+  ```
  这里面存在多种实现方式。 更重要的是，我们在调用next时候，需要显式的指定 .next::<Iterator<String>> 来 指导 rust使用哪个Iterator<T> for Counter 的代码实现。所以第一种更可取
-但是确实存在 Generic 与 Trait 结合的例子： 
+但是确实存在 Generic 与 Trait 结合的例子：
 ```rust
 
 trait Add<RHS=Self> {
@@ -162,7 +168,7 @@ trait Add<RHS=Self> {
     fn add(self, rhs: RHS) -> Self::Output;
 }
 
-// 常用的声明可以如下: 
+// 常用的声明可以如下:
 struct Point {
     x: i32,
     y: i32,
@@ -191,7 +197,7 @@ impl Add<Meters> for Millimeters {
 }
 ```
 
-多个Trait 出现同样函数名字的情况： 
+多个Trait 出现同样函数名字的情况：
 
 ```rust
 
@@ -302,7 +308,7 @@ fn main() {
 
 
 
-Generic 生命周期 syntax： 用于区分函数中 参数生命周期， 对比 参数、返回值 等 生命周期之间的关系。 确保 参数传递生命周期符合 函数声明. 生命周期 需要关联 参数与返回值，才会有效果，只有参数的生命周期没有用处
+### Generic 生命周期 syntax： 用于区分函数中 参数生命周期， 对比 参数、返回值 等 生命周期之间的关系。 确保 参数传递生命周期符合 函数声明. 生命周期 需要关联 参数与返回值，才会有效果，只有参数的生命周期没有用处
 
   ```rust
 
@@ -315,39 +321,39 @@ Generic 生命周期 syntax： 用于区分函数中 参数生命周期， 对�
   }
   // error, rust并不能知道 函数返回值， 是x还是y， 无法检查生命周期
 
-fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
-    if x.len() > y.len() {
-        x
-    } else {
-        y
-    }
-}
-// 要求 函数返回值，应该小于等于 参数， x y的生命周期, 所以下面的函数调用是可以pass的
-fn main() {
-    let string1 = String::from("long string is long");
+  fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+      if x.len() > y.len() {
+          x
+      } else {
+          y
+      }
+  }
+  // 要求 函数返回值，应该小于等于 参数， x y的生命周期, 所以下面的函数调用是可以pass的
+  fn main() {
+      let string1 = String::from("long string is long");
 
-    {
-        let string2 = String::from("xyz");
-        let result = longest(string1.as_str(), string2.as_str());
-        println!("The longest string is {}", result);
-    }
-}
+      {
+          let string2 = String::from("xyz");
+          let result = longest(string1.as_str(), string2.as_str());
+          println!("The longest string is {}", result);
+      }
+  }
 
-// 而这个， 则是编译失败的，因为 返回值的生命周期 大于其中参数 y 的生命周期， 会导致 dangling refrence, 比如， result指向 y, 而y 在 内部的scope中已经销毁了
-fn main() {
-    let string1 = String::from("long string is long");
-    let result;
-    {
-        let string2 = String::from("xyz");
-        result = longest(string1.as_str(), string2.as_str());
-    }
-    println!("The longest string is {}", result);
-}
-// 还可以这样， 总是 返回其中的一个值
-fn longest<'a>(x: &'a str, y: &str) -> &'a str {
-    x
-}
-```
+  // 而这个， 则是编译失败的，因为 返回值的生命周期 大于其中参数 y 的生命周期， 会导致 dangling refrence, 比如， result指向 y, 而y 在 内部的scope中已经销毁了
+  fn main() {
+      let string1 = String::from("long string is long");
+      let result;
+      {
+          let string2 = String::from("xyz");
+          result = longest(string1.as_str(), string2.as_str());
+      }
+      println!("The longest string is {}", result);
+  }
+  // 还可以这样， 总是 返回其中的一个值
+  fn longest<'a>(x: &'a str, y: &str) -> &'a str {
+      x
+  }
+  ```
   * Struct 的生命周期： struct 保持的refrence 的生命周期 与struct 生命周期关联。struct 不应该 长于 内部变量的refrence。
   ```rust
   struct ImportantExcerpt<'a> {
@@ -373,8 +379,7 @@ fn longest<'a>(x: &'a str, y: &str) -> &'a str {
 
 
 
- Closures: 
- 
+### Closures: 
  *  |x| {}
  *  FnOnce: 获取参数的ownership
  *  FnMut： 获取参数的 mut 引用
