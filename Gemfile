@@ -1,10 +1,10 @@
 source 'https://gems.ruby-china.com/'
 
 # middleman
-gem 'middleman', '~> 4.2.1'
+gem 'middleman'
 
 # middleman-blog
-gem 'middleman-blog', '~> 4.0'
+gem 'middleman-blog'
 
 # For syntax highlighting
 gem 'middleman-syntax'
@@ -18,17 +18,11 @@ gem 'builder'
 # For using Slim template
 gem 'slim'
 
-# For GitHub Pages deployment
-gem 'middleman-deploy', '~> 2.0.0.pre.alpha'
-
-# For S3 deployment
-gem 'middleman-s3_sync'
-
 # For Markdown
 gem 'kramdown'
 
 # Web server
-gem 'puma'
+gem 'puma',  '3.12.1'
 
 # to serve static files
 gem 'rack-contrib'
