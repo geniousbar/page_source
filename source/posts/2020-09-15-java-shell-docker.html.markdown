@@ -548,6 +548,7 @@ gzip options
 | -v      | --verbose    | Display verbose messages while compressing.                                                                                                                                                                                           |
 | -number |              | Set amount of compression. number is an integer in the range of 1 (fastest, least compression) to 9 (slowest, most compression). The values 1 and 9 may also be expressed as --fast and --best, respectively. The default value is 6. |
 
+
 bzip2 同gzip 一样 为压缩程序，其中的参数 都大概相同，除了-r -number 外。 bunzip2 bzcat 用于解压缩。 bzip2recover 可以恢复受损的 压缩文件
 2. archive command: tar zip:  Archiving is the process of gathering up many files and bundling them together into a single large file.
 | Mode | Meaning                                                    |
@@ -556,6 +557,25 @@ bzip2 同gzip 一样 为压缩程序，其中的参数 都大概相同，除了-
 | x    | Extract an archive.                                        |
 | r    | Append specified pathnames to the end of an archive        |
 | t    | List the content of an archive                             |
+
+
+```shell
+[me@linuxbox ~]$ gzip foo.txt
+[me@linuxbox ~]$ ls -l foo.*
+-rw-r--r-- 1 me me 3230 2018-10-14 07:15 foo.txt.gz
+
+[me@linuxbox ~]$ gzip -d foo.txt.gz
+
+[me@linuxbox ~]$ gunzip foo.txt
+[me@linuxbox ~]$ ls -l foo.*
+-rw-r--r-- 1 me me 15738 2018-10-14 07:15 foo.txt
+
+
+[me@linuxbox ~]$ bzip2 foo.txt
+[me@linuxbox ~]$ ls -l foo.txt.bz2
+-rw-r--r-- 1 me me 2792 2018-10-17 13:51 foo.txt.bz2
+[me@linuxbox ~]$ bunzip2 foo.txt.bz2
+```
 
 tar： 只能以 相对路径 archive 文件。unarchive 的时候 在 当前路径下 以相对路径 恢复文件。example
 
