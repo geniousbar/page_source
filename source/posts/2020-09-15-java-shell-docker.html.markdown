@@ -986,7 +986,7 @@ mv "$filename" "${filename}1" # 使用 {} 来解决歧义
 ```
 ###  function define:
 ```shell
-functiono name {
+function name {
     commands
     return
 }
@@ -1654,7 +1654,7 @@ trap exit_on_signal_SIGTERM SIGTERM
   * 附着到容器： docker attach test_container
   * 查看容器日志： docker logs -f daemon_dave //
   * 查看容器内进程： docker top daemon_dave
-  * 在容器内运行进程： docker exec -d daemon_dave touch /etc/new_config_file 可以在现有的容器内 启动新进程，无论是后台任务还是交互式任务
+  * 在容器内运行进程： docker exec -d daemon_dave touch /etc/new_config_file 可以在现有的容器内 启动新进程，无论是后台任务还是交互式任务, docker exec -it <container_id_or_name> /bin/bash
   * 自动重启容器： docker run --restart=always --name daemon_dave // docker可以通过设定  --restart 标志来检测 容器的退出代码 来决定是否重启容器
   * 深入容器： docker inspect daemon_dave
   * 查看运行中的容器： docker ps

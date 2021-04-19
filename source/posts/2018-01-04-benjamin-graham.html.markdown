@@ -1,7 +1,7 @@
 ---
-title: 格雷厄姆之道
+title: benjamin graham
 date: 2018-01-04
-tags: 投资
+tags: finaice
 ---
 
 格雷厄姆之道（如何在中国实践价值投资）
