@@ -21,6 +21,7 @@ gem 'slim'
 # For Markdown
 gem 'kramdown'
 
+gem 'kramdown-parser-gfm'
 # Web server
 gem 'puma',  '3.12.1'
 
@@ -31,3 +32,4 @@ gem "therubyracer"
 
 gem 'listen'
 gem 'pry'
+gem 'nokogiri'
