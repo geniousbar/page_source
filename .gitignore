@@ -18,6 +18,7 @@
 /.buildpacks
 /node_modules
 /log
+/vendor
 
 # Ignore .DS_store file
 .DS_Store
