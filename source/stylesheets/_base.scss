@@ -68,8 +68,12 @@ h3 {
   word-wrap: break-word;
 }
 
-h {
-    font-weight: bold;
+h4 + h4 {
+    margin-top: 0.5rem;
+}
+
+:is(h4, h5, h6) {
+  font-weight: bold;
 }
 
 p {
