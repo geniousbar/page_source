@@ -220,9 +220,9 @@ tags: week
           myInt b = z;
           myInt d = b.add(b); //this does type System.out.print("the value of d is:
 
-          // error is this
-          // w = z.add(b);// will not type check
-          // w = b.add(z); will not type check
+          // 这里面并没有错误， add 方法为 重载，而非重写，因为 方法签名不同。 同样会通过type check
+          // w = z.add(b);
+          // w = b.add(z);
           w = ( (gaussInt) b).add(z);//this does type check System.out.print("the value of w is: ");
           w.show();
           myInt c = z.add(a); //will this typecheck? System.out.print("the value of c is: ");
@@ -235,9 +235,9 @@ tags: week
   *  分为两类： unchecked exceptions and checked exceptions.
   *  所有的exception 都发生在 runtime， 因为不是的话，要啥编译检查？
   *  Unchecked exceptions 与  checked exception 的区别主要在于： Unchecked exceptions happen because of the programmer’s carelessness，也就是说  unchecked exception 是可以预防的，可以避免的。两个主要的 unchecked exception 主要有： rrayIndexOutofBoundsException and NullPointerException
-  *  所有其他的非 unchecked exception 再是：checked exceptions， 连个主要的exception 有 FileNotFoundException and IOException.
+  *  所有其他的非 unchecked exception 则是：checked exceptions， 两个主要的exception 有 FileNotFoundException and IOException.
   10. 创建 新的 exception
-  * 新创建的 exception 应该继承 exception 或者 任何 除 RunTimeException 之外的 子类。 因为 新创建的 exception  为 checked exception 
+  * 新创建的 exception 应该继承 exception 或者 任何 除 RunTimeException 之外的 子类。 因为 新创建的 exception  为 checked exception
   * An exception is thrown to indicate the occurrence of a runtime error. Only checked exceptions should be thrown, as all unchecked exceptions should be eliminated. 意思是： 只有 checked exceptions 需要throw 声明， unchecked exception 因为无法预测，只能 尽量消除掉。（If a method’s header does not contain a throws clause, then the method throws no checked exceptions.）
   11. Throwing an Exception
   ```java
