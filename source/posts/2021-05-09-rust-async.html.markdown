@@ -578,3 +578,11 @@ fn recursive() -> BoxFuture<'static, ()> {
   * Tokio: A popular async ecosystem with HTTP, gRPC, and tracing frameworks. async-std: A crate that provides asynchronous counterparts to standard library components.
   * smol: A small, simplified async runtime. Provides the Async trait that can be used to wrap structs like*  UnixStream or TcpListener
   * fuchsia-async: An executor for use in the Fuchsia OS.
+
+### 相关资料：
+* Event-driven programming（事件驱动 模型， rust future 就是此类模型 ） https://en.wikipedia.org/wiki/Event-driven_programming
+* event driven  同样存在多种形式， refactor  pattern & https://en.wikipedia.org/wiki/Proactor_pattern
+* 相关资料： 有： http://www.alan-g.me.uk/l2p/tutevent.htm http://www.dre.vanderbilt.edu/~schmidt/PDF/reactor-siemens.pdf  https://altushost-swe.dl.sourceforge.net/project/eventdrivenpgm/event_driven_programming.pdf
+* 在rust 的 async program 中： 主要有  rust async 的语法支持， 社区提供的 future 模型， 以及 对应 runtime executor 实现，则有： async-std, tokio， smol， fuchsia-async。 future 的抽象只有一种，而对应的 runtime executor 因为 与 操作系统 生态有关，则有多种的实现
+* Coroutines （协程， 即是语言在 OS上 对于 轻量线程的抽象， 在 《现代操作系统》 中 有详细介绍过此类模型，但是因为其 一些根源性问题， 对于系统信号、调度等并不友好）
+* The actor model: 将单元划分为 actor， 使用消息进行 通讯， Erlang 是典型的 actor并发代表
