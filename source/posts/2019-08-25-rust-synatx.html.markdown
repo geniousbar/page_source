@@ -17,11 +17,13 @@ tags: rust
 
   堆、栈 中变量的其他 赋值方式：
   * stack-only: copy
+  
     ```rust
     let x = 5;
     let y = x; // x, y  都可用， 因为x 为栈上分配， 对于内存方式为 copy， 不影响所有权
     ```
   * Heap: clone、所有权转移
+  
   ```rust
   let s1 = String::from("hello");
   let s2 = s1.clone();// s2 copy s1的内存，s1 依然可用
@@ -56,6 +58,7 @@ tags: rust
 
 ###  Generic define & syntax
   定义 函数参数签名（告诉编译器 参数类型）, 形式如下:
+  
   ```rust
   fn largest<T>(list:&[T]) -> T {
   }
@@ -77,10 +80,12 @@ tags: rust
   } 
   // 这里为什么显得如此怪异的原因， 在于 我们可以写出 impl Point<String> 来定定制 T=String 时候特有的方法定义。所以我们需要写成如此 impl<T> 来区分于 impl Point<String> , 声明 T 代表是一个place holder
   ```
-  并不会牺牲性能，没有runtime的耗时， 在编译阶段， rust 会填充 placeholder, 来完成， 不同类型的定义。
+**这里为什么显得如此怪异的原因， 在于 我们可以写出 impl Point<String> 来定定制 T=String 时候特有的方法定义。所以我们需要写成如此 impl<T> 来区分于 impl Point<String> , 声明 T 代表是一个place holder**
+并不会牺牲性能，没有runtime的耗时， 在编译阶段， rust 会填充 placeholder, 来完成， 不同类型的定义。
 
 ### Trait: Defining Shared Behavior
  * impl 定义 及其 实现
+ 
   ```rust
     pub trait Summary {
         fn summarize(&self)-> String;
@@ -101,27 +106,30 @@ tags: rust
   ```
   * Trait 类似于Interface， 共享 行为（函数） 定义，还可以 实现 类似 模板调用的方法。
   * Trait 当 Function 参数
+
   ```rust
-  pub fn notify(item: impl Summary) {
-      println!("---------");
-  }
-  // Trait Bound syntax
-  pub fn notify<T: Summary>(item: T) {
+    pub fn notify(item: impl Summary) {
         println!("---------");
-  }
-  // multiple Trait Bound
-  pub fn notify<T: Summary + Display>(item: T) {
+    }
+    // Trait Bound syntax
+    pub fn notify<T: Summary>(item: T) {
+          println!("---------");
+    }
+    // multiple Trait Bound
+    pub fn notify<T: Summary + Display>(item: T) {
+          println!("---------");
+    }
+    // use where
+    pub fn some_function<T, U>(one: T, two: U) {
+        where T: Display + Clone,
+              U: Clone + Debug
         println!("---------");
-  }
-  // use where
-  pub fn some_function<T, U>(one: T, two: U) {
-      where T: Display + Clone,
-            U: Clone + Debug
-      println!("---------");
-  }
-```
+    }
+  ```
+
   * Trait 当做Function 的return type, 但是 存在一些限制： 主要有， 返回值不能是不同类型， 而只能是一个确定的类型 impl trait（例如{} 中 通过if else 返回一个完全不同类型，却实现了同样的Trait 的类型）
   * Trait with Generic 可以 约束 impl Generic 的 类型为实现了 Trait 的类型。
+
   ```rust
   impl<T: Display + PartialOrd> Point<T> {
       fn only_some(&self) {
@@ -129,6 +137,7 @@ tags: rust
   }
   ```
  * Advanced Traits: Traits with placeholder
+ 
   ```rust
     pub trait Iterator {
       type Item;
@@ -143,6 +152,7 @@ tags: rust
     }
   ```
   为什么不适用这样的实现呢？
+
   ```rust
   pub trait Iterator<T> {
       fn next(&mut self) -> Option<T>;
@@ -160,6 +170,7 @@ tags: rust
   ```
  这里面存在多种实现方式。 更重要的是，我们在调用next时候，需要显式的指定 .next::<Iterator<String>> 来 指导 rust使用哪个Iterator<T> for Counter 的代码实现。所以第一种更可取
 但是确实存在 Generic 与 Trait 结合的例子：
+
 ```rust
 
 trait Add<RHS=Self> {
