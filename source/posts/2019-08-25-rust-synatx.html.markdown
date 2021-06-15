@@ -472,8 +472,7 @@ AST
 ```
 
 
-* macro rule 的语法规则： https://danielkeep.github.io/tlborm/book/mbe-macro-rules.html 这其中包含有：
-
+#### macro rule 的语法规则: https://danielkeep.github.io/tlborm/book/mbe-macro-rules.html
 
 ```text
 匹配 语法如下：
@@ -552,188 +551,481 @@ macro_rules! vec_strs {
 
 #### 捕获与扩展 细节：
 
-1. 一旦 捕获表达式 开始消费 tokens，将不能后退 或者在匹配其他的 选项。所以 从最具体 到 最广泛匹配 是最好的方法 。
-2. macro 之间的内容传递。即 第一个macro接受的 为token，如果 第一个macro将捕获传递给其他的macro 则为 AST形式。示例如下：
+1. 匹配项 应该从 最具体 到最广泛的匹配规则， 因为 一旦 捕获表达式 开始消费 tokens，将不能后退 或者在匹配其他的 选项
+2. macro 之间的内容传递: 即 第一个macro接受的 为token，如果 第一个macro将捕获传递给其他的macro 则为 AST形式。示例如下：
 
-```text
+    ```text
 
-macro_rules! capture_expr_then_stringify {
-    ($e:expr) => {
-        stringify!($e)
-    };
-}
+    macro_rules! capture_expr_then_stringify {
+        ($e:expr) => {
+            stringify!($e)
+        };
+    }
 
-fn main() {
-    println!("{:?}", stringify!(dummy(2 * (1 + (3)))));
-    println!("{:?}", capture_expr_then_stringify!(dummy(2 * (1 + (3)))));
-}
+    fn main() {
+        println!("{:?}", stringify!(dummy(2 * (1 + (3)))));
+        println!("{:?}", capture_expr_then_stringify!(dummy(2 * (1 + (3)))));
+    }
 
-output like this:
+    output like this:
 
-"dummy ( 2 * ( 1 + ( 3 ) ) )"
-"dummy(2 * (1 + (3)))"
+    "dummy ( 2 * ( 1 + ( 3 ) ) )"
+    "dummy(2 * (1 + (3)))"
 
-第一个 macro stringify 接受的形式 如下： tokens
+    第一个 macro stringify 接受的形式 如下： tokens
 
-«dummy» «(   )»
-   ╭───────┴───────╮
-    «2» «*» «(   )»
+    «dummy» «(   )»
        ╭───────┴───────╮
-        «1» «+» «(   )»
-                 ╭─┴─╮
-                  «3»
+        «2» «*» «(   )»
+           ╭───────┴───────╮
+            «1» «+» «(   )»
+                     ╭─┴─╮
+                      «3»
 
-第二个 macro stringify 接受的形式如下： AST
+    第二个 macro stringify 接受的形式如下： AST
 
-« »
- │ ┌─────────────┐
- └╴│ Call        │
-   │ fn: dummy   │   ┌─────────┐
-   │ args: ◌     │╶─╴│ BinOp   │
-   └─────────────┘   │ op: Mul │
-                   ┌╴│ lhs: ◌  │
-        ┌────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
-        │ LitInt │╶┘ └─────────┘ └╴│ BinOp   │
-        │ val: 2 │                 │ op: Add │
-        └────────┘               ┌╴│ lhs: ◌  │
-                      ┌────────┐ │ │ rhs: ◌  │╶┐ ┌────────┐
-                      │ LitInt │╶┘ └─────────┘ └╴│ LitInt │
-                      │ val: 1 │                 │ val: 3 │
-                      └────────┘                 └────────┘
+    « »
+     │ ┌─────────────┐
+     └╴│ Call        │
+       │ fn: dummy   │   ┌─────────┐
+       │ args: ◌     │╶─╴│ BinOp   │
+       └─────────────┘   │ op: Mul │
+                       ┌╴│ lhs: ◌  │
+            ┌────────┐ │ │ rhs: ◌  │╶┐ ┌─────────┐
+            │ LitInt │╶┘ └─────────┘ └╴│ BinOp   │
+            │ val: 2 │                 │ op: Add │
+            └────────┘               ┌╴│ lhs: ◌  │
+                          ┌────────┐ │ │ rhs: ◌  │╶┐ ┌────────┐
+                          │ LitInt │╶┘ └─────────┘ └╴│ LitInt │
+                          │ val: 1 │                 │ val: 3 │
+                          └────────┘                 └────────┘
 
-
-
-
-
-
-```
+    ```
 
 3. macro 将  input 从tokens转到 AST，将导致 input再也不能被 macro 表达式匹配，如下：
 
-```text
-macro_rules! capture_then_what_is {
-    (#[$m:meta]) => {what_is!(#[$m])};
-}
+     ```rust
+     macro_rules! capture_then_what_is {
+         (#[$m:meta]) => {what_is!(#[$m])};
+     }
 
-macro_rules! what_is {
-    (#[no_mangle]) => {"no_mangle attribute"};
-    (#[inline]) => {"inline attribute"};
-    ($($tts:tt)*) => {concat!("something else (", stringify!($($tts)*), ")")};
-}
+     macro_rules! what_is {
+         (#[no_mangle]) => {"no_mangle attribute"};
+         (#[inline]) => {"inline attribute"};
+         ($($tts:tt)*) => {concat!("something else (", stringify!($($tts)*), ")")};
+     }
 
-fn main() {
-    println!(
-        "{}\n{}\n{}\n{}",
-        what_is!(#[no_mangle]),
-        what_is!(#[inline]),
-        capture_then_what_is!(#[no_mangle]),
-        capture_then_what_is!(#[inline]),
-    );
-}
+     fn main() {
+         println!(
+             "{}\n{}\n{}\n{}",
+             what_is!(#[no_mangle]),
+             what_is!(#[inline]),
+             capture_then_what_is!(#[no_mangle]),
+             capture_then_what_is!(#[inline]),
+         );
+     }
 
-The output is:  即  macro capture_then_what_is 将input转化 传递给 macro what_is 之后 ，再也 不能被 what_is 中的 pattern 匹配
+     // The output is:  即  macro capture_then_what_is 将input转化 传递给 macro what_is 之后 ，再也 不能被 what_is 中的 pattern 匹配
 
-no_mangle attribute
-inline attribute
-something else (# [ no_mangle ])
-something else (# [ inline ])
+     no_mangle attribute
+     inline attribute
+     something else (# [ no_mangle ])
+     something else (# [ inline ])
 
-```
-
-4. 避免此类情况的唯一方法 时使用 tt 与 ident 进行匹配，使用任何其他的匹配 你只能使用 捕获 而不能传递给 其他的 macro
-
+     ```
+4. 避免此类情况的唯一方法: 使用 tt 与 ident 进行匹配，使用任何其他的匹配 获得的捕获 不能够传递给其他的 macro
 5. 卫生： 默认情况下 macro都是卫生macro，除非我们需要：如下：
 
-```text
-// 卫生宏
-macro_rules! using_a {
-    ($e:expr) => {
-        {
-            let a = 42;
-            $e
+    ```rust
+    // 卫生宏
+    macro_rules! using_a {
+        ($e:expr) => {
+            {
+                let a = 42;
+                $e
+            }
         }
     }
-}
-// 宏调用是错误的，将导致编译错误，即a没有定义
-let four = using_a!(a / 10);
+    // 宏调用是错误的，将导致编译错误，即a没有定义
+    let four = using_a!(a / 10);
 
-// 非卫生宏，捕获 环境中的a
-macro_rules! using_a {
-    ($a:ident, $e:expr) => {
-        {
-            let $a = 42;
-            $e
+    // 非卫生宏，捕获 环境中的a
+    macro_rules! using_a {
+        ($a:ident, $e:expr) => {
+            {
+                let $a = 42;
+                $e
+            }
         }
     }
-}
 
-let four = using_a!(a, a / 10);
-```
+    let four = using_a!(a, a / 10);
+    ```
 
 
-6. self: 标识符或关键字。self在代码中是一个关键字，但是macro中可以称为一个标识符，使用macro在struct中定义方法：
+6. self: 标识符或关键字。self在代码中是一个关键字，但是macro中可以成为一个标识符，使用macro在struct中定义方法：
 
-```text
-//依然需要借助  非卫生宏 来污染 空间，捕获 self
-macro_rules! double_method {
-    ($self_:ident, $body:expr) => {
-        fn double(mut $self_) -> Dummy {
-            $body
-        }
-    };
-}
+    ```rust
+    //依然需要借助  非卫生宏 来污染 空间，捕获 self
+    macro_rules! double_method {
+        ($self_:ident, $body:expr) => {
+            fn double(mut $self_) -> Dummy {
+                $body
+            }
+        };
+    }
 
-struct Dummy(i32);
+    struct Dummy(i32);
 
-impl Dummy {
-    double_method! {self, {
-        self.0 *= 2;
-        self
-    }}
-}
+    impl Dummy {
+        double_method! {self, {
+            self.0 *= 2;
+            self
+        }}
+    }
 
-```
+    ```
 
-7. 一个巧妙的 macro之间传递内容的方法：
+7. 一个巧妙的 macro之间传递内容的方法： 通过 ident捕获callback名称，通过添加 ! 来完成，对另一个macro的调用
 
-```text
-macro_rules! call_with_ident {
-    ($c:ident($i:ident)) => {$c!($i)};
-}
+    ```rust
+    macro_rules! call_with_ident {
+        ($c:ident($i:ident)) => {$c!($i)};
+    }
+    ```
 
-```
-8. 对macro进行debug：
+6. macro的 作用域：
+    * macro 在定义之后 的代码中 以及 sub-module 中可见。
+    * macro 需要 使用 #[macro_use] attribute 才能被 export 出来。 
+    * macro不同于 函数调用， 导致了一些 macro之间相互依赖的关系 与 可见性 关联起来 导致的复杂情景。  但基本上 可以按照 将macro层层 展开来，每层 macro依然 符合 前面两条规则 即： macro使用在 macro定义之后， macro 可见。
+  
+#### macro 中的模式：
+1. callback: 因为macro之间传递参数的 限制，导致的一种间接调用形式。即：使用tt对callback 以及其参数 进行匹配，然后 拼接成  macro调用形式。
+
+    ```rust
+    //因为 macro 接受参数问题 导致的问题 示例：
+
+    acro_rules! call_with_larch {
+        ($callback:ident) => { $callback!(larch) };
+    }
+
+    macro_rules! expand_to_larch {
+        () => { larch };
+    }
+
+    macro_rules! recognise_tree {
+        (larch) => { println!("#1, the Larch.") };
+        (redwood) => { println!("#2, the Mighty Redwood.") };
+        (fir) => { println!("#3, the Fir.") };
+        (chestnut) => { println!("#4, the Horse Chestnut.") };
+        (pine) => { println!("#5, the Scots Pine.") };
+        ($($other:tt)*) => { println!("I don't know; some kind of birch maybe?") };
+    }
+
+    fn main() {
+        recognise_tree!(expand_to_larch!());
+        call_with_larch!(recognise_tree);
+    }
+
+    // 展开形式 与 输出
+
+    recognise_tree! { expand_to_larch ! (  ) }
+    println! { "I don't know; some kind of birch maybe?" }
+    // ...
+
+    call_with_larch! { recognise_tree }
+    recognise_tree! { larch }
+    println! { "#1, the Larch." }
+
+    //callback形式 解决：
+
+    macro_rules! callback {
+        ($callback:ident($($args:tt)*)) => { //注意这里 使用tt 不仅匹配了callback name 还匹配了参数 ，保留了参数token的形式 
+            $callback!($($args)*)
+        };
+    }
+
+    fn main() {
+        callback!(callback(println("Yes, this *was* unnecessary.")));
+    }
+
+    ```
+
+2. tt 递归匹配器，该模式 每次处理一个递归项目，然后调用自身 macro继续 处理后续 递归项目。需要注意macro的 递归次数限制。macro recursion limit 示例：
+
+    ```rust
+    macro_rules! mixed_rules {
+        () => {};
+        (trace $name:ident; $($tail:tt)*) => {
+            {
+                println!(concat!(stringify!($name), " = {:?}"), $name);
+                mixed_rules!($($tail)*);
+            }
+        };
+        (trace $name:ident = $init:expr; $($tail:tt)*) => {
+            {
+                let $name = $init;
+                println!(concat!(stringify!($name), " = {:?}"), $name);
+                mixed_rules!($($tail)*);
+            }
+        };
+    }
+    ```
+
+3. 为了隐藏 内部的macro，因为macro 可见性问题 导致 简单的macro_use 可能与其他的crate 产生名称冲突。所以：  使用一个 包含 所有 pattern规则 的module 进行封装：
+
+    ```rust
+    #[macro_export]
+    macro_rules! foo {
+        (@as_expr $e:expr) => {$e};
+
+        ($($tts:tt)*) => {
+            foo!(@as_expr $($tts)*)
+        };
+    }
+    //这样将 将as_expr 包装在 mod  foo 内部
+
+    // macro 封装的通用形式
+    macro_rules! crate_name_util {
+        (@as_expr $e:expr) => {$e};
+        (@as_item $i:item) => {$i};
+        (@count_tts) => {0usize};
+        // ...
+    }
+    ```
+
+4. tt 模式常用方式，push down计算：
+
+    > 如何实现 接受 形式 如 let strings: [String; 3] = init_array![String::from("hi!"); 3]; 的macro 实现。
+    
+
+    ```rust
+    //一个明显的、直接的 但实现错误的 递归实现 方法。
+
+    macro_rules! init_array {
+        (@accum 0, $_e:expr) => {/* empty */};
+        (@accum 1, $e:expr) => {$e};
+        (@accum 2, $e:expr) => {$e, init_array!(@accum 1, $e)};
+        (@accum 3, $e:expr) => {$e, init_array!(@accum 2, $e)};
+        [$e:expr; $n:tt] => {
+            {
+                let e = $e;
+                [init_array!(@accum $n, e)]
+            }
+        };
+    }
+
+
+    //该模式 编译不通过的原因 在于， 在 每一步骤中 构建了一个不完全的 {String::from("hi"), init_array!(@accum 1, $e)} 的表达式。因为 init_array! 并非一个完整的 表达式。所以 该种方法 并不正确。并导致 编译不通过。
+
+
+    //下面是 push-down accumulation  方式 来实现：
+
+    macro_rules! init_array {
+        (@accum (0, $_e:expr) -> ($($body:tt)*))
+            => {init_array!(@as_expr [$($body)*])};
+        (@accum (1, $e:expr) -> ($($body:tt)*))
+            => {init_array!(@accum (0, $e) -> ($($body)* $e,))};
+        (@accum (2, $e:expr) -> ($($body:tt)*))
+            => {init_array!(@accum (1, $e) -> ($($body)* $e,))};
+        (@accum (3, $e:expr) -> ($($body:tt)*))
+            => {init_array!(@accum (2, $e) -> ($($body)* $e,))};
+        (@as_expr $e:expr) => {$e};
+        [$e:expr; $n:tt] => {
+            {
+                let e = $e;
+                init_array!(@accum ($n, e.clone()) -> ())
+            }
+        };
+    }
+
+    let strings: [String; 3] = init_array![String::from("hi!"); 3];
+
+    //其展开形式为
+
+    init_array! { String:: from ( "hi!" ) ; 3 }
+    init_array! { @ accum ( 3 , e . clone (  ) ) -> (  ) }
+    init_array! { @ accum ( 2 , e.clone() ) -> ( e.clone() , ) }
+    init_array! { @ accum ( 1 , e.clone() ) -> ( e.clone() , e.clone() , ) }
+    init_array! { @ accum ( 0 , e.clone() ) -> ( e.clone() , e.clone() , e.clone() , ) }
+    init_array! { @ as_expr [ e.clone() , e.clone() , e.clone() , ] }
+
+    //我们通过  在 一个新的匹配 部分 -> (($(body):tt)*) 的重复匹配项，来匹配 递归过程中的积累部分 。通过 ->($($body)* $e,)  来 进行 积累 以便 通过编译。
+
+    ```
+
+
+5. 分隔符号： 通过该种形式，我们可以实现 表达式尾部 匹配 任意多的 ，
+
+     ```rust
+     macro_rules! match_exprs {
+         ($($exprs:expr),* $(,)*) => {...};
+     }
+
+     ```
+
+    一般情况下，我们使用表达式  ($($exprs:expr),* 或者  $($exprs:expr,)*)  来写  macro的匹配项，这两种模式 只能匹配 存在 ， 或者 不存在 ， 而 使用上面的匹配方式 可以匹配任意多的，符号。
+
+
+6. tt bundle 技巧： 在一个复杂的 macro中， 往往设定 许多中间的转发层 来携带 表达式或标识符 以传递给 最终处理层，在这种情况下， 中间层 可以将所有的参数 绑定到 一个tt中， 而不需要 写准确的 匹配规则，只是简单的将tt转发给 下一次层面 即可。
+
+    ```rust
+    // 下面的示例中，macro通过,  一个 ($ab:tt, $_skip:tt $($tail:tt)*) 的pattern 来进行 匹配，并在随后的 模式中 传递 $ab tt
+    macro_rules! call_a_or_b_on_tail {
+        ((a: $a:expr, b: $b:expr), call a: $($tail:tt)*) => {
+            $a(stringify!($($tail)*))
+        };
+
+        ((a: $a:expr, b: $b:expr), call b: $($tail:tt)*) => {
+            $b(stringify!($($tail)*))
+        };
+
+        ($ab:tt, $_skip:tt $($tail:tt)*) => {
+            call_a_or_b_on_tail!($ab, $($tail)*)
+        };
+    }
+
+    fn compute_len(s: &str) -> Option<usize> {
+        Some(s.len())
+    }
+
+    fn show_tail(s: &str) -> Option<usize> {
+        println!("tail: {:?}", s);
+        None
+    }
+
+    fn main() {
+        assert_eq!(
+            call_a_or_b_on_tail!(
+                (a: compute_len, b: show_tail),
+                the recursive part that skips over all these
+                tokens doesn't much care whether we will call a
+                or call b: only the terminal rules care.
+            ),
+            None
+        );
+        assert_eq!(
+            call_a_or_b_on_tail!(
+                (a: compute_len, b: show_tail),
+                and now, to justify the existence of two paths
+                we will also call a: its input should somehow
+                be self-referential, so let's make it return
+                some ninety one!
+            ),
+            Some(91)
+        );
+    }
+
+    ```
+
+7. 因为rust对于 权限控制 可见性问题 上缺少 matcher，导致 macro处理起来非常困难。
+
+    ```rust
+    // 下面示例，使用单独的 pattern 来匹配， 不同的 权限的 （pub 或者无pub） 的 结构声明
+    macro_rules! newtype_new {
+        (struct $name:ident($t:ty);) => { newtype_new! { () struct $name($t); } };
+        (pub struct $name:ident($t:ty);) => { newtype_new! { (pub) struct $name($t); } };
+
+        (($($vis:tt)*) struct $name:ident($t:ty);) => {
+            as_item! {
+                impl $name {
+                    $($vis)* fn new(value: $t) -> Self {
+                        $name(value)
+                    }
+                }
+            }
+        };
+    }
+
+    macro_rules! as_item { ($i:item) => {$i} }
+
+    ```
+
+8. AST 强制： 解决rust 编译器 对于tt的一些问题，（当解析器期待一个特定的语法结构，而是找到一堆替换的 tt 标记时，就会出现问题。 它通常不会尝试解析它们，而是会放弃） 该种情况下，需要使用 AST强制， 这些强制通常与下推累积宏一起使用，以便让解析器将最终的 tt 序列视为一种特殊的语法结构。有以下几种 AST强制。
+
+    ```rust
+    macro_rules! as_expr { ($e:expr) => {$e} }
+    macro_rules! as_item { ($i:item) => {$i} }
+    macro_rules! as_pat  { ($p:pat) =>  {$p} }
+    macro_rules! as_stmt { ($s:stmt) => {$s} }
+    ```
+
+9. 常见的 counting macro 的几种解法：
+
+    ```rust
+
+    // 重复方法
+    macro_rules! replace_expr {
+        ($_t:tt $sub:expr) => {$sub};
+    }
+
+    macro_rules! count_tts {
+        ($($tts:tt)*) => {0usize $(+ replace_expr!($tts 1usize))*};
+    }
+
+
+    // 对于较小的数字，这是一种很好的方法，但可能会使编译器在输入大约 500 个左右的标记时崩溃。 考虑到输出将如下所示：
+    //0usize + 1usize + /* ~500 `+ 1usize`s */ + 1usize
+
+    macro_rules! count_tts {
+        () => {0usize};
+        ($_head:tt $($tail:tt)*) => {1usize + count_tts!($($tail)*)};
+    }
+
+    //递归调用， 存在与重复方法同样的 递归限制 问题，可以使用一次匹配 多个项目 来减少 递归深度。如下： 将能够匹配的项目 提高到 ~1,200 
+
+    macro_rules! count_tts {
+        ($_a:tt $_b:tt $_c:tt $_d:tt $_e:tt
+         $_f:tt $_g:tt $_h:tt $_i:tt $_j:tt
+         $_k:tt $_l:tt $_m:tt $_n:tt $_o:tt
+         $_p:tt $_q:tt $_r:tt $_s:tt $_t:tt
+         $($tail:tt)*)
+            => {20usize + count_tts!($($tail)*)};
+        ($_a:tt $_b:tt $_c:tt $_d:tt $_e:tt
+         $_f:tt $_g:tt $_h:tt $_i:tt $_j:tt
+         $($tail:tt)*)
+            => {10usize + count_tts!($($tail)*)};
+        ($_a:tt $_b:tt $_c:tt $_d:tt $_e:tt
+         $($tail:tt)*)
+            => {5usize + count_tts!($($tail)*)};
+        ($_a:tt
+         $($tail:tt)*)
+            => {1usize + count_tts!($($tail)*)};
+        () => {0usize};
+    }
+    ```
+
+
+##### 对macro进行debug：
 * 1）trace_macros 使用示例： 同样可以传递  -Z trace-macros 给rustc 命令调用上。
 
-```text
-#![feature(trace_macros)]
+    ```rust
+    #![feature(trace_macros)]
 
-macro_rules! each_tt {
-    () => {};
-    ($_tt:tt $($rest:tt)*) => {each_tt!($($rest)*);};
-}
+    macro_rules! each_tt {
+        () => {};
+        ($_tt:tt $($rest:tt)*) => {each_tt!($($rest)*);};
+    }
 
-each_tt!(foo bar baz quux);
-trace_macros!(true); // 打开 debug
-each_tt!(spim wak plee whum); // 将 macro的调用进行展开
-trace_macros!(false); // 关闭debug
-each_tt!(trom qlip winp xod);
-
-
-The output is:
-
-each_tt! { spim wak plee whum }
-each_tt! { wak plee whum }
-each_tt! { plee whum }
-each_tt! { whum }
-each_tt! {  }
+    each_tt!(foo bar baz quux);
+    trace_macros!(true); // 打开 debug
+    each_tt!(spim wak plee whum); // 将 macro的调用进行展开
+    trace_macros!(false); // 关闭debug
+    each_tt!(trom qlip winp xod);
 
 
-```
+    The output is:
+
+    each_tt! { spim wak plee whum }
+    each_tt! { wak plee whum }
+    each_tt! { plee whum }
+    each_tt! { whum }
+    each_tt! {  }
+    ```
 
 *  2) macro log_syntax  可以将 编译器 传递给macro的 内容全部输出出来，可以这样。
 
-```text
+```rust
 #![feature(log_syntax)]
 
 macro_rules! sing {
@@ -745,7 +1037,7 @@ macro_rules! sing {
 
 * 3) 可以使用 编译参数 rustc -Z unstable-options --pretty expanded hello.rs 来输出macro展开之后的 形式内容
 
-```text
+```rust
 // Shorthand for initialising a `String`.
 macro_rules! S {
     ($e:expr) => {String::from($e)};
@@ -782,80 +1074,4 @@ fn main() {
 }
 
 ```
-
-6. macro的 作用域： 1） macro 在定义之后 的代码中 以及 sub-module 中可见。 2）macro 需要 使用 #[macro_use] attribute 才能被 export 出来。 macro不同于 函数调用， 导致了一些 macro之间相互依赖的关系 与 可见性 关联起来 导致的复杂情景。  但基本上 可以按照 将macro层层 展开来，每层 macro依然 符合 前面两条规则 即： macro使用在 macro定义之后， macro 可见。
-
-#### macro 中的模式：
-1. callback: 因为macro之间传递参数的 限制，导致的一种间接调用形式。即：使用tt对callback 以及其参数 进行匹配，然后 拼接成  macro调用形式。
-
-```text
-//因为 macro 接受参数问题 导致的问题 示例：
-
-acro_rules! call_with_larch {
-    ($callback:ident) => { $callback!(larch) };
-}
-
-macro_rules! expand_to_larch {
-    () => { larch };
-}
-
-macro_rules! recognise_tree {
-    (larch) => { println!("#1, the Larch.") };
-    (redwood) => { println!("#2, the Mighty Redwood.") };
-    (fir) => { println!("#3, the Fir.") };
-    (chestnut) => { println!("#4, the Horse Chestnut.") };
-    (pine) => { println!("#5, the Scots Pine.") };
-    ($($other:tt)*) => { println!("I don't know; some kind of birch maybe?") };
-}
-
-fn main() {
-    recognise_tree!(expand_to_larch!());
-    call_with_larch!(recognise_tree);
-}
-
-// 展开形式 与 输出
-
-recognise_tree! { expand_to_larch ! (  ) }
-println! { "I don't know; some kind of birch maybe?" }
-// ...
-
-call_with_larch! { recognise_tree }
-recognise_tree! { larch }
-println! { "#1, the Larch." }
-
-//callback形式 解决：
-
-macro_rules! callback {
-    ($callback:ident($($args:tt)*)) => { //注意这里 使用tt 不仅匹配了callback name 还匹配了参数 ，保留了参数token的形式 
-        $callback!($($args)*)
-    };
-}
-
-fn main() {
-    callback!(callback(println("Yes, this *was* unnecessary.")));
-}
-
-```
-2. tt 递归匹配器，该模式 每次处理一个递归项目，然后调用自身 macro继续 处理后续 递归项目。需要注意macro的 递归次数限制。macro recursion limit 示例：
-
-```text
-
-macro_rules! mixed_rules {
-    () => {};
-    (trace $name:ident; $($tail:tt)*) => {
-        {
-            println!(concat!(stringify!($name), " = {:?}"), $name);
-            mixed_rules!($($tail)*);
-        }
-    };
-    (trace $name:ident = $init:expr; $($tail:tt)*) => {
-        {
-            let $name = $init;
-            println!(concat!(stringify!($name), " = {:?}"), $name);
-            mixed_rules!($($tail)*);
-        }
-    };
-}
-```
-3. 
 
