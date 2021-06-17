@@ -676,3 +676,366 @@ impl<T: fmt::Display + ?Sized> ToString for T {
    }
    ```
 
+
+### Rust 工具 Trait：
+#### 总览：
+
+| Trait                | Desc                                                                                                           |
+|----------------------|----------------------------------------------------------------------------------------------------------------|
+| Drop                 | 析构函数，当value 被drop时候，自动调用                                                                         |
+| Sized                | Marker Trait， 标记 在编译期间能够确定 size的类型（与之对应的 为 动态 sized 比如 slice）                              |
+| Clone                | 支持clone方法的类型                                                                                            |
+| Copy                 | Marker Trait， 标记 支持可以 通过简单的 memory byte-for-bytes 复制 来支持 clone的类型                          |
+| Deref & DerefMut     | 为 smart 指针 支持的类型                                                                                       |
+| Default              | 存在default 数值的类型                                                                                         |
+| AsRef & AsMut        | Conversion traits for borrowing one type of reference from another.                                            |
+| Borrow and BorrowMut | Conversion traits, like AsRef/AsMut, but additionally guaranteeing consistent hashing, ordering, and equality. |
+| From and Into        | Conversion traits for transforming one type of value into another.                                             |
+| ToOwned              | Conversion trait for converting a reference to an owned value.                                                 |
+
+
+#### Drop:
+1. 定义
+
+    ```rust
+    trait Drop {
+      fn drop(&mut self);
+    }
+
+
+    //一个简单的 实现 示例：
+
+    struct Appellation {
+        name: String,
+        nicknames: Vec<String>,
+    }
+
+    impl Drop for Appellation {
+        fn drop(&mut self) {
+            print!("Dropping {}", self.name);
+            if !self.nicknames.is_empty() {
+                print!(" (AKA {})", self.nicknames.join(", "));
+            }
+            println!("");
+        }
+    }
+
+    ```
+
+2. Drop trait中 drop函数调用的时机：
+  * value drop时候调用
+  * 在drop 内部的field之前 进行调用，所以 在Appellation 的drop实现中  内部的field 依然可用。
+  * 在 drop调用之后 ，依次调用内部的field的 drop 函数，来释放field内存占用。
+
+3. 何时需要： Drop 一般很少需要自己进行实现。 只有当 自己定义的类型 **拥有rust 并不知道如何清理的资源时**，才需要实现Drop Trait。比如下面：
+
+   ```rust
+
+   struct FileDesc {
+       fd: c_int,
+   }
+
+   impl Drop for FileDesc {
+       fn drop(&mut self) {
+           let _ = unsafe { libc::close(self.fd) };
+       }
+   }
+   ```
+4. Drop组成的结构将是 一个 树状的 调用链。链中 链接关系为 field， 每个节点不是自己实现了 Drop，就是链接节点实现了Drop
+5. Drop 与 Copy Trait 存在 互斥关系，即  实现了Drop 则不能实现  Copy。
+6. 标准库中存在一个 drop函数， fn drop<T>(_x: T) {} 函数 拿到 T的ownership，但并不做任何事情。
+
+#### Sized： 该类型的数值 在内存中 总是 固定的大小，即： 在编译期间 即能够确定空间大小。几乎rust中所有的type都是 Sized，包括 enum 类型，即便Vec<T> 在heap中存在一个变长的内存，但是Vec 本身 是一个指向 内存地址的指针，包含 address， capacity， length 所以 Vec<T>是一个 Size type。
+
+* rust中少有的 unsized类型， str, [T],  reference of a trait object. 
+  * str类型 实例 "name" "big" 在 内存中的大小并不相同。
+  * trait Object 比如 std::io::Write 因为实现了 Trait Write 的类型不同，其对应的 size 也不相同。
+* Rust 无法 存储 unsized数值的变量 以及 作为参数传递，只能 通过 Sized  pointer来进行包装， 比如  &str， Box<Write>
+* slice‘s pointer 与 Trait pointer 同样是一个 fat pointer
+
+* Sized Trait是一个marker trait， 即 rust 编译器自动实现 Sized 类型， 我们不能够自己为类型实现 Sized， 即 rust 使用 该trait实现一种 类型标记作用
+* 在函数参数中可以 添加 T: Sized 来限制 参数
+* 因为 unsized类型 非常少，而限制非常多，所以 默认情况下 rust 自动为我们的 T placeholder 添加 Sized限制，如果我们不需要 该约束 则 使用过 T： ?Sized 来取消约束，即： 类型 不需要是 Sized。 比如 Box<str>
+
+* 示例： Box 与 RcBox 并不要求 模版参数 T 为Sized
+
+   ```rust
+   pub struct Box<
+       T: ?Sized,
+       #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator = Global,
+   >(Unique<T>, A);
+
+
+
+   struct RcBox<T: ?Sized> {
+     ref_count: usize,
+     value: T,
+   }
+   ```
+
+####  Clone： 复制一个  独立 的 self 并返回它， Self 不应该是unsized， clone一般是 比较耗费资源的操作，所以rust并没有为每个 类型实现它，而是 由我们自己来实现，但是Rc<T>  与 Arc<T>是一个例外，其clone只是简单的增加计数而已。
+* 定义：
+    ```rust
+    trait Clone: Sized {
+      fn clone(&self) -> Self;
+      fn clone_from(&mut self, source: &Self) {
+        *self = source.clone()
+      }
+    }
+    ```
+* Clone trait提供的 clone_from(&mut self, source: &Self) 函数， 该函数 通过 修改self， 复制source中的内容，来实现clone。应该总是在能够使用clone_from的时候 使用它，如下情况，将减少heap内存的分配和释放。
+
+    ```rust
+    let mut s = String::from("source");
+    let mut target = String::from("target");
+    // 第一种写法, 将造成 target 的 复制操作， 然后是 赋值操作， 将导致 s原先 heap的释放 与target的 heap复制
+    s = target.clone();
+
+    // 第二种写法， 该种写法， 在符合条件下，将不会在 heap重新分配内存， 也不需要s释放原先的heap内存，在s原地修改
+    s.clone_from(&target)
+    ```
+
+* derive: rust为我们提供了一种简单的 clone 各个field 的方式。添加 #[derive(Clone)]  即可。
+* 一些没有实现了Clone trait的type， std::sync::Mutex, std::fs::File
+
+#### Copy: 在表达式 A = B中， 将 B赋值给A时 不是转移B的ownership给A，而是 直接 copy 一个 B出来 赋值给A，该种情况即是 实现了 Copy Trait， 比如基本的简单类型。 i32， i64
+* 定义 以及 实现：
+    ```rust
+    trait Copy: Clone { }
+    impl Copy for MyType { }
+    ```
+
+* Copy 同样是一个 Marker trait， 但 rust 允许我们为自己的类型实现 Copy， 因为 在Copy 过程中，我们需要Clone B， 所以 Clone Trait 是该 trait 的super trait。 同样rust 为我们实现了一个默认的实现 #[derive(Copy)] 通常情况下  Copy 存在的时候 Clone也需要存在 即 常见的形式为 #[derive(Copy, Clone)]
+
+* 注意问题：
+  * 与 Drop 的关系： 任何实现 Drop 特性的类型都不能是 Copy。 Rust 假定如果一个类型需要特殊的清理代码，它也必须需要特殊的复制代码，因此不能被复制。
+
+  * 该Trait的实现 将 方便代码的编写，因为 clone() 隐式的实现， 但是需要注意应该谨慎的为 类型实现 copy， 导致大量clone 导致的 资源损耗。
+
+####  Deref and DerefMut: rust 将自动尝试使用 两个trait提供的方法 将 类型转换到 需要的类型。即： 如果 deref 能够防止类型的不匹配，那么rust将自动帮我们 插入代码。
+* 定义： 
+  ```rust
+
+  trait Deref {
+  type Target: ?Sized;
+    fn deref(&self) -> &Self::Target;
+  }
+  trait DerefMut: Deref {
+    fn deref_mut(&mut self) -> &mut Self::Target;
+  }
+
+  ```
+
+* std库中实例：
+   * r: Rc<String> 我们可以 使用 r.find（‘？’） 而不是 (*r).find('?') 因为 Rc<T> 实现了 Deref<Target=T>, Rc<String> 可以转化为 String
+
+   * r: String, 我们可以直接使用 str 的split_at 方法， 因为 String 实现了 Deref<Target=str>
+   * r: Vec<T>, 同样可以使用 [T]的方法，因为 Vec<T> 实现了 Deref<Target=[T]>
+* 注意情况：
+  * rust 可能会插入 多个转换代码 如果需要的话，比如 &Rc<String> deref 到 &String, deref 到 &str， &str中拥有 split_at 方法。
+
+
+
+  * rust为并不会为  模版方法 尝试 进行 类型的自动deref 转换。
+* 使用场景： 
+  * **该Trait 是为了实现smart pointer 而设计的**。比如 Box， Rc， Arc ， 一些 能够被视为 拥有 reference的类型（比如 String 与str 以及 Vec\<T\> 与 [T] ） 不应该为了 使用Target 的方法 而为类型实现 Deref\<Target\>
+
+####  Default：为 有明显的理由 提供默认值的 type实现。
+* 定义：
+  ```rust
+  trait Default {
+    fn default() -> Self;
+  }
+
+  ```
+* std库中的实例：
+  * String 也提供了 Default 的实现。
+  * 所有的rust collection 类型， Vec HashMap， BinaryHeap ... 都提供了 Default 的实现，default 函数提供空的 collection。 这对于 提供一个方法，有用户来指定 返回的collection 类型有很好的帮助，比如
+
+     ```rust
+     use std::collections::HashSet;
+     let squares = [4, 9, 16, 25, 36, 49, 64];
+     let (powers_of_two, impure): (HashSet<i32>, HashSet<i32>) = squares.iter().partition(|&n| n & (n-1) == 0);
+     assert_eq!(powers_of_two.len(), 3);
+     assert_eq!(impure.len(), 4);
+
+     ```
+* 使用场景： 1) 上述 std collection， 2） 为一个拥有大量field的 struct 提供默认数值。
+* **derive**:  如果一个struct中各个字段实现了 Default， 则我们使用  #[derive(Default)] 来提供 默认的Default 实现。
+
+#### AsRef and AsMut:  为类型转换提供了除了 Deref 之外的另外一种方法。 不同于 Deref 能够提供 rust 内部的代码deref()调用的插入， AsRef 仅仅是 提供了 as_ref的 trait
+* 定义：
+    ```rust
+    trait AsRef<T: ?Sized> {
+      fn as_ref(&self) -> &T;
+    }
+    trait AsMut<T: ?Sized> {
+      fn as_mut(&mut self) -> &mut T;
+    }
+
+    ```
+* std库中的实例：
+
+    ```rust
+    fn open<P: AsRef<Path>>(path: P) -> Result<File>
+
+    //因为 String， 以及 str  实现了 AsRef<Path> 所以， 我们可以进行如下的 写法：
+
+    let dot_emacs = std::fs::File::open("/home/jimb/.emacs")?;
+
+    // 这里面需要注意，因为 实现了 AsRef<Path> 的是 str， 并不是 &str， 那么为什么上面的代码能够通过编译呢？ 这里面 rust 并不会进行类型转换，因为 rust并不提供 对于 变量约束 模版变量参数 的类型转换。
+    // 因为 存在 如下 blanket implement: 即： any type T impl AsRef<U> then &T impl AsRef<U> also.
+
+    impl<'a, T, U> AsRef<U> for &'a T
+    where
+        T: AsRef<U>,
+        T: ?Sized,
+        U: ?Sized,
+    {
+        fn as_ref(&self) -> &U {
+            (*self).as_ref()
+        }
+    }
+
+    ```
+* 使用场景： 该Trait 显得简单，但是依然非常重要， 为 减少更具体类型 提供了帮助， 在 定义更具体的AsFoo trait之前，应该考虑是否可以 让现有类型实现 AsRef<Foo>
+
+
+
+####  Borrow and BorrowMut: 与 AsRef 相似，如果type impl Borrow<T> 则 能够从type borrow() 出一个 &T, 区别在于 Borrow 添加了一些限制，要求 type 与 &T 能够hash 的数值一样 才行。（rust 并没有强制要求 ，而是 以文档方式要求） 这 为 Hash table 与 tree 的key 比较 提供了方便。
+
+* 定义：
+
+```rust
+trait Borrow<Borrowed: ?Sized> {
+  fn borrow(&self) -> &Borrowed;
+}
+```
+
+* std 库中的实例： HashMap
+
+     ```rust
+     // 考虑我们有一个 HashMap<String, i32> 的collection，
+     // 我们需要获取 'name' 对应的数值，
+     // 考虑Hashmap的get 实现
+
+     impl HashMap<K, V> where K: Eq + Hash {
+        fn get(&self, key: K) -> Option<&V> { ... }
+     }
+     // 因为 get方法签名， key： K， 这要求我们 传递 一个String 类型的数值，来寻找 key对应的 value
+     // 这里的问题在于 我们每次需要查询 都需要构建一个 String（进行内存分配）将是十分浪费的方法。
+
+     impl HashMap<K, V> where K: Eq + Hash {
+        fn get(&self, key: &K) -> Option<&V> { ... }
+     }
+
+     // 对比上面要好一点，方法要求我们传递 &String类型，但是 我们需要查找一个 constant string对应的数值时候，
+     //我们需要这样写, 该种写法 同样造成 name 转换为string，即分配内存空间。
+
+     hashtable.get(&"name".to_string());
+
+
+     impl HashMap<K, V> where K: Eq + Hash {
+       fn get<Q: ?Sized>(&self, key: &Q) -> Option<&V>
+          where K: Borrow<Q>,
+                Q:Eq+Hash
+          {...}
+
+     }
+
+     // 最终的解法，我们要求 参数 Q 是一个能够 从 HashMap K中 borrow出来的 类型，并且 Q impl  Eq + Hash， 所以我们 将从HashMap 中的K 调用borrow 方法，来与 key: &Q 进行比较，来寻找到 对应的value
+     // 因为 String impl  Borrow<str> Borrow<String>, 所以我们 可以 传递 &str, &String 给 get 方法
+     ```
+
+* 使用场景：
+  * std 库中所有的collection 使用 Borrow 来进行 进行 lookup
+  * std 库提供了 blanket implementation ， impl T for Borrow<T> ， impl &mut T for Borrow<T>  所以 在HashMap<K, V> 中，我们可以 .get(&K) 来进行查找。
+
+
+
+#### From and Into:  消耗 type A 的ownership 返回 type B (对比 AsRef Borrow trait 他们并不使用 调用者 的ownership，只是返回一个 reference)
+
+* 定义：
+
+     ```rust
+     trait Into<T>: Sized {
+       fn into(self) -> T;
+     }
+     trait From<T>: Sized {
+       fn from(T) -> Self;
+     }
+
+     ```
+
+*  std 自动实现了 A impl From \<B\> 则  B impl Into\<A\>
+*  使用场景： 两个Trait 虽然扮演了一个角色（类型转换）， 但用法不同，
+   * Into： 一般用作 function 参数，来将  function 参数变得更加灵活。
+   * From： 一般用作通用的构造函数， 从多种 类型中产生一个 type。
+   如下是示例：
+
+     ```rust
+     use std::net::Ipv4Addr;
+     fn ping<A>(address: A) -> std::io::Result<bool>
+      where A: Into<Ipv4Addr>
+      {
+        let ipv4_address = address.into(); ...
+      }
+
+
+     let addr1 = Ipv4Addr::from([66, 146, 219, 98]);
+     let addr2 = Ipv4Addr::from(0xd076eb94_u32);
+     ```
+
+* 限制； 1) 与 AsRef 的转换相比 From Into 可能会比较“重”， 即AsRef 的转换是相对廉价的。From Into的转换可能涉及到 内存分配，copy等操作 ， 比如 String impl From<&str> 需要 copy str 的内容到 string中。 2） From & Into 转换 不允许失败
+
+#### ToOwned： 存在目的是： 为了解决 clone trait 的限制，即 A impl Clone， 则 &A.clone() 将返回 一个A， 但是 对于 &str .clone() 返回 str 则不能接受（因为str 为unsized 类型）， 所以 创建了 ToOwned trait：
+
+* 定义： 即 任何实现了 A Borrow \<B\> 的，则能够 B.to_owned() A
+
+     ```rust
+     trait ToOwned {
+        type Owned: Borrow<Self>;
+        fn to_owned(&self) -> Self::Owned;
+     }
+     ```
+* std库中的实例： str impl ToOwned<Owned=String> 则 str.to_owned() String
+
+
+#### Cow: Borrow and ToOwned at Work
+
+* 定义： Cow 是 clone on write的缩写。
+
+     ```rust
+     enum Cow<'a, B: ?Sized + 'a>
+       where B: ToOwned
+     {
+       Borrowed(&'a B),
+       Owned(<B as ToOwned>::Owned), //这里的语法 有些奇怪 
+     }
+
+     // cow存在两个 enum类型，Borrowed为 一个reference， Owned 则保存 一个 实际数值 ，该数值 应该是从 &'B 中 to_owned出来的，
+     //下面为一个示例：
+
+     use std::borrow::Cow;
+     use std::path::PathBuf;
+     fn describe(error: &Error) -> Cow<'static, str> {
+         match *error {
+             Error::OutOfMemory => "out of memory".into(),
+             Error::StackOverflow => "stack overflow".into(),
+             Error::MachineOnFire => "machine on fire".into(),
+             Error::Unfathomable => "machine bewildered".into(),
+             Error::FileNotFound(ref path) => format!("file not found: {}", path.display()).into(),
+         }
+     }
+
+     println!("Disaster has struck: {}", describe(&error));
+
+     let mut log: Vec<String> = Vec::new();
+     log.push(describe(&error).into_owned());
+
+     // Cow impl  Into 所以 在 describe match  arm 中可以使用 str.into() 方法返回 Cow
+     // Cow的存在 可以让 println 中 继续 保持 str， 而在  Vec<String>.push中 则 into_owned()返回 String，即需要的时候才会分配内存
+
+     ```
+
+
