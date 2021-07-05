@@ -332,11 +332,12 @@ fn main() {
 
 ### Executors and System IO:
 #### Executor： 谁来调用 Future 的poll 方法？ 答案是 Future Executor。 executor 调用一大堆 Futures 的poll方法 以便让Future 取得进展， 当 Future 能够 取得进一步进展时，通过调用wake 方法， 以便 executor 再次执行 Future。
-#### System IO: 在上面的 SimpleFuture 代码中， 谁来执行 wake 方法呢？ self.socket.set_readable_callback(wake) 又是如何处罚呢？ 答案是 epoll 的IO多路复用，可以让我们 使用thread 对 socket文件进行 监听，循环检测 IO 事件。 
+#### System IO: 在上面的 SimpleFuture 代码中， 谁来执行 wake 方法呢？ self.socket.set_readable_callback(wake) 又是如何触发的呢？ 答案是 epoll 的IO多路复用，可以让我们 使用thread 对 socket文件进行 监听，循环检测 IO 事件。 
 #### Executors: 单线程 与 多线程
 > 多线程执行程序可同时在多个任务上取得进展。 对于具有许多任务的工作负载，它可以极大地加快执行速度，但是在任务之间同步数据通常会更加昂贵。 在单线程和多线程运行时之间进行选择时，建议测量应用程序的性能。
 
-任务可以在创建任务的线程上运行，也可以在单独的线程上运行。 异步运行时通常提供将任务生成到单独线程上的功能。 即使任务在单独的线程上执行，它们也应该是非阻塞的。 为了在多线程执行器上安排任务，它们也必须是Send。 一些运行时提供了生成非发送任务的功能，以确保每个任务都在生成它的线程上执行。 它们还可以提供用于将阻塞任务生成到专用线程上的功能，这对于从其他库运行阻塞同步代码很有用。
+任务可以在创建任务的线程上运行，也可以在单独的线程上运行。
+异步运行时通常提供将任务生成到单独线程上的功能。 即使任务在单独的线程上执行，它们也应该是非阻塞的。 为了在多线程执行器上安排任务，它们也必须是Send。 一些运行时提供了 生成并发送任务 的功能，以确保每个任务都在生成它的线程上执行。 它们还可以提供用于将阻塞任务生成到专用线程上的功能，这对于从其他库运行阻塞同步代码很有用。
 
 * async Lifetimes， async move， 因为异步的存在， 导致 async { /../ } 可以 传递给变量 并进行 .await， 导致  block {} 中 的包含的变量，以及 引用 需要与 Future 存在的周期相同。 async move 允许 like normal block 一样， 允许将 block中变量 移入到 block中， 并跟随 Future 一样的生命周期
 * 当使用 多线程的 executor时， Future 可能在 threads 中进行移动，所以 在async block中的 any variables 必须同样能够在 threads中进行移动， 意味着  任何没有实现 [Send trait](https://doc.rust-lang.org/std/marker/trait.Send.html)、reference type 没有 实现 [Sync trait](https://doc.rust-lang.org/std/marker/trait.Sync.html) 的都不能够 在async block中使用。

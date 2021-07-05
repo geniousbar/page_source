@@ -898,7 +898,7 @@ impl<T: fmt::Display + ?Sized> ToString for T {
     }
 
     ```
-* 使用场景： 该Trait 显得简单，但是依然非常重要， 为 减少更具体类型 提供了帮助， 在 定义更具体的AsFoo trait之前，应该考虑是否可以 让现有类型实现 AsRef<Foo>
+* 使用场景： 该Trait 显得简单，但是依然非常重要， 为 减少更具体类型 提供了帮助， 在 定义更具体的AsFoo trait之前，应该考虑是否可以 让现有类型实现 AsRef\<Foo\>
 
 
 
