@@ -175,3 +175,135 @@ Mysql 性能优化
     2. limit: 分页： offset 非常大时，严重影响性能。可以使用 order 利用Index 来加快查询。优化方法：
        * 尽可能使用 覆盖索引 查询， 然后在做一次 对应列的 查询
        * 使用ID记录 上次数据的查询位置，通过 where id > ID limit 避免offset
+### Mvcc & Lock:
+*  情况测试： repeatable read level: 
+id, b
+2	6
+4	6
+1	7
+6	7
+3	8
+
+TA: start  transaction;
+select * from t2 WHERE b in (6, 7) for update;
+
+4 lock struct(s), heap size 1248, 10 row lock(s)
+MySQL thread id 263, OS thread handle 0x7fecb0b48700, query id 40915 localhost 127.0.0.1 root
+
+TB: start transaction;
+insert into t2 (id, b) values (8, 3); //block
+
+
+LOCK WAIT 2 lock struct(s), heap size 376, 1 row lock(s), undo log entries 1
+MySQL thread id 270, OS thread handle 0x7fecc953d700, query id 40917 localhost 127.0.0.1 root update
+insert into t2 (id, b) values (8, 3)
+------- TRX HAS BEEN WAITING 33 SEC FOR THIS LOCK TO BE GRANTED:
+RECORD LOCKS space id 0 page no 18123 n bits 72 index `b_index` of table `test`.`t2` trx id E5C6 lock_mode X locks gap before rec insert intention waiting
+Record lock, heap no 3 PHYSICAL RECORD: n_fields 2; compact format; info bits 0
+ 0: len 4; hex 80000006; asc     ;;
+ 1: len 4; hex 80000002; asc     ;;
+ 
+ 
+ 
+第二次： 
+
+TA: start transaction
+
+select * from t2 WHERE b in (6, 7) for update;
+
+
+TB: start transaction;
+insert into t2 (id, b) values (10, 10);
+insert into t2 (id, b) values (11, 20);
+insert into t2 (id, b) values (12, 3); // block
+
+
+
+TA: start  transaction;
+ update t2 set b = 9 WHERE b in (6, 7);
+ 
+ ---TRANSACTION E5CD, ACTIVE 12 sec
+2 lock struct(s), heap size 376, 6 row lock(s), undo log entries 4
+MySQL thread id 263, OS thread handle 0x7fecb0b48700, query id 40961 localhost 127.0.0.1 root
+ 
+TB: start transaction;
+insert into t2 (id, b) values (10, 10); // block
+
+
+mysql tables in use 1, locked 1
+LOCK WAIT 2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 270, OS thread handle 0x7fecc953d700, query id 40963 localhost 127.0.0.1 root update
+insert into t2 (id, b) values (10, 10)
+------- TRX HAS BEEN WAITING 4 SEC FOR THIS LOCK TO BE GRANTED:
+RECORD LOCKS space id 0 page no 18122 n bits 80 index `PRIMARY` of table `test`.`t2` trx id E5CE lock_mode X insert intention waiting
+Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
+ 0: len 8; hex 73757072656d756d; asc supremum;;
+
+
+
+TA:  start  transaction;
+update t2 set b = 9 WHERE b in (6, 7);
+
+---TRANSACTION E5D0, ACTIVE 104 sec
+2 lock struct(s), heap size 376, 6 row lock(s), undo log entries 4
+MySQL thread id 263, OS thread handle 0x7fecb0b48700, query id 40970 localhost 127.0.0.1 root
+
+TB: start transaction;
+insert into t2 (id, b) values (20, 0); // block
+
+LOCK WAIT 2 lock struct(s), heap size 376, 1 row lock(s)
+MySQL thread id 270, OS thread handle 0x7fecc953d700, query id 40985 localhost 127.0.0.1 root update
+insert into t2 (id, b) values (20, 0)
+------- TRX HAS BEEN WAITING 3 SEC FOR THIS LOCK TO BE GRANTED:
+RECORD LOCKS space id 0 page no 18122 n bits 80 index `PRIMARY` of table `test`.`t2` trx id E5D3 lock_mode X insert intention waiting
+Record lock, heap no 1 PHYSICAL RECORD: n_fields 1; compact format; info bits 0
+ 0: len 8; hex 73757072656d756d; asc supremum;;
+ 
+ 
+ 
+ 
+ TA: start  transaction;
+ update t2 set b = 9 WHERE b = 6;
+  TB: start transaction;
+ insert into t2 (id, b) values (20, 4); // block
+ 
+ 
+TA: start  transaction;
+update t2 set b = 9 WHERE b = 6;
+TB: start transaction;
+insert into t2 (id, b) values (20, 20); 
+insert into t2 (id, b) values (20, 4); // block
+
+
+
+TA: start  transaction;
+select * from t2 WHERE b = 6 for update;
+TB: start transaction;
+insert into t2 (id, b) values (20, 4); //block
+
+
+TA: start  transaction;
+select * from t2 WHERE b = 6 for update;
+TB: start transaction;
+insert into t2 (id, b) values (21, 9);
+insert into t2 (id, b) values (20, 4); // block
+
+
+
+lock 实验 总结的大概结论为：
+explain type 为ref 时候， 可以导致 gap外 可以insert， 如果gap上 为S锁， 则 可以被其他的 Transaction 获取S锁， 
+非ref/ const， 时， 加 record lock asc - supernum, 导致 前后都无法insert， update/share
+
+
+以表为例： 表结构为： id, b (这里select for update 与 update delete 的lock 策略应该相同)
+sql1: update set b = 3 where b = x, 则在 < x 的第一个row (x - 2) --- x 设定 gap lock（X锁）， x 设定 record lock。 所以不能在 (x-2)..x 上insert数据， 可以在 0...(x-2)  (x..supernum) 上 insert new row 。 所以任何 试图在 (x-2)..x 范围内进行 update, insert 都会被阻塞。(这里面存在一个问题即 b = 3 上是如何处理的？ 这里面可能涉及到 聚簇索引 与 二级索引 的关系问题， ？ 在insert b = 3 同样回阻塞， update where b = 3 同样)
+sql: update set b = 3 where b in (x, y) type 为 index 导致 在 asc - supernum 范围内，全部上锁，即 类似锁表效果， 在范围内的insert， update 都会被 阻塞。
+sql: update set b = 10 where id = x 与 sql1 相同，但是 需要综合 考虑 二级索引 与 聚簇索引。
+sql: 任何其他的sql 都会锁住全部的 rows，导致 insert update 无法有效并发进行
+
+参考资料为： http://mysql.taobao.org/monthly/2016/01/01/
+
+这里面提到了， 聚簇索引 + 二级索引，也就是说 不同的sql 使用索引不同 将导致加锁 顺序不同， 即： 存在两种情况， 1）先lock 聚簇（Record lock） 然后 更新 二级索引， 2) 先lock 二级索引， 再获取 聚簇上的lock 。也就是说存在 两种加锁路径： 1） 使用lock 进行搜索，然后 修改二级索引 树， 2） 使用二级索引搜索，然后 修改 聚簇数据，二级索引树。 
+
+
+
