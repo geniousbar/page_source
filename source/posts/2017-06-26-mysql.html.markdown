@@ -175,6 +175,25 @@ Mysql 性能优化
     2. limit: 分页： offset 非常大时，严重影响性能。可以使用 order 利用Index 来加快查询。优化方法：
        * 尽可能使用 覆盖索引 查询， 然后在做一次 对应列的 查询
        * 使用ID记录 上次数据的查询位置，通过 where id > ID limit 避免offset
+### Explain 中的字段解读：
+1. type 字段： 从 坏到好 排序
+  * all： 全表扫描， 
+  * index： 索引扫描，同样是 耗时操作（在Extra column中 出现Using Index 则为 使用 覆盖索引， 要明显好于 二次回表操作）
+  * range： 在索引内部范围查找， 好于Index（全部的索引扫描）
+  * ref： 使用索引 返回 单个row， ref_or_null 是同样的ref 类型，
+  * eq_ref： 使用素音 返回最多一个row， 使用  unique index 或者 primary key 时，经常出现该种情况
+  * const: 使用 primary key 时 经常出现。
+  * NULL: mysql 不需要使用 索引或表 就能够解决的问题， 比如 select index 上min value
+2. Extra
+   * Using index: 使用 覆盖索引，避免回表操作
+   * Using where: 在 store  engine 返回之后 mysql server 回再次 filter
+   * Using temporary： 使用临时表 对 返回结果进行 排序操作
+   * Using filesort: 需要在 disk 或者 ram上对结果进行排序
+   * Range checked for each record (index map:N). This value means there’s no good index, and the indexes will be reevaluated for each row in a join. N is a bitmap of the indexes shown in possible_keys and is redundant.
+   * Using index condition: Tables are read by accessing index tuples and testing them first to determine whether to read full table rows.
+3. possible_keys： 该查询中 可能 使用的 index 名称
+3. key: 优化器决定使用的 索引名称（可能基于其他原因导致与 possible_keys不同
+2. ref: 该字段显示： 使用该字段数值 在 key 字段中（优化器决定使用的） 进行查找 或者 constant
 ### Mvcc & Lock:
 *  情况测试： repeatable read level: 
 id, b
