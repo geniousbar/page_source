@@ -1014,7 +1014,7 @@ xargs 中存在一些 问题，主要是 关于 filename 中的空格，等分�
 
   mv "$filename" "${filename}1" # 使用 {} 来解决歧义
   ```
-###  function define:
+### function define:
   ```shell
   function name {
       commands
@@ -1029,6 +1029,8 @@ xargs 中存在一些 问题，主要是 关于 filename 中的空格，等分�
   ```
 
 * local var: 局部变量， local foo=
+* function 之间的数据传递： 有三种 答案在这里： https://stackoverflow.com/questions/8742783/returning-value-from-called-function-in-a-shell-script
+* 其中使用echo 方式传递 返回值 的方式 类似于 local name=$(cat xxx | grep) 等， 即： 使用 Process Substitution 来分离出一个process 执行 shell 代码， 通过 stdin stdout stderr 等来实现 process的处理结果
 
 ### Flow Control:
 * if
