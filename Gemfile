@@ -23,7 +23,7 @@ gem 'kramdown'
 
 gem 'kramdown-parser-gfm'
 # Web server
-gem 'puma',  '3.12.1'
+gem 'puma',  '4.3.11'
 
 # to serve static files
 gem 'rack-contrib'
