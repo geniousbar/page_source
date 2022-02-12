@@ -1,0 +1,1213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-01-17 Mon 10:29 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="lishaohua" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:e95b018ef3580986a04669f1b5879592219e2a7a&dn=public-domain.txt Public Domain
+<!--/*--><![CDATA[/*><!--*/
+     function CodeHighlightOn(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.add("code-highlighted");
+         target.classList.add("code-highlighted");
+       }
+     }
+     function CodeHighlightOff(elem, id)
+     {
+       var target = document.getElementById(id);
+       if(null != target) {
+         elem.classList.remove("code-highlighted");
+         target.classList.remove("code-highlighted");
+       }
+     }
+    /*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org992c9f3">1. Rails 调用栈 整理:</a></li>
+<li><a href="#orgf5cf3db">2. Rails application  request  Rack 调用栈</a>
+<ul>
+<li><a href="#orgd2379f4">2.1. ActionDispatch::Static</a></li>
+<li><a href="#orge883ada">2.2. Rack::Lock 为啥需要 mutex。lock 呢？</a></li>
+<li><a href="#org02a1692">2.3. Rack::MethodOverride  重写 ENV 中的 REQUEST_METHOD POST 方法</a></li>
+<li><a href="#org4a7e6af">2.4. Rails::Rack::Logger 依然是 @app.call(env) 但是创建了 ActionDispatch::Request</a></li>
+<li><a href="#orgac0a12b">2.5. ActionDispatch::ShowExceptions 将 @app.call(env) 包含在 begin rescue 中， 并 进行 render_exception(env, exception) 在render_exceptions 中 将 exception 交给 ActionDispatch::PublicExceptions 的instance 进行处理。</a></li>
+</ul>
+</li>
+<li><a href="#org773e061">3. ? 几个问题：</a>
+<ul>
+<li><a href="#org0ce16d9">3.1. 1. 为什么将  ActiveRecord::ConnectionAdapters::ConnectionManagement 添加到  作为middleware来使用？</a></li>
+<li><a href="#org6092ffd">3.2. 2. response 中 的body 嵌套了2层次， 为： Rack::BodyProxy， ActionDispatch::BodyProxy， ActiveRecord::ConnectionAdapters::ConnectionManagement::Proxy, Actiondispatch::Request</a></li>
+<li><a href="#orgc9cffb8">3.3. 3. response 中的interface 为 close, each</a></li>
+<li><a href="#orgcab04c3">3.4. 4. response 中 body 为 Object 最终 在  rack/content_length.rb 中， 使用如下代码 （调用each  返回body 数组 进行解析）</a></li>
+<li><a href="#org1cac950">3.5. 5. render 接口</a></li>
+<li><a href="#orgc1d9616">3.6. 6. rescue_from</a></li>
+<li><a href="#org51e0866">3.7. 7. flash 实现原理</a></li>
+<li><a href="#org815522b">3.8. 8. request_id  使用方法</a></li>
+<li><a href="#orged961cf">3.9. obody.close if obody.respond_to?(:close), body 调用 close是为什么？</a></li>
+<li><a href="#org18d88da">3.10. Rack::ETag 中 可能 调用 digest_body 计算etag 数值时， 调用了  ActionDispatch::Response.each 方法，破坏了 ActionDispatch::Response 的结构。不过在所有的 handle body 过程中，都是使用  .each 调用，所以无论是否破坏都无所谓了</a></li>
+<li><a href="#org3c89028">3.11. controller 中的action  的调用栈 backstrace</a></li>
+</ul>
+</li>
+<li><a href="#org49513d5">4. 完善的 Rails 请求处理调用栈</a>
+<ul>
+<li><a href="#org21dbe34">4.1. reuqest &#x2013;&gt; Controller，  Request, Response, Header, Cookies, Session 等环境的设定. rack中的 env hash -&gt; ActionDispatch::Request ActionDispatch::Response</a>
+<ul>
+<li><a href="#org2eee967">4.1.1. rack::middleware 中的call 一直都是 env， 即 hash，那么 ActionDispatch::Request 是哪里建立的？ 在代码 route_set  其中的 controller.action  在 new ProductController instance 之后， 调用 dispatch, 同时构建 ActionDispatch::Request.new(env)</a></li>
+<li><a href="#org5dfed59">4.1.2. 之后 rackdelegation 中 构建了 ActionDispatch::Response.new 设定了 response.request = request 的ref 关系, 之后metal中的 dispatch  设定request 设定 env 等 instance 变量</a></li>
+<li><a href="#org37104d9">4.1.3. *(重点 区分于 其他的 super， 以及 dispatch， 这里转换为 调用  process(action_name)  然后to_a 返回 RackMiddleware 的结构） 在 metal 在 ProductController instance 设定完 response, request 之后， 则开始了真正的处理，</a></li>
+<li><a href="#org8151446">4.1.4. 在经历了 Rendering &amp; AbstractController::Base 中的process 的调用之后 转为对 process_action 的调用。</a></li>
+<li><a href="#org10c74ed">4.1.5. process_action 的调用栈为 ：</a></li>
+<li><a href="#orga9efb91">4.1.6. Productcontroler#index 调用达成, 因为 ancestors为， 所以 在 ProductControler 中使用的 cookies request， response render header etc&#x2026; 都为 祖先连 中的提供的方法。</a></li>
+<li><a href="#org8be7734">4.1.7. 其基本的继承关系为： ProductsController &lt; ApplicationController &lt; ActionController::Base 在 Base 则进行了 不少的相关的module include, 代码 ActiveSupport.run_load_hooks(:action_controller, self)  则导致了 ActiveRecord::Railties::ControllerRuntime 的include， 相关代码在 1, 2</a></li>
+<li><a href="#orgf217cd2">4.1.8. class_attribute</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgac7b80e">5. ruby 确定方法在那些祖先链中的 帮助方法, 可以 eval在module中 ooooo self.class.ancestors.select {|item| item.instance_methods(false).include?(:_render_template)}</a></li>
+<li><a href="#org72e6cab">6. render 的方法：</a>
+<ul>
+<li><a href="#org861c83d">6.1. ProductController#render 调用开始</a></li>
+<li><a href="#orga1d69cf">6.2. 整体调用栈:</a></li>
+<li><a href="#orgb856097">6.3. 在 _normalized_render 挖成之后 开始真正的渲染 body self.response_body = render_to_body(options),   _render_template 调用开始</a></li>
+<li><a href="#orgd581b98">6.4. 在 _render_template  开始之前，首先调用了 _process_options(options) 来进行 options的一些，处理，比如 在ActionControllere::Rendering 中， 设定了 header，status  etc.</a></li>
+<li><a href="#orgce38c00">6.5. _render_template  开始：</a>
+<ul>
+<li><a href="#org28c1ce1">6.5.1. _render_template 为最终的渲染 html的入口， 参数相关：</a></li>
+<li><a href="#orga1648d5">6.5.2. _render_template 几个关键变量， lookup_context  view_renderer  view_context</a></li>
+<li><a href="#org71096dd">6.5.3. view_context_class: view_context_class 在 here  ActionView::Base.prepare</a></li>
+<li><a href="#org8519beb">6.5.4. _render_template  对  view_renderer.render  的调用：</a></li>
+</ul>
+</li>
+<li><a href="#orgd7d0854">6.6. render总结： 忽略细节 仅仅从 类名字 以及 变量名 来看， render的过程  就是 find template &#x2013; compile template  &#x2014; define_compiled code as a method in module  -&#x2014; viewcontext call method_name 即完成了 整个render的过程。 其关键细节有：</a>
+<ul>
+<li><a href="#org8a4b572">6.6.1. 1. lookup_context:   ActionView::LookupContext.new 定义了 整个 find_template 的过程, 其主要参数为 i18n local 以及 format 即寻找 json, 还是html 对应的模版方法。 其内部包含 view_paths: ActionView::PathSet（Path 的结合， 其主要提供 find 方法，找到对应的文件，binread 出来， 并创建 Template.new ）</a></li>
+<li><a href="#orgcab8fea">6.6.2. 2. view_renderer: ActionView::Renderer.new(lookup_context) 主要提供render方法， 包装 对于 lookup_context find 的 template  的render 方法调用。 比如 提供对于 render partial: xxx, local: , template 等 的处理。</a></li>
+<li><a href="#orgd8f3b1a">6.6.3. 3. view_context: 是整个view 的渲染环境。 其生成 一个匿名类的实例变量：  view_context_class.new(view_renderer, view_assigns, self)， view_renderer:  , view_assigns:  携带了 Controller 中的实例变量 ， self: Controller</a></li>
+<li><a href="#org1c639a4">6.6.4. 代码 最终通过 调用 view_renderer.render 调用，通过lookup_context 找到 Template, Template.render(view), Template 将 进行 compile！ 该过程将 读取 xxx.html.erb 的文件内容，转为 ruby代码， eval 到 view_context 祖先链 中. view_context.send(method_name) 来进行调用，即 method_name 输出为 一个 html 内容。</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org992c9f3" class="outline-2">
+<h2 id="org992c9f3"><span class="section-number-2">1</span> Rails 调用栈 整理:</h2>
+</div>
+<div id="outline-container-orgf5cf3db" class="outline-2">
+<h2 id="orgf5cf3db"><span class="section-number-2">2</span> Rails application  request  Rack 调用栈</h2>
+<div class="outline-text-2" id="text-2">
+<div class="org-src-container">
+<pre class="src src-text">#&lt;ActionDispatch::Static:0x00000003b68ea8
+ @app=
+  #&lt;Rack::Lock:0x00000003b68f20
+   @app=
+    #&lt;ActiveSupport::Cache::Strategy::LocalCache::Middleware:0x000000038a1d00
+     @app=
+      #&lt;Rack::Runtime:0x00000003b68f70
+       @app=
+        #&lt;Rack::MethodOverride:0x00000003b68f98
+         @app=
+          #&lt;ActionDispatch::RequestId:0x00000003b68fc0
+           @app=
+            #&lt;Rails::Rack::Logger:0x00000003b69038
+             @app=
+              #&lt;ActionDispatch::ShowExceptions:0x00000003b69088
+               @app=
+                #&lt;ActionDispatch::DebugExceptions:0x00000003b690b0
+                 @app=
+                  #&lt;ActionDispatch::RemoteIp:0x00000003b690d8
+                   @app=
+                    #&lt;ActionDispatch::Reloader:0x00000003b69100
+                     @app=
+                      #&lt;ActionDispatch::Callbacks:0x00000003b69128
+                       @app=
+                        #&lt;ActiveRecord::ConnectionAdapters::ConnectionManagement:0x00000003b69150
+                         @app=
+                          #&lt;ActiveRecord::QueryCache:0x00000003bdd0f0
+                           @app=
+                            #&lt;ActionDispatch::Cookies:0x00000003be61a0
+                             @app=
+                              #&lt;ActionDispatch::Session::CookieStore:0x00000003be64c0
+                               @app=
+                                #&lt;ActionDispatch::Flash:0x00000003be64e8
+                                 @app=
+                                  #&lt;ActionDispatch::ParamsParser:0x00000003be6600
+                                   @app=
+                                    #&lt;ActionDispatch::Head:0x00000003be6628
+                                     @app=
+                                      #&lt;Rack::ConditionalGet:0x00000003be6650
+                                       @app=
+                                        #&lt;Rack::ETag:0x00000003be6678
+                                         @app=
+                                          #&lt;ActionDispatch::BestStandardsSupport:0x00000003be6718
+                                           @app=#&lt;ActionDispatch::Routing::RouteSet:0x000000028c1840&gt;,
+                                           @header="IE=Edge"&gt;,
+                                         @cache_control="max-age=0, private, must-revalidate",
+                                         @no_cache_control="no-cache"&gt;&gt;&gt;,
+                                   @parsers=
+                                    {#&lt;Mime::Type:0x00000003c26c78
+                                      @string="application/xml",
+                                      @symbol=:xml,
+                                      @synonyms=["text/xml", "application/x-xml"]&gt;=&gt;:xml_simple,
+                                     #&lt;Mime::Type:0x00000003c25aa8
+                                      @string="application/json",
+                                      @symbol=:json,
+                                      @synonyms=["text/x-json", "application/jsonrequest"]&gt;=&gt;:json}&gt;&gt;,
+                               @coder=#&lt;Rack::Session::Cookie::Base64::Marshal:0x00000003be6240&gt;,
+                               @cookie_only=true,
+                               @default_options=
+                                {:path=&gt;"/",
+                                 :domain=&gt;nil,
+                                 :expire_after=&gt;nil,
+                                 :secure=&gt;false,
+                                 :httponly=&gt;true,
+                                 :defer=&gt;false,
+                                 :renew=&gt;false,
+                                 :secret=&gt;"3aa1de448a8a5c46d7060bf037452de196eb0afa213a516b6ba14be7f501",
+                                 :coder=&gt;#&lt;Rack::Session::Cookie::Base64::Marshal:0x00000003be6240&gt;},
+                               @key="_hello_world_session",
+                               @secrets=["3aa1de448a8a5c46d7060bf037452de196eb0afa213a516b6ba14be7f501"]&gt;&gt;&gt;&gt;&gt;,
+                     @condition=
+                      #&lt;Proc:0x00000003d205c0@/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/application.rb:275 (lambda)&gt;,
+                     @validated=true&gt;,
+                   @check_ip=true,
+                   @proxies=
+                    /
+      ^127\.0\.0\.1$                | # localhost
+
+&lt;page break&gt; --- Press enter to continue ( q&lt;enter&gt; to break ) --- &lt;page break&gt;
+
+      ^(10                          | # private IP 10.x.x.x
+        172\.(1[6-9]|2[0-9]|3[0-1]) | # private IP in the range 172.16.0.0 .. 172.31.255.255
+        192\.168                      # private IP 192.168.x.x
+       )\.
+    /x&gt;&gt;,
+               @exceptions_app=
+                #&lt;ActionDispatch::PublicExceptions:0x00000003d41a68 @public_path="/var/www/hello_world/public"&gt;&gt;,
+             @taggers=[]&gt;&gt;&gt;,
+       @header_name="X-Runtime"&gt;,
+     @name="ActiveSupport::Cache::Strategy::LocalCache",
+     @thread_local_key=:active_support_cache_file_store_local_cache_29640140&gt;,
+   @mutex=#&lt;Mutex:0x00000003b68ef8&gt;&gt;,
+ @file_handler=
+  #&lt;ActionDispatch::FileHandler:0x00000003b68e80
+   @compiled_root=/^\/var\/www\/hello_world\/public/,
+   @file_server=#&lt;Rack::File:0x00000003b3f080 @headers=nil, @root="/var/www/hello_world/public"&gt;,
+   @root="/var/www/hello_world/public"&gt;&gt;
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgd2379f4" class="outline-3">
+<h3 id="orgd2379f4"><span class="section-number-3">2.1</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/static.rb:73">ActionDispatch::Static</a></h3>
+</div>
+<div id="outline-container-orge883ada" class="outline-3">
+<h3 id="orge883ada"><span class="section-number-3">2.2</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/lock.rb:12">Rack::Lock</a> 为啥需要 mutex。lock 呢？</h3>
+</div>
+<div id="outline-container-org02a1692" class="outline-3">
+<h3 id="org02a1692"><span class="section-number-3">2.3</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/methodoverride.rb:12">Rack::MethodOverride</a>  重写 ENV 中的 REQUEST_METHOD POST 方法</h3>
+</div>
+<div id="outline-container-org4a7e6af" class="outline-3">
+<h3 id="org4a7e6af"><span class="section-number-3">2.4</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:12">Rails::Rack::Logger</a> 依然是 @app.call(env) 但是创建了 ActionDispatch::Request</h3>
+</div>
+<div id="outline-container-orgac0a12b" class="outline-3">
+<h3 id="orgac0a12b"><span class="section-number-3">2.5</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/show_exceptions.rb:54">ActionDispatch::ShowExceptions</a> 将 @app.call(env) 包含在 begin rescue 中， 并 进行 render_exception(env, exception) 在render_exceptions 中 将 exception 交给 ActionDispatch::PublicExceptions 的instance 进行处理。</h3>
+</div>
+</div>
+<div id="outline-container-org773e061" class="outline-2">
+<h2 id="org773e061"><span class="section-number-2">3</span> ? 几个问题：</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org0ce16d9" class="outline-3">
+<h3 id="org0ce16d9"><span class="section-number-3">3.1</span> 1. 为什么将  ActiveRecord::ConnectionAdapters::ConnectionManagement 添加到  作为middleware来使用？</h3>
+</div>
+<div id="outline-container-org6092ffd" class="outline-3">
+<h3 id="org6092ffd"><span class="section-number-3">3.2</span> 2. response 中 的body 嵌套了2层次， 为： Rack::BodyProxy， ActionDispatch::BodyProxy， ActiveRecord::ConnectionAdapters::ConnectionManagement::Proxy, Actiondispatch::Request</h3>
+</div>
+<div id="outline-container-orgc9cffb8" class="outline-3">
+<h3 id="orgc9cffb8"><span class="section-number-3">3.3</span> 3. response 中的interface 为 close, each</h3>
+</div>
+<div id="outline-container-orgcab04c3" class="outline-3">
+<h3 id="orgcab04c3"><span class="section-number-3">3.4</span> 4. response 中 body 为 Object 最终 在  rack/content_length.rb 中， 使用如下代码 （调用each  返回body 数组 进行解析）</h3>
+</div>
+<div id="outline-container-org1cac950" class="outline-3">
+<h3 id="org1cac950"><span class="section-number-3">3.5</span> 5. render 接口</h3>
+</div>
+<div id="outline-container-orgc1d9616" class="outline-3">
+<h3 id="orgc1d9616"><span class="section-number-3">3.6</span> 6. rescue_from</h3>
+</div>
+<div id="outline-container-org51e0866" class="outline-3">
+<h3 id="org51e0866"><span class="section-number-3">3.7</span> 7. flash 实现原理</h3>
+</div>
+<div id="outline-container-org815522b" class="outline-3">
+<h3 id="org815522b"><span class="section-number-3">3.8</span> 8. request_id  使用方法</h3>
+</div>
+
+<div id="outline-container-orged961cf" class="outline-3">
+<h3 id="orged961cf"><span class="section-number-3">3.9</span> obody.close if obody.respond_to?(:close), body 调用 close是为什么？</h3>
+<div class="outline-text-3" id="text-3-9">
+<div class="org-center">
+<p>
+if !STATUS_WITH_NO_ENTITY_BODY.include?(status.to_i) &amp;&amp;
+  !headers['Content-Length'] &amp;&amp;
+  !headers['Transfer-Encoding'] &amp;&amp;
+  body.respond_to?(:to_ary)
+</p>
+
+<p>
+obody = body
+body, length = [], 0
+obody.each { |part| body &lt;&lt; part; length += bytesize(part) }
+obody.close if obody.respond_to?(:close)
+</p>
+
+<p>
+  headers['Content-Length'] = length.to_s
+end
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org18d88da" class="outline-3">
+<h3 id="org18d88da"><span class="section-number-3">3.10</span> Rack::ETag 中 可能 调用 digest_body 计算etag 数值时， 调用了  ActionDispatch::Response.each 方法，破坏了 ActionDispatch::Response 的结构。不过在所有的 handle body 过程中，都是使用  .each 调用，所以无论是否破坏都无所谓了</h3>
+</div>
+<div id="outline-container-org3c89028" class="outline-3">
+<h3 id="org3c89028"><span class="section-number-3">3.11</span> controller 中的action  的调用栈 backstrace</h3>
+<div class="outline-text-3" id="text-3-11">
+<div class="org-src-container">
+<pre class="src src-file">app/controllers/products_controller.rb:7:in `index'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/implicit_render.rb:4:in `send_action'
+vendor/bundle/ruby/2.2.0/gems/actionpa ck-3.2.22/lib/abstract_controller/base.rb:167:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:10:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:18:in `block in process_action'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:414:in `_run__2126880704958389253__process_action__557280389713684037__callbacks'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in `__run_callback'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385:in `_run_process_action_callbacks'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81:in `run_callbacks'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:17:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rescue.rb:29:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:30:in `block in process_action'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123:in `block in instrument'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications/instrumenter.rb:20:in `instrument'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123:in `instrument'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:29:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/params_wrapper.rb:207:in `process_action'
+vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:18:in `process_action' //
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:121:in `process'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:45:in `process'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:203:in `dispatch' // 1.  done Controller 中的 request &amp; response 的设定 （基本上所有的后续步骤都在 设定response， 以及从 request 中获取cookies session params 等） ， 2. call process 3. to_a 返回给 rack middleware 
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rack_delegation.rb:15:in `dispatch'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:247:in `block in action' // 这里 会new  Controller &amp; call dispatch
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:74:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:74:in `dispatch'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:37:in `call'
+vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:69:in `block in call'
+vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56:in `each'
+vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:610:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/etag.rb:23:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/conditionalget.rb:25:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/head.rb:14:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/flash.rb:243:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:210:in `context'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:205:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/cookies.rb:342:in `call'
+vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/query_cache.rb:64:in `call'
+vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/connection_adapters/abstract/connection_pool.rb:479:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:28:in `block in call'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in `_run__646590171442477071__call__4302349229053203558__callbacks'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in `__run_callback'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385:in `_run_call_callbacks'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81:in `run_callbacks'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:27:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/reloader.rb:65:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/remote_ip.rb:31:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/debug_exceptions.rb:16:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/show_exceptions.rb:56:in `call'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:32:in `call_app'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16:in `block in call'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/tagged_logging.rb:22:in `tagged'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/request_id.rb:22:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/methodoverride.rb:21:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/runtime.rb:17:in `call'
+vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/lock.rb:15:in `call'
+vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/static.rb:83:in `call'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/engine.rb:484:in `call'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/application.rb:231:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/content_length.rb:14:in `call'
+vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/log_tailer.rb:17:in `call'
+vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/handler/webrick.rb:59:in `service'
+/usr/local/lib/ruby/2.2.0/webrick/httpserver.rb:138:in `service'
+/usr/local/lib/ruby/2.2.0/webrick/httpserver.rb:94:in `run'
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-org49513d5" class="outline-2">
+<h2 id="org49513d5"><span class="section-number-2">4</span> 完善的 Rails 请求处理调用栈</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+<div id="outline-container-org21dbe34" class="outline-3">
+<h3 id="org21dbe34"><span class="section-number-3">4.1</span> reuqest &#x2013;&gt; Controller，  Request, Response, Header, Cookies, Session 等环境的设定. rack中的 env hash -&gt; ActionDispatch::Request ActionDispatch::Response</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-org2eee967" class="outline-4">
+<h4 id="org2eee967"><span class="section-number-4">4.1.1</span> rack::middleware 中的call 一直都是 env， 即 hash，那么 ActionDispatch::Request 是哪里建立的？ 在代码 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:73">route_set</a>  其中的 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:245">controller.action</a>  在 new ProductController instance 之后， 调用 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rack_delegation.rb:11">dispatch</a>, 同时构建 ActionDispatch::Request.new(env)</h4>
+<div class="outline-text-4" id="text-4-1-1">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Routing</span>::<span style="color: #6699cc;">RouteSet</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">dispatch</span><span style="color: #cccccc;">(</span>controller, action, env<span style="color: #cccccc;">)</span>
+  <span style="color: #66cccc;">//</span> controller &#20026; <span style="color: #6699cc;">ProductController</span>
+  res = controller.action<span style="color: #cccccc;">(</span>action<span style="color: #cccccc;">)</span>.call<span style="color: #cccccc;">(</span>env<span style="color: #cccccc;">)</span>
+  res
+<span style="color: #99cc99;">end</span>
+
+
+<span style="color: #99cc99;">def</span> <span style="color: #99cc99;">self</span>.<span style="color: #f99157;">action</span><span style="color: #cccccc;">(</span>name, klass = <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Request</span><span style="color: #cccccc;">)</span>
+  <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">binding.pry</span>
+  middleware_stack.build<span style="color: #cccccc;">(</span>name.to_s<span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span> |env|
+    new.dispatch<span style="color: #cccccc;">(</span>name, klass.new<span style="color: #66cccc;">(</span>env<span style="color: #66cccc;">)</span><span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org5dfed59" class="outline-4">
+<h4 id="org5dfed59"><span class="section-number-4">4.1.2</span> 之后 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rack_delegation.rb:11">rackdelegation</a> 中 构建了 ActionDispatch::Response.new 设定了 response.request = request 的ref 关系, 之后metal中的<a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:199"> dispatch</a>  设定request 设定 env 等 instance 变量</h4>
+<div class="outline-text-4" id="text-4-1-2">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #99cc99;">def</span> <span style="color: #f99157;">dispatch</span><span style="color: #cccccc;">(</span>action, request, response = <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Response</span>.new<span style="color: #cccccc;">)</span>
+  <span style="color: #ffcc66;">@_response</span> ||= response
+  <span style="color: #ffcc66;">@_response</span>.request ||= request
+  <span style="color: #99cc99;">super</span><span style="color: #cccccc;">(</span>action, request<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">dispatch</span><span style="color: #cccccc;">(</span>name, request<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  <span style="color: #ffcc66;">@_request</span> = request
+  <span style="color: #ffcc66;">@_env</span> = request.env
+  <span style="color: #ffcc66;">@_env</span><span style="color: #cccccc;">[</span><span style="color: #66cccc;">'action_controller.instance'</span><span style="color: #cccccc;">]</span> = <span style="color: #99cc99;">self</span>
+  process<span style="color: #cccccc;">(</span>name<span style="color: #cccccc;">)</span>
+  to_a
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org37104d9" class="outline-4">
+<h4 id="org37104d9"><span class="section-number-4">4.1.3</span> *(重点 区分于 其他的 super， 以及 dispatch， 这里转换为 调用  process(action_name)  然后to_a 返回 RackMiddleware 的结构） 在 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:199">metal</a> 在 ProductController instance 设定完 response, request 之后， 则开始了真正的处理，</h4>
+</div>
+<div id="outline-container-org8151446" class="outline-4">
+<h4 id="org8151446"><span class="section-number-4">4.1.4</span> 在经历了 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:43">Rendering</a> &amp; <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:112">AbstractController::Base</a> 中的process 的调用之后 转为对 process_action 的调用。</h4>
+<div class="outline-text-4" id="text-4-1-4">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">abstract_controller/rendering.rb</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">process</span><span style="color: #cccccc;">(</span>*<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  old_config, <span style="color: #6699cc;">I18n</span>.config = <span style="color: #6699cc;">I18n</span>.config, <span style="color: #6699cc;">I18nProxy</span>.new<span style="color: #cccccc;">(</span><span style="color: #6699cc;">I18n</span>.config, lookup_context<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">super</span>
+<span style="color: #99cc99;">ensure</span>
+  <span style="color: #6699cc;">I18n</span>.config = old_config
+<span style="color: #99cc99;">end</span>
+
+  <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">base.rb &#36825;&#37324;&#36827;&#34892;&#20102;&#31616;&#21333;&#30340; &#26597;&#25214; action &#26159;&#21542;&#23384;&#22312;&#30340;&#26816;&#26597;</span>
+  <span style="color: #99cc99;">def</span> <span style="color: #f99157;">process</span><span style="color: #cccccc;">(</span>action, *args<span style="color: #cccccc;">)</span>
+    <span style="color: #ffcc66;">@_action_name</span> = action_name = action.to_s
+
+    <span style="color: #99cc99;">unless</span> action_name = _find_action_name<span style="color: #cccccc;">(</span>action_name<span style="color: #cccccc;">)</span>
+      <span style="color: #cc99cc;">raise</span> <span style="color: #6699cc;">ActionNotFound</span>, <span style="color: #66cccc;">"The action '</span><span style="color: #ffcc66;">#{action}</span><span style="color: #66cccc;">' could not be found for </span><span style="color: #ffcc66;">#{self.class.name}</span><span style="color: #66cccc;">"</span>
+    <span style="color: #99cc99;">end</span>
+
+    <span style="color: #ffcc66;">@_response_body</span> = <span style="color: #6699cc;">nil</span>
+
+    process_action<span style="color: #cccccc;">(</span>action_name, *args<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org10c74ed" class="outline-4">
+<h4 id="org10c74ed"><span class="section-number-4">4.1.5</span> process_action 的调用栈为 ：</h4>
+<div class="outline-text-4" id="text-4-1-5">
+<div class="org-src-container">
+<pre class="src src-ruby">  controller_runtime.rb<span style="color: #6699cc;">:18</span>:in <span style="color: #66cccc;">`process_action' </span>
+<span style="color: #66cccc;">  params_wrapper.rb:207:in `</span>process_action<span style="color: #66cccc;">'</span>
+<span style="color: #66cccc;">  instrumentation.rb:29:in `process_action'</span>
+<span style="color: #66cccc;">//</span>  &#20854;&#20013; instrumentation.rb &#20013;&#30340;&#20195;&#30721;&#36923;&#36753;&#26368;&#20026; &#23500;&#26377;&#21547;&#20041;&#12290;&#20854; &#36827;&#34892;&#20102;&#28040;&#24687;&#30340; publish
+    <span style="color: #99cc99;">def</span> <span style="color: #f99157;">process_action</span><span style="color: #cccccc;">(</span>*args<span style="color: #cccccc;">)</span>
+      raw_payload = <span style="color: #cccccc;">{</span>
+        <span style="color: #6699cc;">:controller</span> =&gt; <span style="color: #99cc99;">self</span>.class.name,
+        <span style="color: #6699cc;">:action</span>     =&gt; <span style="color: #99cc99;">self</span>.action_name,
+        <span style="color: #6699cc;">:params</span>     =&gt; request.filtered_parameters,
+        <span style="color: #6699cc;">:format</span>     =&gt; request.format.try<span style="color: #66cccc;">(</span><span style="color: #6699cc;">:ref</span><span style="color: #66cccc;">)</span>,
+        <span style="color: #6699cc;">:method</span>     =&gt; request.method,
+        <span style="color: #6699cc;">:path</span>       =&gt; <span style="color: #66cccc;">(</span>request.fullpath <span style="color: #99cc99;">rescue</span> <span style="color: #66cccc;">"unknown"</span><span style="color: #66cccc;">)</span>
+      <span style="color: #cccccc;">}</span>
+
+      <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Notifications</span>.instrument<span style="color: #cccccc;">(</span><span style="color: #66cccc;">"start_processing.action_controller"</span>, raw_payload.dup<span style="color: #cccccc;">)</span>
+
+      <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Notifications</span>.instrument<span style="color: #cccccc;">(</span><span style="color: #66cccc;">"process_action.action_controller"</span>, raw_payload<span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span> |payload|
+        result = <span style="color: #99cc99;">super</span>
+        payload<span style="color: #cccccc;">[</span><span style="color: #6699cc;">:status</span><span style="color: #cccccc;">]</span> = response.status
+        append_info_to_payload<span style="color: #cccccc;">(</span>payload<span style="color: #cccccc;">)</span>
+        result
+      <span style="color: #99cc99;">end</span>
+    <span style="color: #99cc99;">end</span>
+
+<span style="color: #66cccc;">//</span> rendering.rb
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">process_action</span><span style="color: #cccccc;">(</span>*<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+ <span style="color: #99cc99;">self</span>.formats = request.formats.map <span style="color: #cccccc;">{</span> |x| x.ref <span style="color: #cccccc;">}</span>
+ <span style="color: #99cc99;">super</span>
+<span style="color: #99cc99;">end</span>
+
+</pre>
+</div>
+</div>
+<ol class="org-ol">
+<li><a id="org1a7b6e8"></a>之后来到了 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rescue.rb:28">metal/rescue.rb</a> 代码如下: rescue 主要负责 resuce action中发生的异常（在 controller中使用 rescue_from(Exception, function/block) 进行设定）<br /></li>
+<li><a id="org2b5a0f7"></a>如果  action 中 raise 了 exception 则 使用 rescue_with_handler 进行处理，<br />
+<div class="outline-text-5" id="text-4-1-5-2">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #99cc99;">def</span> <span style="color: #f99157;">process_action</span><span style="color: #cccccc;">(</span>*args<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">super</span>
+<span style="color: #99cc99;">rescue</span> <span style="color: #6699cc;">Exception</span> =&gt; exception
+  request.env<span style="color: #cccccc;">[</span><span style="color: #66cccc;">'action_dispatch.show_detailed_exceptions'</span><span style="color: #cccccc;">]</span> ||= show_detailed_exceptions?
+  rescue_with_handler<span style="color: #cccccc;">(</span>exception<span style="color: #cccccc;">)</span> || <span style="color: #cc99cc;">raise</span><span style="color: #cccccc;">(</span>exception<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org15e2365"></a><a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:16">abstract_controller/callbacks.rb</a>  代码如下： 运行 before_filter, implicit_rendering  进行 最终的 send 方法调用<br />
+<div class="outline-text-5" id="text-4-1-5-3">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #99cc99;">def</span> <span style="color: #f99157;">process_action</span><span style="color: #cccccc;">(</span>*args<span style="color: #cccccc;">)</span>
+  run_callbacks<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:process_action</span>, action_name<span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span>
+    <span style="color: #99cc99;">super</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orga9efb91" class="outline-4">
+<h4 id="orga9efb91"><span class="section-number-4">4.1.6</span> Productcontroler#index 调用达成, 因为 ancestors为， 所以 在 ProductControler 中使用的 cookies request， response render header etc&#x2026; 都为 祖先连 中的提供的方法。</h4>
+</div>
+<div id="outline-container-org8be7734" class="outline-4">
+<h4 id="org8be7734"><span class="section-number-4">4.1.7</span> 其基本的继承关系为： ProductsController &lt; ApplicationController &lt; ActionController::Base 在 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/base.rb:226">Base</a> 则进行了 不少的相关的module include, 代码 ActiveSupport.run_load_hooks(:action_controller, self)  则导致了 ActiveRecord::Railties::ControllerRuntime 的include， 相关代码在 <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railtie.rb:93">1</a>, <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/base.rb:233">2</a></h4>
+<div class="outline-text-4" id="text-4-1-7">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #cccccc;">[</span><span style="color: #6699cc;">ProductsController</span>,
+ <span style="color: #6699cc;">ApplicationController</span>,
+ <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">&lt;Module:0x000000038e06e0&gt;,</span>
+ <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Routing</span>::<span style="color: #6699cc;">Helpers</span>,
+ <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">&lt;Module:0x000000036adff8&gt;,</span>
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Base</span>,
+ <span style="color: #6699cc;">ActiveRecord</span>::<span style="color: #6699cc;">Railties</span>::<span style="color: #6699cc;">ControllerRuntime</span>,
+ <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Routing</span>::<span style="color: #6699cc;">RouteSet</span>::<span style="color: #6699cc;">MountedHelpers</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Compatibility</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">ParamsWrapper</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Instrumentation</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Rescue</span>,
+ <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Rescuable</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">HttpAuthentication</span>::<span style="color: #6699cc;">Token</span>::<span style="color: #6699cc;">ControllerMethods</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">HttpAuthentication</span>::<span style="color: #6699cc;">Digest</span>::<span style="color: #6699cc;">ControllerMethods</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">HttpAuthentication</span>::<span style="color: #6699cc;">Basic</span>::<span style="color: #6699cc;">ControllerMethods</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">RecordIdentifier</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">DataStreaming</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Streaming</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">ForceSSL</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">RequestForgeryProtection</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Flash</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Cookies</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">MimeResponds</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">ImplicitRender</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>::<span style="color: #6699cc;">Fragments</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>::<span style="color: #6699cc;">ConfigMethods</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>::<span style="color: #6699cc;">Sweeping</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>::<span style="color: #6699cc;">Pages</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Caching</span>::<span style="color: #6699cc;">Actions</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Callbacks</span>,
+ <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Callbacks</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">ConditionalGet</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Head</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Renderers</span>::<span style="color: #6699cc;">All</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Renderers</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Rendering</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Redirecting</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">RackDelegation</span>,
+ <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Benchmarkable</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Logger</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">UrlFor</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">UrlFor</span>,
+ <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Routing</span>::<span style="color: #6699cc;">UrlFor</span>,
+ <span style="color: #6699cc;">ActionDispatch</span>::<span style="color: #6699cc;">Routing</span>::<span style="color: #6699cc;">PolymorphicRoutes</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">HideActions</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Helpers</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Helpers</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">AssetPaths</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Translation</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Layouts</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Rendering</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">ViewPaths</span>,
+ <span style="color: #6699cc;">ActionController</span>::<span style="color: #6699cc;">Metal</span>,
+ <span style="color: #6699cc;">AbstractController</span>::<span style="color: #6699cc;">Base</span>,
+ <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Configurable</span>,
+ <span style="color: #6699cc;">Object</span>,
+ <span style="color: #6699cc;">JSON</span>::<span style="color: #6699cc;">Ext</span>::<span style="color: #6699cc;">Generator</span>::<span style="color: #6699cc;">GeneratorMethods</span>::<span style="color: #6699cc;">Object</span>,
+ <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Dependencies</span>::<span style="color: #6699cc;">Loadable</span>,
+ <span style="color: #6699cc;">PP</span>::<span style="color: #6699cc;">ObjectMixin</span>,
+ <span style="color: #6699cc;">Kernel</span>,
+ <span style="color: #6699cc;">BasicObject</span><span style="color: #cccccc;">]</span> 
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgf217cd2" class="outline-4">
+<h4 id="orgf217cd2"><span class="section-number-4">4.1.8</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/class/attribute.rb:7  ">class_attribute</a></h4>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgac7b80e" class="outline-2">
+<h2 id="orgac7b80e"><span class="section-number-2">5</span> ruby 确定方法在那些祖先链中的 帮助方法, 可以 eval在module中 ooooo self.class.ancestors.select {|item| item.instance_methods(false).include?(:_render_template)}</h2>
+</div>
+<div id="outline-container-org72e6cab" class="outline-2">
+<h2 id="org72e6cab"><span class="section-number-2">6</span> render 的方法：</h2>
+<div class="outline-text-2" id="text-6">
+</div>
+<div id="outline-container-org861c83d" class="outline-3">
+<h3 id="org861c83d"><span class="section-number-3">6.1</span> ProductController#render 调用开始</h3>
+<div class="outline-text-3" id="text-6-1">
+<div class="org-src-container">
+<pre class="src src-file">/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:89:in `render'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:17:in `render'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40:in `block (2 levels) in render'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/benchmark.rb:5:in `block in ms'
+/usr/local/lib/ruby/2.2.0/benchmark.rb:303:in `realtime'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/benchmark.rb:5:in `ms'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40:in `block in render'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:83:in `cleanup_view_runtime'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:24:in `cleanup_view_runtime'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:39:in `render'
+/var/www/hello_world/app/controllers/products_controller.rb:9:in `index'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/implicit_render.rb:4:in `send_action'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:167:in `process_action'
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:10:in `process_action'
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga1d69cf" class="outline-3">
+<h3 id="orga1d69cf"><span class="section-number-3">6.2</span> 整体调用栈:</h3>
+<div class="outline-text-3" id="text-6-2">
+<div class="org-src-container">
+<pre class="src src-org"><span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:164">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:164:in`_normalize_options',</a></span>  <span style="font-style: italic;">/ &#35774;&#23450;  prefixes = ["products", "application"], :template=&gt;"index"</span>
+<span style="color: #6699cc; font-style: italic; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/layouts.rb:346">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/layouts.rb:346:in`_normalize_options',</a></span><span style="font-style: italic;">  /</span> &#35774;&#23450; layout 
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:54">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:54:in`_normalize_options',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/compatibility.rb:45">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/compatibility.rb:45:in`_normalize_options',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:138">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:138:in`_normalize_render',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:87">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:87:in`render',</a></span> //_normalize_render &#24320;&#22987;&#35843;&#29992;&#30340;&#22320;&#26041;&#65292; &#20043;&#21518;&#24320;&#22987; render_to_body
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:17">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:17:in`render',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40:in`block(2levels)inrender',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/benchmark.rb:5">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/benchmark.rb:5:in`blockinms',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/usr/local/lib/ruby/2.2.0/benchmark.rb:303">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/core_ext/benchmark.rb:5:in`ms',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:40:in`blockinrender',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:83">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:83:in`cleanup_view_runtime',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:24">hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:24:in`cleanup_view_runtime',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:39">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:39:in`render',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/app/controllers/products_controller.rb:9">hello_world/app/controllers/products_controller.rb:9:in`index',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/implicit_render.rb:4">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/implicit_render.rb:4:in`send_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:167">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:167:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:10">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:10:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:18">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:18:in`blockinprocess_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:414">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:414:in`_run__424937401741049124__process_action__1059339388285677565__callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in`__run_callback',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385:in`_run_process_action_callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81:in`run_callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:17">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/callbacks.rb:17:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rescue.rb:29">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rescue.rb:29:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:30">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:30:in`blockinprocess_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123:in`blockininstrument',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications/instrumenter.rb:20">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications/instrumenter.rb:20:in`instrument',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/notifications.rb:123:in`instrument',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:29">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/instrumentation.rb:29:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/params_wrapper.rb:207">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/params_wrapper.rb:207:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:18">hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/railties/controller_runtime.rb:18:in`process_action',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:121">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/base.rb:121:in`process',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:45">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:45:in`process',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:203">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:203:in`dispatch',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rack_delegation.rb:15">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rack_delegation.rb:15:in`dispatch',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:247">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal.rb:247:in`blockinaction',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:75">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:75:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:75">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:75:in`dispatch',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:37">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:37:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:69">hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:69:in`blockincall',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56">hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56:in`each',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56">hello_world/vendor/bundle/ruby/2.2.0/gems/journey-1.0.4/lib/journey/router.rb:56:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:611">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/routing/route_set.rb:611:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/best_standards_support.rb:17">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/best_standards_support.rb:17:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/etag.rb:23">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/etag.rb:23:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/conditionalget.rb:25">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/conditionalget.rb:25:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/head.rb:14">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/head.rb:14:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/params_parser.rb:22">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/params_parser.rb:22:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/flash.rb:243">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/flash.rb:243:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:210">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:210:in`context',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:205">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/session/abstract/id.rb:205:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/cookies.rb:342">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/cookies.rb:342:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/query_cache.rb:64">hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/query_cache.rb:64:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/connection_adapters/abstract/connection_pool.rb:479">hello_world/vendor/bundle/ruby/2.2.0/gems/activerecord-3.2.22/lib/active_record/connection_adapters/abstract/connection_pool.rb:479:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:28">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:28:in`blockincall',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in`_run__3872105554719177894__call__1007754118550543098__callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:405:in`__run_callback',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:385:in`_run_call_callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/callbacks.rb:81:in`run_callbacks',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:27">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/callbacks.rb:27:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/reloader.rb:65">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/reloader.rb:65:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/remote_ip.rb:31">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/remote_ip.rb:31:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/debug_exceptions.rb:16">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/debug_exceptions.rb:16:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/show_exceptions.rb:56">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/show_exceptions.rb:56:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:32">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:32:in`call_app',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16:in`blockincall',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/tagged_logging.rb:22">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/tagged_logging.rb:22:in`tagged',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/logger.rb:16:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/request_id.rb:22">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/request_id.rb:22:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/methodoverride.rb:21">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/methodoverride.rb:21:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/runtime.rb:17">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/runtime.rb:17:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/cache/strategy/local_cache.rb:72">hello_world/vendor/bundle/ruby/2.2.0/gems/activesupport-3.2.22/lib/active_support/cache/strategy/local_cache.rb:72:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/lock.rb:15">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/lock.rb:15:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/static.rb:83">hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_dispatch/middleware/static.rb:83:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/engine.rb:484">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/engine.rb:484:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/application.rb:231">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/application.rb:231:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/content_length.rb:14">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/content_length.rb:14:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/log_tailer.rb:17">hello_world/vendor/bundle/ruby/2.2.0/gems/railties-3.2.22/lib/rails/rack/log_tailer.rb:17:in`call',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/handler/webrick.rb:59">hello_world/vendor/bundle/ruby/2.2.0/gems/rack-1.4.7/lib/rack/handler/webrick.rb:59:in`service',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/usr/local/lib/ruby/2.2.0/webrick/httpserver.rb:138">httpserver.rb:138:in`service',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/usr/local/lib/ruby/2.2.0/webrick/httpserver.rb:94">httpserver.rb:94:in`run',</a></span>
+<span style="color: #6699cc; text-decoration: underline;"><a href="file+emacs:/usr/local/lib/ruby/2.2.0/webrick/server.rb:294">/usr/local/lib/ruby/2.2.0/webrick/server.rb:294:in`blockinstart_thread'</a></span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgb856097" class="outline-3">
+<h3 id="orgb856097"><span class="section-number-3">6.3</span> 在 _normalized_render 挖成之后 开始真正的渲染 body self.response_body = render_to_body(options),   _render_template 调用开始</h3>
+<div class="outline-text-3" id="text-6-3">
+<p>
+<a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:87">/Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:87:in`render',</a> 之后  调用 render_to_body(options) 设定 self.response_body = render_to_body(options)
+</p>
+
+<p>
+<a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:105">3. /Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:105:in`render_to_body',</a> <i>//</i> 这里开始了 _render_template 的调用
+<a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/renderers.rb:28">2. /Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/renderers.rb:28:in`render_to_body',</a>
+<a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/compatibility.rb:50">1. /Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/compatibility.rb:50:in`render_to_body',</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd581b98" class="outline-3">
+<h3 id="orgd581b98"><span class="section-number-3">6.4</span> 在 _render_template  开始之前，首先调用了 _process_options(options) 来进行 options的一些，处理，比如 在ActionControllere::Rendering 中， 设定了 header，status  etc.</h3>
+<div class="outline-text-3" id="text-6-4">
+<div class="org-src-container">
+<pre class="src src-text">status, content_type, location = options.values_at(:status, :content_type, :location)
+/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/action_controller/metal/rendering.rb:59
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgce38c00" class="outline-3">
+<h3 id="orgce38c00"><span class="section-number-3">6.5</span> _render_template  开始：</h3>
+<div class="outline-text-3" id="text-6-5">
+</div>
+<div id="outline-container-org28c1ce1" class="outline-4">
+<h4 id="org28c1ce1"><span class="section-number-4">6.5.1</span> <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:105">_render_template</a> 为最终的渲染 html的入口， 参数相关：</h4>
+<div class="outline-text-4" id="text-6-5-1">
+<div class="org-src-container">
+<pre class="src src-ruby">options = <span style="color: #cccccc;">{</span><span style="color: #6699cc;">:action</span>=&gt;<span style="color: #66cccc;">"index"</span>,
+<span style="color: #6699cc;">:prefixes</span>=&gt;<span style="color: #66cccc;">[</span><span style="color: #66cccc;">"products"</span>, <span style="color: #66cccc;">"application"</span><span style="color: #66cccc;">]</span>,
+<span style="color: #6699cc;">:template</span>=&gt;<span style="color: #66cccc;">"index"</span>,
+<span style="color: #6699cc;">:layout</span>=&gt;<span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">&lt;Proc:0x000000019a5c08@/var/www/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/layouts.rb:383&gt;}</span>
+
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orga1648d5" class="outline-4">
+<h4 id="orga1648d5"><span class="section-number-4">6.5.2</span> _render_template 几个关键变量， lookup_context  view_renderer  view_context</h4>
+<div class="outline-text-4" id="text-6-5-2">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #99cc99;">def</span> <span style="color: #f99157;">_render_template</span><span style="color: #cccccc;">(</span>options<span style="color: #cccccc;">)</span>
+  lookup_context.rendered_format = <span style="color: #6699cc;">nil</span> <span style="color: #99cc99;">if</span> options<span style="color: #cccccc;">[</span><span style="color: #6699cc;">:formats</span><span style="color: #cccccc;">]</span>
+  view_renderer.render<span style="color: #cccccc;">(</span>view_context, options<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">view_renderer</span>
+  <span style="color: #ffcc66;">@_view_renderer</span> ||= <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">Renderer</span>.new<span style="color: #cccccc;">(</span>lookup_context<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">view_context</span>
+  view_context_class.new<span style="color: #cccccc;">(</span>view_renderer, view_assigns, <span style="color: #99cc99;">self</span><span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">view_context_class</span>
+  <span style="color: #ffcc66;">@view_context_class</span> ||= <span style="color: #99cc99;">begin</span>
+    routes  = _routes  <span style="color: #99cc99;">if</span> respond_to?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:_routes</span><span style="color: #cccccc;">)</span>
+    helpers = _helpers <span style="color: #99cc99;">if</span> respond_to?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:_helpers</span><span style="color: #cccccc;">)</span>
+    <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">Base</span>.prepare<span style="color: #cccccc;">(</span>routes, helpers<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">view_assigns</span>
+  hash = <span style="color: #cccccc;">{}</span>
+  variables  = instance_variable_names
+  variables -= protected_instance_variables
+  variables -= <span style="color: #6699cc;">DEFAULT_PROTECTED_INSTANCE_VARIABLES</span>
+  variables.each <span style="color: #cccccc;">{</span> |name| hash<span style="color: #66cccc;">[</span>name.to_s<span style="color: #ffcc66;">[</span>1, name.length<span style="color: #ffcc66;">]</span><span style="color: #66cccc;">]</span> = instance_variable_get<span style="color: #66cccc;">(</span>name<span style="color: #66cccc;">)</span> <span style="color: #cccccc;">}</span>
+  hash
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org71096dd" class="outline-4">
+<h4 id="org71096dd"><span class="section-number-4">6.5.3</span> view_context_class: <a href="file:///Users/lishaohua/Documents/self_test/ruby_test/unicorn_test/hello_world/vendor/bundle/ruby/2.2.0/gems/actionpack-3.2.22/lib/abstract_controller/rendering.rb:50">view_context_class 在 here</a>  ActionView::Base.prepare</h4>
+</div>
+<div id="outline-container-org8519beb" class="outline-4">
+<h4 id="org8519beb"><span class="section-number-4">6.5.4</span> _render_template  对  view_renderer.render  的调用：</h4>
+<div class="outline-text-4" id="text-6-5-4">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">Renderer</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">render</span><span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">if</span> options.key?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:partial</span><span style="color: #cccccc;">)</span>
+    render_partial<span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">else</span>
+    render_template<span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">render_template</span><span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  _template_renderer.render<span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">_template_renderer</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  <span style="color: #ffcc66;">@_template_renderer</span> ||= <span style="color: #6699cc;">TemplateRenderer</span>.new<span style="color: #cccccc;">(</span><span style="color: #ffcc66;">@lookup_context</span><span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">TemplateRenderer</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">render</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">render</span><span style="color: #cccccc;">(</span>context, options<span style="color: #cccccc;">)</span>
+  <span style="color: #ffcc66;">@view</span>    = context
+  <span style="color: #ffcc66;">@details</span> = extract_details<span style="color: #cccccc;">(</span>options<span style="color: #cccccc;">)</span>
+  extract_format<span style="color: #cccccc;">(</span>options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:file</span><span style="color: #66cccc;">]</span> || options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:template</span><span style="color: #66cccc;">]</span>, <span style="color: #ffcc66;">@details</span><span style="color: #cccccc;">)</span>
+  template = determine_template<span style="color: #cccccc;">(</span>options<span style="color: #cccccc;">)</span> // &#36825;&#37324;&#26368;&#20026;&#37325;&#35201;
+  context  = <span style="color: #ffcc66;">@lookup_context</span>
+
+  <span style="color: #99cc99;">unless</span> context.rendered_format
+    context.formats = template.formats <span style="color: #99cc99;">unless</span> template.formats.empty?
+    context.rendered_format = context.formats.first
+  <span style="color: #99cc99;">end</span>
+
+
+  render_template<span style="color: #cccccc;">(</span>template, options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:layout</span><span style="color: #66cccc;">]</span>, options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:locals</span><span style="color: #66cccc;">]</span><span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+</pre>
+</div>
+</div>
+<ol class="org-ol">
+<li><a id="org909a542"></a>这里面 存在两个分支：  determin_template 以及 render_template<br /></li>
+<li><a id="orgf84216f"></a>determin_template 的调用栈：<br />
+<div class="outline-text-5" id="text-6-5-4-2">
+<div class="org-src-container">
+<pre class="src src-ruby">  <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">TemplateRenderer</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">determin_template</span>
+  <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">&#36825;&#37324;&#20915;&#23450; template&#30340;&#30830;&#23450;&#65292; find_template &#26368;&#20026;&#37325;&#35201;&#65292; &#32780; &#22312;  find_template &#20013; &#36716;&#32780;&#35843;&#29992;&#20102; @lookup_context#find_template</span>
+  <span style="color: #99cc99;">def</span> <span style="color: #f99157;">determine_template</span><span style="color: #cccccc;">(</span>options<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+    keys = options<span style="color: #cccccc;">[</span><span style="color: #6699cc;">:locals</span><span style="color: #cccccc;">]</span>.try<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:keys</span><span style="color: #cccccc;">)</span> || <span style="color: #cccccc;">[]</span>
+
+    <span style="color: #99cc99;">if</span> options.key?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:text</span><span style="color: #cccccc;">)</span>
+      <span style="color: #6699cc;">Template</span>::<span style="color: #6699cc;">Text</span>.new<span style="color: #cccccc;">(</span>options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:text</span><span style="color: #66cccc;">]</span>, formats.try<span style="color: #66cccc;">(</span><span style="color: #6699cc;">:first</span><span style="color: #66cccc;">)</span><span style="color: #cccccc;">)</span>
+    <span style="color: #99cc99;">elsif</span> options.key?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:file</span><span style="color: #cccccc;">)</span>
+      with_fallbacks <span style="color: #cccccc;">{</span> find_template<span style="color: #66cccc;">(</span>options<span style="color: #ffcc66;">[</span><span style="color: #6699cc;">:file</span><span style="color: #ffcc66;">]</span>, <span style="color: #6699cc;">nil</span>, <span style="color: #6699cc;">false</span>, keys, <span style="color: #ffcc66;">@details</span><span style="color: #66cccc;">)</span> <span style="color: #cccccc;">}</span>
+    <span style="color: #99cc99;">elsif</span> options.key?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:inline</span><span style="color: #cccccc;">)</span>
+      handler = <span style="color: #6699cc;">Template</span>.handler_for_extension<span style="color: #cccccc;">(</span>options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:type</span><span style="color: #66cccc;">]</span> || <span style="color: #66cccc;">"erb"</span><span style="color: #cccccc;">)</span>
+      <span style="color: #6699cc;">Template</span>.new<span style="color: #cccccc;">(</span>options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:inline</span><span style="color: #66cccc;">]</span>, <span style="color: #66cccc;">"inline template"</span>, handler, <span style="color: #6699cc;">:locals</span> =&gt; keys<span style="color: #cccccc;">)</span>
+    <span style="color: #99cc99;">elsif</span> options.key?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:template</span><span style="color: #cccccc;">)</span>
+      options<span style="color: #cccccc;">[</span><span style="color: #6699cc;">:template</span><span style="color: #cccccc;">]</span>.respond_to?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:render</span><span style="color: #cccccc;">)</span> ?
+        options<span style="color: #cccccc;">[</span><span style="color: #6699cc;">:template</span><span style="color: #cccccc;">]</span> : find_template<span style="color: #cccccc;">(</span>options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:template</span><span style="color: #66cccc;">]</span>, options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:prefixes</span><span style="color: #66cccc;">]</span>, <span style="color: #6699cc;">false</span>, keys, <span style="color: #ffcc66;">@details</span><span style="color: #cccccc;">)</span>
+    <span style="color: #99cc99;">else</span>
+      <span style="color: #cc99cc;">raise</span> <span style="color: #6699cc;">ArgumentError</span>, <span style="color: #66cccc;">"You invoked render but did not give any of :partial, :template, :inline, :file or :text option."</span>
+    <span style="color: #99cc99;">end</span>
+  <span style="color: #99cc99;">end</span>
+
+  <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">LookupContext</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">find_template</span>
+  <span style="color: #99cc99;">def</span> <span style="color: #f99157;">find</span><span style="color: #cccccc;">(</span>name, prefixes = <span style="color: #66cccc;">[]</span>, partial = <span style="color: #6699cc;">false</span>, keys = <span style="color: #66cccc;">[]</span>, options = <span style="color: #66cccc;">{}</span><span style="color: #cccccc;">)</span>
+    <span style="color: #ffcc66;">@view_paths</span>.find<span style="color: #cccccc;">(</span>*args_for_lookup<span style="color: #66cccc;">(</span>name, prefixes, partial, keys, options<span style="color: #66cccc;">)</span><span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+  <span style="color: #99cc99;">alias</span> <span style="color: #6699cc;">:find_template</span> <span style="color: #6699cc;">:find</span>
+
+  <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">PathSet</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">find</span>
+  <span style="color: #99cc99;">def</span> <span style="color: #f99157;">find</span><span style="color: #cccccc;">(</span>*args<span style="color: #cccccc;">)</span>
+    find_all<span style="color: #cccccc;">(</span>*args<span style="color: #cccccc;">)</span>.first || <span style="color: #cc99cc;">raise</span><span style="color: #cccccc;">(</span><span style="color: #6699cc;">MissingTemplate</span>.new<span style="color: #66cccc;">(</span><span style="color: #99cc99;">self</span>, *args<span style="color: #66cccc;">)</span><span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+
+  <span style="color: #99cc99;">def</span> <span style="color: #f99157;">find_all</span><span style="color: #cccccc;">(</span>path, prefixes = <span style="color: #66cccc;">[]</span>, *args<span style="color: #cccccc;">)</span>
+    prefixes = <span style="color: #cccccc;">[</span>prefixes<span style="color: #cccccc;">]</span> <span style="color: #99cc99;">if</span> <span style="color: #6699cc;">String</span> === prefixes
+    prefixes.each <span style="color: #99cc99;">do</span> |prefix|
+      paths.each <span style="color: #99cc99;">do</span> |resolver|
+        templates = resolver.find_all<span style="color: #cccccc;">(</span>path, prefix, *args<span style="color: #cccccc;">)</span>
+        <span style="color: #99cc99;">return</span> templates <span style="color: #99cc99;">unless</span> templates.empty?
+      <span style="color: #99cc99;">end</span>
+    <span style="color: #99cc99;">end</span>
+    <span style="color: #cccccc;">[]</span>
+  <span style="color: #99cc99;">end</span>
+
+
+<span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">Resolver</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">find_all</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">find_all</span><span style="color: #cccccc;">(</span>name, prefix=<span style="color: #6699cc;">nil</span>, partial=<span style="color: #6699cc;">false</span>, details=<span style="color: #66cccc;">{}</span>, key=<span style="color: #6699cc;">nil</span>, locals=<span style="color: #66cccc;">[]</span><span style="color: #cccccc;">)</span>
+  cached<span style="color: #cccccc;">(</span>key, <span style="color: #66cccc;">[</span>name, prefix, partial<span style="color: #66cccc;">]</span>, details, locals<span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span>
+    find_templates<span style="color: #cccccc;">(</span>name, prefix, partial, details<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+
+
+<span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">PathResolver</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">find_templates</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">find_templates</span><span style="color: #cccccc;">(</span>name, prefix, partial, details<span style="color: #cccccc;">)</span>
+  path = <span style="color: #6699cc;">Path</span>.build<span style="color: #cccccc;">(</span>name, prefix, partial<span style="color: #cccccc;">)</span>
+  query<span style="color: #cccccc;">(</span>path, details, details<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:formats</span><span style="color: #66cccc;">]</span><span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">query</span><span style="color: #cccccc;">(</span>path, details, formats<span style="color: #cccccc;">)</span>
+  query = build_query<span style="color: #cccccc;">(</span>path, details<span style="color: #cccccc;">)</span>
+
+  template_paths = find_template_paths query
+
+  template_paths.map <span style="color: #cccccc;">{</span> |template|
+    handler, format = extract_handler_and_format<span style="color: #66cccc;">(</span>template, formats<span style="color: #66cccc;">)</span>
+    contents = <span style="color: #6699cc;">File</span>.binread template
+
+    <span style="color: #6699cc;">Template</span>.new<span style="color: #66cccc;">(</span>contents, <span style="color: #6699cc;">File</span>.expand_path<span style="color: #ffcc66;">(</span>template<span style="color: #ffcc66;">)</span>, handler,
+      <span style="color: #6699cc;">:virtual_path</span> =&gt; path.virtual,
+      <span style="color: #6699cc;">:format</span>       =&gt; format,
+      <span style="color: #6699cc;">:updated_at</span>   =&gt; mtime<span style="color: #ffcc66;">(</span>template<span style="color: #ffcc66;">)</span><span style="color: #66cccc;">)</span>
+  <span style="color: #cccccc;">}</span>
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="org57115bc"></a>render_template 的过程：<br />
+<div class="outline-text-5" id="text-6-5-4-3">
+<div class="org-src-container">
+<pre class="src src-ruby"><span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">TemplateRenderer</span><span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">render_tempalte</span>
+render_template<span style="color: #cccccc;">(</span>template, options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:layout</span><span style="color: #66cccc;">]</span>, options<span style="color: #66cccc;">[</span><span style="color: #6699cc;">:locals</span><span style="color: #66cccc;">]</span><span style="color: #cccccc;">)</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">render_template</span><span style="color: #cccccc;">(</span>template, layout_name = <span style="color: #6699cc;">nil</span>, locals = <span style="color: #66cccc;">{}</span><span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  view, locals = <span style="color: #ffcc66;">@view</span>, locals || <span style="color: #cccccc;">{}</span>
+
+  <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">view is viewcontext &amp; template is ActionView::Template</span>
+  render_with_layout<span style="color: #cccccc;">(</span>layout_name, locals<span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span> |layout|
+    instrument<span style="color: #cccccc;">(</span><span style="color: #6699cc;">:template</span>, <span style="color: #6699cc;">:identifier</span> =&gt; template.identifier, <span style="color: #6699cc;">:layout</span> =&gt; layout.try<span style="color: #66cccc;">(</span><span style="color: #6699cc;">:virtual_path</span><span style="color: #66cccc;">)</span><span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span>
+      template.render<span style="color: #cccccc;">(</span>view, locals<span style="color: #cccccc;">)</span> <span style="color: #cccccc;">{</span> |*name| view._layout_for<span style="color: #66cccc;">(</span>*name<span style="color: #66cccc;">)</span> <span style="color: #cccccc;">}</span>
+    <span style="color: #99cc99;">end</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">ActionView::Template</span>
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">render</span><span style="color: #cccccc;">(</span>view, locals, buffer=<span style="color: #6699cc;">nil</span>, &amp;block<span style="color: #cccccc;">)</span>
+  <span style="color: #6699cc;">ActiveSupport</span>::<span style="color: #6699cc;">Notifications</span>.instrument<span style="color: #cccccc;">(</span><span style="color: #66cccc;">"!render_template.action_view"</span>, <span style="color: #6699cc;">:virtual_path</span> =&gt; <span style="color: #ffcc66;">@virtual_path</span><span style="color: #cccccc;">)</span> <span style="color: #99cc99;">do</span>
+    compile!<span style="color: #cccccc;">(</span>view<span style="color: #cccccc;">)</span>
+    <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">&#35813;&#26041;&#27861; &#23558; compile! &#23450;&#20041;&#30340;&#26041;&#27861;&#65292;&#27714;&#20540;&#65292; &#21363; &#23558; index.html.erb &#36755;&#20986;&#20026; html: String</span>
+    view.send<span style="color: #cccccc;">(</span>method_name, locals, buffer, &amp;block<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">rescue</span> <span style="color: #6699cc;">Exception</span> =&gt; e
+  handle_render_error<span style="color: #cccccc;">(</span>view, e<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">compile!</span><span style="color: #cccccc;">(</span>view<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  <span style="color: #99cc99;">if</span> view.is_a?<span style="color: #cccccc;">(</span><span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">CompiledTemplates</span><span style="color: #cccccc;">)</span>
+    mod = <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">CompiledTemplates</span>
+  <span style="color: #99cc99;">else</span>
+    mod = view.singleton_class
+  <span style="color: #99cc99;">end</span>
+  compile<span style="color: #cccccc;">(</span>view, mod<span style="color: #cccccc;">)</span>
+<span style="color: #99cc99;">end</span>
+
+<span style="color: #99cc99;">def</span> <span style="color: #f99157;">compile</span><span style="color: #cccccc;">(</span>view, mod<span style="color: #cccccc;">)</span> <span style="color: #999999; font-style: italic;">#</span><span style="color: #999999; font-style: italic;">:nodoc:</span>
+  method_name = <span style="color: #99cc99;">self</span>.method_name
+  code = <span style="color: #ffcc66;">@handler</span>.call<span style="color: #cccccc;">(</span><span style="color: #99cc99;">self</span><span style="color: #cccccc;">)</span>
+  <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">&#36825;&#37324;&#38750;&#24120;&#37325;&#35201;&#65292; &#36825;&#37324;&#30340; code &#36755;&#20986;&#20026; "@output_buffer = output_buffer || ActionView::OutputBuffer.new;@ids.each do |id|\n@output_buffer.safe_concat('&lt;h1&gt; ');@output_buffer.append= (id);@output_buffer.safe_concat(' &lt;/h1&gt;\n');end\n@output_buffer.to_s"  &#22312; html.erb &#20026; &lt;%@ids.each do |id|%&gt;&lt;h1&gt; &lt;%=id%&gt; &lt;/h1&gt;&lt;%end%&gt; &#26102;</span>
+
+
+  <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">Make sure that the resulting String to be evalled is in the</span>
+  <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">encoding of the code</span>
+  source = <span style="color: #66cccc;">&lt;&lt;-end_src</span>
+<span style="color: #66cccc;">          def </span><span style="color: #ffcc66;">#{method_name}</span><span style="color: #66cccc;">(local_assigns, output_buffer)</span>
+<span style="color: #66cccc;">            _old_virtual_path, @virtual_path = @virtual_path, </span><span style="color: #ffcc66;">#{@virtual_path.inspect}</span><span style="color: #66cccc;">;_old_output_buffer = @output_buffer;</span><span style="color: #ffcc66;">#{locals_code}</span><span style="color: #66cccc;">;</span><span style="color: #ffcc66;">#{code}</span>
+<span style="color: #66cccc;">          ensure</span>
+<span style="color: #66cccc;">            @virtual_path, @output_buffer = _old_virtual_path, _old_output_buffer</span>
+<span style="color: #66cccc;">          end</span>
+<span style="color: #66cccc;">        end_src</span>
+
+  <span style="color: #99cc99;">begin</span>
+    <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">&#36825;&#37324;&#26368;&#20026;&#37325;&#35201;&#65292; mod &#19968;&#33324;&#20026; ActionViewCompiled, &#21363; &#23558;source &#21464;&#20026; Module&#30340;&#26041;&#27861;</span>
+    mod.module_eval<span style="color: #cccccc;">(</span>source, identifier, 0<span style="color: #cccccc;">)</span>
+    <span style="color: #6699cc;">ObjectSpace</span>.define_finalizer<span style="color: #cccccc;">(</span><span style="color: #99cc99;">self</span>, <span style="color: #6699cc;">Finalizer</span><span style="color: #66cccc;">[</span>method_name, mod<span style="color: #66cccc;">]</span><span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">rescue</span> <span style="color: #6699cc;">Exception</span> =&gt; e <span style="color: #999999; font-style: italic;"># </span><span style="color: #999999; font-style: italic;">errors from template code</span>
+    <span style="color: #99cc99;">if</span> logger = <span style="color: #cccccc;">(</span>view &amp;&amp; view.logger<span style="color: #cccccc;">)</span>
+      logger.debug <span style="color: #66cccc;">"ERROR: compiling </span><span style="color: #ffcc66;">#{method_name}</span><span style="color: #66cccc;"> RAISED </span><span style="color: #ffcc66;">#{e}</span><span style="color: #66cccc;">"</span>
+      logger.debug <span style="color: #66cccc;">"Function body: </span><span style="color: #ffcc66;">#{source}</span><span style="color: #66cccc;">"</span>
+      logger.debug <span style="color: #66cccc;">"Backtrace: </span><span style="color: #ffcc66;">#{e.backtrace.join("</span><span style="color: #ffcc66;">\</span><span style="color: #cc99cc;">n</span><span style="color: #ffcc66;">")}</span><span style="color: #66cccc;">"</span>
+    <span style="color: #99cc99;">end</span>
+
+    <span style="color: #cc99cc;">raise</span> <span style="color: #6699cc;">ActionView</span>::<span style="color: #6699cc;">Template</span>::<span style="color: #6699cc;">Error</span>.new<span style="color: #cccccc;">(</span><span style="color: #99cc99;">self</span>, <span style="color: #66cccc;">{}</span>, e<span style="color: #cccccc;">)</span>
+  <span style="color: #99cc99;">end</span>
+<span style="color: #99cc99;">end</span>
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgd7d0854" class="outline-3">
+<h3 id="orgd7d0854"><span class="section-number-3">6.6</span> render总结： 忽略细节 仅仅从 类名字 以及 变量名 来看， render的过程  就是 find template &#x2013; compile template  &#x2014; define_compiled code as a method in module  -&#x2014; viewcontext call method_name 即完成了 整个render的过程。 其关键细节有：</h3>
+<div class="outline-text-3" id="text-6-6">
+</div>
+<div id="outline-container-org8a4b572" class="outline-4">
+<h4 id="org8a4b572"><span class="section-number-4">6.6.1</span> 1. lookup_context:   ActionView::LookupContext.new 定义了 整个 find_template 的过程, 其主要参数为 i18n local 以及 format 即寻找 json, 还是html 对应的模版方法。 其内部包含 view_paths: ActionView::PathSet（Path 的结合， 其主要提供 find 方法，找到对应的文件，binread 出来， 并创建 Template.new ）</h4>
+</div>
+<div id="outline-container-orgcab8fea" class="outline-4">
+<h4 id="orgcab8fea"><span class="section-number-4">6.6.2</span> 2. view_renderer: ActionView::Renderer.new(lookup_context) 主要提供render方法， 包装 对于 lookup_context find 的 template  的render 方法调用。 比如 提供对于 render partial: xxx, local: , template 等 的处理。</h4>
+</div>
+<div id="outline-container-orgd8f3b1a" class="outline-4">
+<h4 id="orgd8f3b1a"><span class="section-number-4">6.6.3</span> 3. view_context: 是整个view 的渲染环境。 其生成 一个匿名类的实例变量：  view_context_class.new(view_renderer, view_assigns, self)， view_renderer:  , view_assigns:  携带了 Controller 中的实例变量 ， self: Controller</h4>
+</div>
+<div id="outline-container-org1c639a4" class="outline-4">
+<h4 id="org1c639a4"><span class="section-number-4">6.6.4</span> 代码 最终通过 调用 view_renderer.render 调用，通过lookup_context 找到 Template, Template.render(view), Template 将 进行 compile！ 该过程将 读取 xxx.html.erb 的文件内容，转为 ruby代码， eval 到 view_context 祖先链 中. view_context.send(method_name) 来进行调用，即 method_name 输出为 一个 html 内容。</h4>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: lishaohua</p>
+<p class="date">Created: 2022-01-17 Mon 10:29</p>
+</div>
+</body>
+</html>

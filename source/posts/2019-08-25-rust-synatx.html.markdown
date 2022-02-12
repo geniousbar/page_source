@@ -420,8 +420,8 @@ NewType: 因为 impl Trait for Type, 中的type需要在本地的crate，而不�
       .collect();
  ```
 
-
-### macros:
+## macros:
+### macro_rules:
 #### rust tokens 分类：
 ```text
   Identifiers: foo, Bambous, self, we_can_dance, LaCaravane, …
@@ -1035,7 +1035,7 @@ macro_rules! sing {
 
 ```
 
-* 3) 可以使用 编译参数 rustc -Z unstable-options --pretty expanded hello.rs 来输出macro展开之后的 形式内容
+* 3) 可以使用 编译参数 rustc -Z unstable-options --pretty=expanded hello.rs 来输出macro展开之后的 形式内容
 
 ```rust
 // Shorthand for initialising a `String`.
@@ -1074,4 +1074,98 @@ fn main() {
 }
 
 ```
+### 3种 procedural macros: 1) 在 struce & enum 上使用：#[derive] 2) 在任何 地方可以使用的： Attribute-like macros 3) Function-like macros
+#### procedural macro 的 整体概览：
+##### 1. 使用 rust func 对 macro接受的 TokenStream 进行处理， 并返回  TokenStream 
+```rust
+pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+    ...
+}
+```
+##### 2. 依赖 crate:  proc-macro syn quote. 其中 proc-macro 存在于 rust lib 库中。
+* proc-macro: 提供 将 #[derive()], #[some_type], println!() macro 声明方式，关联到 macro 定义的 rust func 中
+* syn: 将TokenStream ---> syn::DeriveInput
+* quote: rust code ---> TokenStream
+* macro func: 将 syn::DeriveInput ---> TokenStream （需要quote 的帮助, 为 macro定义的主要逻辑）
 
+##### 3. #[derive] example:
+```rust
+  // hello_macro
+   pub trait HelloMacro {
+       fn hello_macro();
+   }
+
+  // hello_macro_derive
+  // Cargo.toml
+  [lib]
+  proc-macro = true
+
+  [dependencies]
+  syn = "1.0"
+  quote = "1.0"
+
+  // src/lib.rs
+  extern crate proc_macro;
+
+  use proc_macro::TokenStream;
+  use quote::quote;
+  use syn;
+
+  #[proc_macro_derive(HelloMacro)]
+  pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+      // Construct a representation of Rust code as a syntax tree
+      // that we can manipulate
+      let ast = syn::parse(input).unwrap();
+
+      // Build the trait implementation
+      impl_hello_macro(&ast)
+  }
+
+  fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
+      let name = &ast.ident;
+      let gen = quote! {
+          impl HelloMacro for #name {
+              fn hello_macro() {
+                  println!("Hello, Macro! My name is {}!", stringify!(#name));
+              }
+          }
+      };
+      gen.into()
+  }
+
+  //useage
+
+  use hello_macro::HelloMacro;
+  use hello_macro_derive::HelloMacro;
+
+  #[derive(HelloMacro)]
+  struct Pancakes;
+
+  fn main() {
+      Pancakes::hello_macro();
+  }
+
+
+```
+
+##### 4. Attribute-like macros: 跟 #[derive] 类似， 但是这里没有明确的示例， 即 不知道 item: TokenStream 的内容
+
+```rust
+
+#[route(GET, "/")]
+fn index() {}
+
+#[proc_macro_attribute]
+pub fn route(attr: TokenStream, item: TokenStream) -> TokenStream {
+```
+
+##### 5. Function-like macros: 类似于 macro_rules，但是远比  macro_rule 要灵活，因为 可以使用rust code 对  TokenStream 进行处理。 所以可以sql 这种复杂的语句
+
+```rust
+let sql = sql!(SELECT * FROM posts WHERE id=1);
+
+#[proc_macro]
+pub fn sql(input: TokenStream) -> TokenStream {
+}
+
+```
