@@ -1417,3 +1417,14 @@ content=$(tail -c ${offset} ${file})
 echo ${content} // 会导致  newline (\n) 丢失， 丢失，导致后面的 grep 可能失败， 不能够正常表现, 所以需要 使用 echo "${content}" 来实现 newline 的保留， (newline 并没有因为保存在变量中，而被丢弃，只是因为IFS 包含 newline 没有表现出来) , 相关参考在 https://www.baeldung.com/linux/variable-preserve-linebreaks?utm_source=pocket_mylist
 match=$(echo "${content}" | grep 'app error: exception:' |  grep -E "unexpected token at 'null' params|undefined method \`split' for nil:NilClass" -v)
 ```
+
+错误重定向： /home/shaohua.li/error_monitor.sh >> /home/shaohua.li/crontab_shell/task.log 2>>&1 错误，在bash中会产生错误， zsh 则没有问题。所以这里的写法 应该是 >> xxxx 2>&1  2会追加到 1 所以应该控制 1 的打开方式，但是这是否会存在 1 为 write， 2 也只能为  write 不能为append?  这里面的思考方式，应该是 写程序， 关于fd 的方式 （透过现象看本质，即 同一个程序 使用同一个 fd，以及打开fd 两次， 导致的偏移量的区别）
+ * cd , cd ~, cd ~user_name
+ * options & arguments:  command -options arguments, GNU project also support two dash  command --options arguments,
+ * mkdir directory... When three periods follow an argument in the description of a com- mand (as above), it means that the argument can be repeated, thus the following com- mand:
+ * ls -a (list all files) -A (like -a not include . and ..) -l (long format) -h (long fomart display file size in k,m,g )  -S (sort by file size) -t (sort by modification time) -r (reverse order)
+ * Wildcards  expand : t provides special characters to help us rapidly specify groups of filenames.: 
+ * * (any) 
+ * 单个位置： ? (single char) [chars] (match any chars that is a member of this set), [!characters] Character Ranges [A-Z] [a-z] [0-9] 可嵌套：[[:lower:]123]
+ 
+ 

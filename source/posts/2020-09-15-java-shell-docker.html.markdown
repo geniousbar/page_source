@@ -334,15 +334,15 @@ docker run -d -p 80 --name static_web static_web nginx -g "daemon off;"
 
 ##### Dockerfile 指令: 
   * CMD: 指定容器启动时候的运行的命令， 区分于RUN 为镜像被构建时运行的命令，CMD 则是容器启动时候运行的命令。同docker run时候指定的命令， docker run中的命令会覆盖CMD命令，即 docker run中指定了命令，则CMD中的命令将不会被执行
-  * ENTRYPOINT： 区分于 CMD，不会被 docker run中的命令 所替代，而是 替代 CMD 一起传递给 ENTRYPOINT，示例： 
-  
-```shell
+  * ENTRYPOINT： 区分于 CMD，需要传递 --entrypoint 来代替,  docker run  custom-cmd ...  会替代 CMD 一起传递给 ENTRYPOINT，示例：(即  ENTRYPOINT 是 docker的 默认入口， cmd 为默认 参数， docker run cmd 时候， cmd 代替 默认cmd 传递给 entrypoint， 但是 entrypoint  并非 不可代替， 可以指定  --entrypoint 来执行 出 /bin/sh 之外的 可执行文件 代替)  参考文档 (stackoverflow)[https://stackoverflow.com/questions/21553353/what-is-the-difference-between-cmd-and-entrypoint-in-a-dockerfile] (docker)[https://yeasy.gitbook.io/docker_practice/image/dockerfile/entrypoint] (docker hub) [https://docs.docker.com/engine/reference/builder/] (images) [https://stackoverflow.com/questions/44769315/how-to-see-docker-image-contents]
+
+    ```shell
     ENTRYPOINT ["/usr/sbin/nginx"]
     CMD ["-h"]
 
       docker  run -t -i static_web -g "daemon off;"
     ```
-  * WORKDIR: 为后续的指令 执行  设定工作目录， 
+  * WORKDIR: 为后续的指令 执行  设定工作目录
   * ENV: 指定环境变量， 在后续的 RUN 中使用，也可以在其他命令中使用环境变量。 该变量 持久的保存到 从我们的镜像创建的任何容器中。 相反 在docker run -e 中传递的环境变量 则一次性有效
   
     ```shell
