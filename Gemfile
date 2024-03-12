@@ -28,7 +28,6 @@ gem 'puma',  '3.12.1'
 # to serve static files
 gem 'rack-contrib'
 
-gem "therubyracer"
 
 gem 'listen'
 gem 'pry'
